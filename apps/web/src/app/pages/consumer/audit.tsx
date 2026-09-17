@@ -85,7 +85,7 @@ function TimelineEntry({ entry }: { entry: AuditLogEntry }) {
   const hasDetail =
     meta.field !== undefined ||
     meta.newValue !== undefined ||
-    Boolean(entry.metadata);
+    Object.keys(meta).length > 0;
   const isEdit = entry.eventType === "FIELD_EDITED";
 
   return (

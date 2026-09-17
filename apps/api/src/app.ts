@@ -1,7 +1,10 @@
 import type { HealthResponse, MeResponse } from "@repo/types";
 import { toNodeHandler } from "better-auth/node";
+import compression from "compression";
 import cors from "cors";
 import express, { type Express } from "express";
+import helmet from "helmet";
+import morgan from "morgan";
 import { auth } from "./lib/auth.js";
 import { assertBootEnv } from "./lib/env.js";
 import { requireAuth } from "./middleware/require-auth.js";
@@ -24,6 +27,10 @@ export const createApp = (): Express => {
     .map((url) => url.trim())
     .filter((url) => url.length > 0);
   const allowedOrigins = [frontendUrl, ...extraOrigins];
+
+  app.use(helmet());
+  app.use(compression());
+  app.use(morgan("combined"));
 
   app.use(
     cors({

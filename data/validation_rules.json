@@ -1,0 +1,47 @@
+[
+  {
+    "id": "V001",
+    "name": "Required Fields",
+    "type": "presence",
+    "fields": ["loan_id", "borrower_id", "original_principal"]
+  },
+  {
+    "id": "V002",
+    "name": "Valid State",
+    "type": "regex",
+    "field": "borrower_state",
+    "pattern": "^[A-Z]{2}$"
+  },
+  {
+    "id": "V003",
+    "name": "Positive Balance",
+    "type": "numeric",
+    "field": "current_balance",
+    "min": 0
+  },
+  {
+    "id": "V004",
+    "name": "Balance <= Principal",
+    "type": "comparison",
+    "field": "current_balance",
+    "operator": "<=",
+    "compare_to": "original_principal"
+  },
+  {
+    "id": "V005",
+    "name": "Maturity > Origination",
+    "type": "date_comparison",
+    "field": "maturity_date",
+    "operator": ">",
+    "compare_to": "origination_date"
+  },
+  {
+    "id": "V006",
+    "name": "Closed Zero Balance",
+    "type": "conditional",
+    "condition_field": "payment_status",
+    "condition_val": "CLOSED",
+    "check_field": "current_balance",
+    "expected": 0
+  }
+]

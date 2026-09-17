@@ -1,0 +1,17 @@
+[
+  {
+    "id": "u_001",
+    "name": "Alice Operator",
+    "role": "DATA_OPERATOR"
+  },
+  {
+    "id": "u_002",
+    "name": "Bob Reviewer",
+    "role": "REVIEWER"
+  },
+  {
+    "id": "u_003",
+    "name": "Charlie Consumer",
+    "role": "DATA_CONSUMER"
+  }
+]

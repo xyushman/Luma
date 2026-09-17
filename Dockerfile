@@ -31,6 +31,7 @@ RUN git init -q . && bun install --frozen-lockfile
 COPY apps/api apps/api
 COPY packages packages
 RUN cd apps/api && bun x prisma generate --schema prisma/schema.prisma
+USER bun
 EXPOSE 4000
 CMD ["bun", "apps/api/src/index.ts"]
 
