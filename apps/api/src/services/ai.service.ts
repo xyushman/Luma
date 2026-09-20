@@ -243,6 +243,14 @@ const mockExplainRecommendation = (params: {
 
 const AI_UNAVAILABLE_MSG = "AI unavailable";
 
+/**
+ * Analyzes a specific data exception on a loan record using AI to explain why it occurred
+ * and suggests the most reliable corrected values based on available context.
+ *
+ * @param exceptionId - The unique identifier of the exception to explain
+ * @param actorId - Optional ID of the user requesting the explanation (for audit logging)
+ * @returns The AI's recommendation including confidence, suggested values, and reasoning
+ */
 export const explainException = async (
   exceptionId: string,
   actorId?: string
@@ -381,6 +389,14 @@ export const explainException = async (
   return { exceptionId, recommendation };
 };
 
+/**
+ * Generates a concise, plain-prose summary of a loan data upload batch, highlighting
+ * the most common exception types, severity distribution, and areas needing reviewer attention.
+ *
+ * @param batchId - The unique identifier of the upload batch to summarize
+ * @param actorId - Optional ID of the user requesting the summary (for audit logging)
+ * @returns A brief AI-generated summary of the batch's validation results
+ */
 export const summarizeBatch = async (
   batchId: string,
   actorId?: string
@@ -479,6 +495,14 @@ export const summarizeBatch = async (
   return { batchId, model: modelId, summary: summaryText, timestamp };
 };
 
+/**
+ * Re-evaluates the severity of a specific exception using AI, taking into account
+ * financial materiality, data-trust impact, and downstream reporting risks.
+ *
+ * @param exceptionId - The unique identifier of the exception to classify
+ * @param actorId - Optional ID of the user requesting the classification (for audit logging)
+ * @returns The AI's suggested severity level and the reasoning behind it
+ */
 export const classifySeverity = async (
   exceptionId: string,
   actorId?: string
@@ -566,6 +590,14 @@ export const classifySeverity = async (
   };
 };
 
+/**
+ * Translates a user's natural language request into a structured JSON validation rule
+ * that can be applied to loan data checking.
+ *
+ * @param promptText - The user's natural language description of the desired rule
+ * @param actorId - Optional ID of the user requesting the rule (for audit logging)
+ * @returns A structured rule object containing conditions, severity, and exception type
+ */
 export const suggestRule = async (
   promptText: string,
   actorId?: string
@@ -652,6 +684,14 @@ export const suggestRule = async (
   return { model: modelId, note, promptSummary, rule, timestamp };
 };
 
+/**
+ * Drafts a professional, factual note for a reviewer documenting an exception
+ * and its potential resolution rationale, based on loan context and servicer conflicts.
+ *
+ * @param exceptionId - The unique identifier of the exception to draft a note for
+ * @param actorId - Optional ID of the user requesting the note (for audit logging)
+ * @returns An AI-generated draft note ready for reviewer approval or modification
+ */
 export const draftReviewerNote = async (
   exceptionId: string,
   actorId?: string

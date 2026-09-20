@@ -18,36 +18,53 @@ import { processDocumentManifest } from "../services/document-manifest.service.j
 import { processStreamAndNormalize } from "../services/ingestion.service.js";
 import { processPublicDataIngestion } from "../services/public-data/ingestion.service.js";
 
+// Define the maximum allowed file size for uploads (500 Megabytes)
 const MAX_FILE_SIZE = 500 * 1024 * 1024;
+// Determine the system's temporary directory and create a specific folder for Luma uploads
 const UPLOAD_DIR = path.join(os.tmpdir(), "luma-uploads");
+// Create a Zod schema to validate that batch IDs are valid CUIDs (Collision Resistant Unique Identifiers)
 const BATCH_ID_SCHEMA = z.string().cuid2().or(z.string().cuid());
 
+// Helper function to ensure the upload directory physically exists on the disk
 const ensureUploadDir = (): void => {
+  // If the directory does not exist yet...
   if (!fs.existsSync(UPLOAD_DIR)) {
+    // ...create it (and any necessary parent directories)
     fs.mkdirSync(UPLOAD_DIR, { recursive: true });
   }
 };
 
+// Run the helper function immediately on startup to ensure the folder is ready
 ensureUploadDir();
 
+// Configure 'multer', a middleware for handling multipart/form-data (file uploads)
 const storage = multer.diskStorage({
+  // Define where the file should be saved on the server
   destination: (_req, _file, cb) => {
+    // Double-check the directory exists before saving
     ensureUploadDir();
+    // Callback with no error (null) and the destination path
     cb(null, UPLOAD_DIR);
   },
+  // Define how the uploaded file should be named on the server
   filename: (_req, file, cb) => {
+    // Create a safe, unique filename by prepending the current timestamp and stripping out any dangerous characters
     const safeName = `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+    // Callback with no error (null) and the generated safe filename
     cb(null, safeName);
   },
 });
 
+// Initialize the multer instance with our storage configuration and file size limit
 const upload = multer({
   limits: { fileSize: MAX_FILE_SIZE },
   storage,
 });
 
+// Create a new Express router object to handle upload-related API endpoints
 const router = express.Router();
 
+// Apply an authentication middleware to ALL routes in this router so only logged-in users can access them
 router.use(requireAuth);
 
 router.post(

@@ -1,0 +1,72 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: luma-postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: luma
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - luma_pgdata_local:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d luma"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      target: api
+    image: luma-api:local
+    working_dir: /app/apps/api
+    command: ["bun", "node_modules/prisma/build/index.js", "migrate", "deploy"]
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/luma
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      target: api
+    image: luma-api:local
+    container_name: luma-api-local
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/luma
+      BETTER_AUTH_SECRET: secret_for_local_development_only
+      BETTER_AUTH_URL: http://localhost:4000
+      FRONTEND_URL: http://localhost:3000
+      MOCK_AI: "true"
+      AI_MODEL_ID: gemini-3.5-flash-lite
+      PORT: "4000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      target: web
+      args:
+        VITE_API_URL: http://localhost:4000
+    image: luma-web:local
+    container_name: luma-web-local
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+volumes:
+  luma_pgdata_local:

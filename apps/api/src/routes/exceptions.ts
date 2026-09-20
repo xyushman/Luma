@@ -19,6 +19,12 @@ const CUID_SCHEMA = cuidSchema;
 // Operator dashboard (Module G / ui-and-flow §4.1) must NOT use this endpoint for
 // "Corrections needed" — operator uses GET /api/uploads (failedRows) + GET /api/loans?validationStatus=failed.
 // Keeping this guard strict preserves RBAC and makes the 403 on operator intentional.
+
+// SECURITY GUARD / RBAC ENFORCEMENT:
+// This middleware ensures that ONLY users with the 'reviewer' role can access ANY
+// of the routes in this file. If a 'data_operator' tries to hit this endpoint
+// directly via API to approve their own errors, it instantly rejects them with a 403 Forbidden.
+// This is how we enforce Separation of Duties at the network layer.
 router.use(requireAuth, requireRole("reviewer"));
 
 router.get("/", async (req: Request, res: Response): Promise<void> => {

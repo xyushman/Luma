@@ -1,0 +1,501 @@
+loanId,borrowerId,loanType,originationDate,maturityDate,originalPrincipal,currentBalance,interestRate,termMonths,borrowerState,loanPurpose,creditGrade,employmentLength,incomeBand,paymentStatus,daysPastDue,servicerName,lastPaymentDate
+LN-10001,BRW-90001,Personal,2022-08-08,2024-12-01,42371,33382,14.99,36,MI,Debt Consolidation,B,1-3 years,100k-150k,Late (31-120 days),91,PennyMac,2022-12-11
+LN-10002,BRW-90002,Personal,2022-05-17,2023-05-06,21154,20016,7.11,36,GA,Major Purchase,B,1-3 years,0-50k,In Grace Period,0,Wells Fargo,2025-09-11
+LN-10003,BRW-90003,Personal,2018-07-06,2028-09-27,13116,11978,16.34,60,OH,Major Purchase,D,< 1 year,100k-150k,In Grace Period,0,Wells Fargo,2022-05-31
+LN-10004,BRW-90004,Personal,2022-07-05,2026-09-12,42947,29955,19.51,60,GA,Debt Consolidation,D,1-3 years,50k-100k,Charged Off,0,Mr. Cooper,2022-12-15
+LN-10005,BRW-90005,Personal,2020-12-01,2027-12-07,14218,10650,16.12,60,NC,Major Purchase,A,8-10 years,0-50k,Current,0,Wells Fargo,2023-08-18
+LN-10006,BRW-90006,Personal,2018-07-01,2027-07-07,35532,26312,12.41,36,PA,Major Purchase,A,4-7 years,100k-150k,Late (31-120 days),80,Mr. Cooper,2024-03-18
+LN-10007,BRW-90007,Personal,2019-10-31,2028-01-22,24934,13864,9.47,36,MI,Home Improvement,E,10+ years,0-50k,Charged Off,0,LoanCare,2025-12-14
+LN-10008,BRW-90008,Personal,2018-08-18,2028-09-13,28005,17004,6.65,36,NC,Home Improvement,D,4-7 years,50k-100k,Fully Paid,0,LoanCare,2023-11-06
+LN-10009,BRW-90009,Personal,2021-12-04,2024-08-20,13717,10954,6.87,60,TX,Major Purchase,D,10+ years,50k-100k,Charged Off,0,Mr. Cooper,2026-09-03
+LN-10010,BRW-90010,Personal,2020-07-23,2027-05-12,44403,26767,19.94,60,NY,Major Purchase,C,10+ years,0-50k,In Grace Period,0,Mr. Cooper,2024-11-07
+LN-10011,BRW-90011,Personal,2022-04-21,2023-12-19,7641,7333,9.60,36,TX,Medical Expenses,C,10+ years,150k-200k,Charged Off,0,Wells Fargo,2025-05-03
+LN-10012,BRW-90012,Personal,2020-09-28,2023-09-26,26847,14174,18.09,36,NY,Credit Card Refinancing,D,< 1 year,0-50k,Current,0,LoanCare,2024-11-26
+LN-10013,BRW-90013,Personal,2021-02-13,2027-11-23,36743,24579,19.71,36,OH,Debt Consolidation,C,8-10 years,50k-100k,Current,0,PennyMac,2023-10-15
+LN-10014,BRW-90014,Personal,2020-12-16,2027-08-07,11957,6441,7.34,60,NC,Major Purchase,E,1-3 years,0-50k,In Grace Period,0,PennyMac,2025-12-04
+LN-10015,BRW-90015,Personal,2022-08-13,2025-12-01,28381,16889,10.91,36,TX,Major Purchase,A,1-3 years,100k-150k,Late (31-120 days),108,PennyMac,2023-08-19
+LN-10016,BRW-90016,Personal,2022-11-11,2024-02-08,27184,26960,10.66,36,CA,Home Improvement,B,8-10 years,100k-150k,Late (31-120 days),115,Wells Fargo,2026-08-08
+LN-10017,BRW-90017,Personal,2019-04-28,2023-09-30,38005,30219,17.50,36,TX,Debt Consolidation,D,10+ years,50k-100k,Charged Off,0,Mr. Cooper,2023-09-11
+LN-10018,BRW-90018,Personal,2018-08-04,2025-03-04,32064,18073,7.90,36,FL,Major Purchase,D,< 1 year,100k-150k,In Grace Period,0,Mr. Cooper,2024-01-24
+LN-10019,BRW-90019,Personal,2021-07-10,2028-07-26,33957,27314,15.61,60,CA,Credit Card Refinancing,A,1-3 years,150k-200k,Fully Paid,0,Wells Fargo,2026-02-06
+LN-10020,BRW-90020,Personal,2018-04-19,2025-08-11,33289,18401,12.21,36,OH,Major Purchase,B,4-7 years,50k-100k,Late (31-120 days),74,Mr. Cooper,2025-10-07
+LN-10021,BRW-90021,Personal,2022-10-09,2027-01-26,36741,25889,16.58,36,OH,Medical Expenses,E,< 1 year,0-50k,In Grace Period,0,Mr. Cooper,2023-11-27
+LN-10022,BRW-90022,Personal,2020-06-19,2028-07-11,43630,38410,13.95,36,IL,Major Purchase,D,1-3 years,0-50k,Current,0,PennyMac,2024-01-20
+LN-10023,BRW-90023,Personal,2020-07-08,2024-05-18,43131,32720,5.42,36,OH,Debt Consolidation,C,1-3 years,100k-150k,In Grace Period,0,Cenlar,2022-09-26
+LN-10024,BRW-90024,Personal,2022-10-05,2026-03-30,33103,32409,12.68,36,MI,Debt Consolidation,C,< 1 year,150k-200k,In Grace Period,0,Cenlar,2024-02-07
+LN-10025,BRW-90025,Personal,2018-11-27,2028-09-24,26894,21412,16.72,60,FL,Home Improvement,C,1-3 years,150k-200k,Late (31-120 days),72,Cenlar,2024-08-01
+LN-10026,BRW-90026,Personal,2020-02-25,2024-02-04,13880,11461,11.55,60,IL,Credit Card Refinancing,E,< 1 year,0-50k,Current,0,PennyMac,2025-10-23
+LN-10027,BRW-90027,Personal,2021-02-04,2025-12-11,41099,37383,17.58,60,NC,Credit Card Refinancing,B,10+ years,50k-100k,In Grace Period,0,Wells Fargo,2022-03-11
+LN-10028,BRW-90028,Personal,2022-11-25,2025-02-14,33623,28602,6.06,60,GA,Debt Consolidation,D,8-10 years,0-50k,Fully Paid,0,Cenlar,2022-09-10
+LN-10029,BRW-90029,Personal,2019-10-06,2027-10-09,11463,6693,5.05,60,NC,Major Purchase,D,< 1 year,0-50k,Charged Off,0,LoanCare,2025-04-11
+LN-10030,BRW-90030,Personal,2022-03-28,2024-12-09,41752,35344,12.93,60,CA,Major Purchase,D,8-10 years,100k-150k,In Grace Period,0,Mr. Cooper,2024-07-14
+LN-10031,BRW-90031,Personal,2018-06-17,2026-01-15,31945,19895,16.82,60,TX,Debt Consolidation,A,8-10 years,0-50k,Charged Off,0,LoanCare,2026-05-27
+LN-10032,BRW-90032,Personal,2018-05-18,2028-07-24,5860,4195,11.87,60,NY,Medical Expenses,E,8-10 years,150k-200k,Charged Off,0,Wells Fargo,2025-08-13
+LN-10033,BRW-90033,Personal,2019-01-10,2025-06-28,14427,12987,13.44,36,NY,Credit Card Refinancing,A,< 1 year,0-50k,Fully Paid,0,Mr. Cooper,2022-10-01
+LN-10034,BRW-90034,Personal,2021-04-09,2028-03-15,24970,19420,5.27,60,MI,Major Purchase,D,< 1 year,0-50k,Late (31-120 days),46,LoanCare,2024-09-21
+LN-10035,BRW-90035,Personal,2022-08-28,2026-08-24,26813,21801,6.47,36,MI,Medical Expenses,E,4-7 years,50k-100k,Charged Off,0,Wells Fargo,2022-11-21
+LN-10036,BRW-90036,Personal,2020-08-01,2025-04-17,16698,11933,17.06,36,GA,Debt Consolidation,D,4-7 years,100k-150k,Late (31-120 days),109,Cenlar,2023-10-04
+LN-10037,BRW-90037,Personal,2020-09-15,2028-10-19,12522,9833,9.13,60,FL,Debt Consolidation,A,1-3 years,150k-200k,In Grace Period,0,Mr. Cooper,2024-05-27
+LN-10038,BRW-90038,Personal,2019-04-06,2025-08-04,29719,28514,8.84,60,NY,Credit Card Refinancing,E,10+ years,50k-100k,Fully Paid,0,PennyMac,2025-11-24
+LN-10039,BRW-90039,Personal,2022-05-21,2027-01-20,9583,7422,14.39,60,MI,Home Improvement,C,1-3 years,50k-100k,Charged Off,0,LoanCare,2025-10-25
+LN-10040,BRW-90040,Personal,2022-03-07,2027-05-03,40371,28392,14.47,60,IL,Major Purchase,D,< 1 year,150k-200k,In Grace Period,0,Cenlar,2025-07-26
+LN-10041,BRW-90041,Personal,2019-10-20,2024-02-10,43081,22324,14.13,60,FL,Home Improvement,A,< 1 year,100k-150k,Current,0,PennyMac,2024-11-24
+LN-10042,BRW-90042,Personal,2021-09-01,2024-03-02,21526,19017,14.84,60,TX,Home Improvement,E,4-7 years,100k-150k,Fully Paid,0,Wells Fargo,2025-04-20
+LN-10043,BRW-90043,Personal,2021-11-09,2026-12-27,20107,18511,10.19,60,,Credit Card Refinancing,D,10+ years,150k-200k,Late (31-120 days),106,Mr. Cooper,2024-02-05
+LN-10044,BRW-90044,Personal,2021-08-13,2028-10-03,33816,21172,17.02,36,NC,Medical Expenses,D,< 1 year,200k+,Late (31-120 days),80,Wells Fargo,2022-10-10
+LN-10045,BRW-90045,Personal,2018-07-23,2027-02-27,20999,13225,12.86,60,NY,Debt Consolidation,D,4-7 years,100k-150k,In Grace Period,0,Mr. Cooper,2026-04-23
+LN-10046,BRW-90046,Personal,2018-04-21,2028-02-12,6496,5095,8.74,60,OH,Home Improvement,C,< 1 year,150k-200k,Current,0,LoanCare,2022-06-01
+LN-10047,BRW-90047,Personal,2018-08-05,2026-12-25,28880,22457,18.87,60,TX,Major Purchase,E,10+ years,100k-150k,Fully Paid,0,Wells Fargo,2023-09-21
+LN-10048,BRW-90048,Personal,2019-06-17,2025-03-11,28209,23093,12.39,60,PA,Major Purchase,E,1-3 years,50k-100k,Late (31-120 days),55,PennyMac,2025-04-14
+LN-10049,BRW-90049,Personal,2019-07-16,2025-10-06,40581,21171,18.23,60,NY,Home Improvement,D,< 1 year,0-50k,In Grace Period,0,Cenlar,2023-08-25
+LN-10050,BRW-90050,Personal,2020-05-09,2028-01-29,16868,14805,12.91,36,CA,Debt Consolidation,B,< 1 year,150k-200k,Charged Off,0,Mr. Cooper,2026-04-15
+LN-10051,BRW-90051,Personal,2019-06-14,2028-05-08,39292,34940,12.35,36,OH,Medical Expenses,E,8-10 years,0-50k,Late (31-120 days),85,LoanCare,2024-08-03
+LN-10052,BRW-90052,Personal,2022-07-22,2023-05-08,26201,18133,13.44,60,NC,Major Purchase,E,10+ years,0-50k,In Grace Period,0,Wells Fargo,2024-03-15
+LN-10053,BRW-90053,Personal,2022-08-10,2023-03-10,18893,17724,8.89,36,NY,Credit Card Refinancing,A,4-7 years,200k+,Charged Off,0,Mr. Cooper,2023-04-20
+LN-10054,BRW-90054,Personal,2018-10-13,2025-07-22,21925,13003,7.52,36,MI,Debt Consolidation,E,< 1 year,50k-100k,Current,0,Mr. Cooper,2025-12-20
+LN-10055,BRW-90055,Personal,2021-09-20,2027-12-16,21113,17219,10.42,60,TX,Medical Expenses,B,4-7 years,100k-150k,Late (31-120 days),95,LoanCare,2026-06-20
+LN-10056,BRW-90056,Personal,2019-12-11,2023-12-19,11903,31903,8.30,36,FL,Major Purchase,A,< 1 year,50k-100k,Fully Paid,0,PennyMac,2025-06-17
+LN-10057,BRW-90057,Personal,2018-06-21,2027-09-24,8119,28119,17.44,36,FL,Credit Card Refinancing,C,4-7 years,100k-150k,Current,0,Cenlar,2022-06-16
+LN-10058,BRW-90058,Personal,2019-09-30,2025-01-03,26994,21558,13.13,36,CA,Debt Consolidation,A,< 1 year,200k+,In Grace Period,0,Cenlar,2023-08-11
+LN-10059,BRW-90059,Personal,2018-11-28,2028-02-23,39808,26763,8.45,36,FL,Debt Consolidation,A,10+ years,50k-100k,Charged Off,0,Wells Fargo,2026-04-04
+LN-10060,BRW-90060,Personal,2022-12-06,2025-10-03,40621,23874,5.26,36,IL,Credit Card Refinancing,D,8-10 years,0-50k,Late (31-120 days),55,Cenlar,2023-05-03
+LN-10061,BRW-90061,Personal,2020-03-30,2024-05-20,42463,37552,14.07,36,NC,Credit Card Refinancing,B,< 1 year,200k+,Fully Paid,0,Mr. Cooper,2023-10-27
+LN-10062,BRW-90062,Personal,2021-11-15,2023-07-29,15945,13259,11.18,36,IL,Credit Card Refinancing,B,1-3 years,100k-150k,In Grace Period,0,PennyMac,2024-04-29
+LN-10063,BRW-90063,Personal,2018-12-03,2026-10-22,13739,12343,10.06,36,OH,Debt Consolidation,A,1-3 years,150k-200k,Fully Paid,0,Mr. Cooper,2026-07-19
+LN-10064,BRW-90064,Personal,2021-01-26,2025-03-09,20802,19799,11.57,36,FL,Home Improvement,C,4-7 years,200k+,Late (31-120 days),82,PennyMac,2023-06-03
+LN-10065,BRW-90065,Personal,2018-04-18,2026-12-15,28509,25313,10.29,60,TX,Major Purchase,B,4-7 years,200k+,Late (31-120 days),78,Cenlar,2024-11-20
+LN-10066,BRW-90066,Personal,2020-02-02,2024-10-29,26209,24967,15.03,60,NC,Medical Expenses,E,1-3 years,200k+,Current,0,LoanCare,2024-12-27
+LN-10067,BRW-90067,Personal,2022-06-20,2027-08-20,11571,9450,18.34,36,TX,Home Improvement,E,1-3 years,200k+,Current,0,PennyMac,2022-05-31
+LN-10068,BRW-90068,Personal,2019-01-09,2023-06-22,44720,33572,6.61,60,CA,Credit Card Refinancing,D,10+ years,50k-100k,Late (31-120 days),44,PennyMac,2026-04-18
+LN-10069,BRW-90069,Personal,2022-03-02,2024-12-15,22622,17062,7.15,60,PA,Major Purchase,A,8-10 years,150k-200k,Charged Off,0,Cenlar,2024-03-29
+LN-10070,BRW-90070,Personal,2021-10-07,2027-08-25,5908,5011,11.42,60,PA,Debt Consolidation,B,4-7 years,100k-150k,Current,0,Wells Fargo,2023-10-04
+LN-10071,BRW-90071,Personal,2020-11-06,2023-03-12,33683,21176,6.09,60,IL,Home Improvement,E,1-3 years,0-50k,Current,0,PennyMac,2024-09-20
+LN-10072,BRW-90072,Personal,2019-07-14,2025-11-28,17921,9511,6.89,36,MI,Major Purchase,A,4-7 years,0-50k,In Grace Period,0,Wells Fargo,2023-06-29
+LN-10073,BRW-90073,Personal,2019-03-15,2026-01-19,18165,12607,17.32,36,TX,Medical Expenses,A,< 1 year,200k+,In Grace Period,0,PennyMac,2023-05-22
+LN-10074,BRW-90074,Personal,2020-12-07,2027-02-03,8919,7309,7.50,60,NY,Credit Card Refinancing,E,1-3 years,100k-150k,In Grace Period,0,PennyMac,2024-09-20
+LN-10075,BRW-90075,Personal,2021-04-23,2024-05-16,28630,27194,6.02,36,GA,Major Purchase,D,10+ years,200k+,Current,0,PennyMac,2026-05-31
+LN-10076,BRW-90076,Personal,2020-09-28,2025-08-18,26582,25286,13.40,60,NC,Major Purchase,D,1-3 years,50k-100k,Charged Off,0,Mr. Cooper,2024-11-18
+LN-10077,BRW-90077,Personal,2021-08-18,2025-12-16,39539,31810,8.61,36,GA,Home Improvement,D,4-7 years,50k-100k,Late (31-120 days),104,LoanCare,2024-01-31
+LN-10078,BRW-90078,Personal,2021-06-10,2024-04-22,36322,25036,16.00,60,PA,Debt Consolidation,A,< 1 year,100k-150k,In Grace Period,0,PennyMac,2022-04-14
+LN-10079,BRW-90079,Personal,2018-01-09,2024-01-19,35242,28881,5.49,60,GA,Major Purchase,E,1-3 years,50k-100k,Fully Paid,0,PennyMac,2023-03-21
+LN-10080,BRW-90080,Personal,2021-07-23,2026-06-30,22947,15341,18.18,36,GA,Major Purchase,E,< 1 year,0-50k,Charged Off,0,Cenlar,2024-04-28
+LN-10081,BRW-90081,Personal,2021-09-25,2027-04-26,5000,3667,6.13,36,OH,Home Improvement,B,< 1 year,50k-100k,Current,0,Mr. Cooper,2025-04-26
+LN-10082,BRW-90082,Personal,2018-06-20,2026-10-13,25655,24318,15.18,36,PA,Home Improvement,B,4-7 years,50k-100k,Fully Paid,0,Wells Fargo,2024-01-07
+LN-10083,BRW-90083,Personal,2019-04-20,2025-02-19,10690,6160,18.35,60,CA,Medical Expenses,C,< 1 year,0-50k,Current,0,Cenlar,2026-06-01
+LN-10084,BRW-90084,Personal,2019-12-15,2026-08-29,43398,23851,11.81,60,GA,Home Improvement,B,1-3 years,0-50k,Charged Off,0,Wells Fargo,2026-06-20
+LN-10085,BRW-90085,Personal,2020-11-18,2023-10-25,19309,10296,10.27,60,PA,Debt Consolidation,C,1-3 years,150k-200k,Charged Off,0,Wells Fargo,2026-08-30
+LN-10086,BRW-90086,Personal,2020-08-20,2025-02-05,12591,12496,9.63,60,MI,Major Purchase,A,10+ years,150k-200k,Current,0,Mr. Cooper,2022-08-13
+LN-10087,BRW-90087,Personal,2019-06-04,2025-10-17,31021,30507,9.91,36,CA,Debt Consolidation,A,8-10 years,200k+,Current,0,Wells Fargo,2022-12-10
+LN-10088,BRW-90088,Personal,2022-10-16,2028-09-12,18413,9366,14.39,60,IL,Medical Expenses,A,8-10 years,200k+,Charged Off,0,Cenlar,2024-01-22
+LN-10089,BRW-90089,Personal,2018-02-14,2026-03-29,42571,29741,15.83,36,CA,Major Purchase,A,< 1 year,100k-150k,Late (31-120 days),58,Cenlar,2025-12-08
+LN-10090,BRW-90090,Personal,2020-09-21,2023-11-18,13356,12445,5.09,60,OH,Major Purchase,D,< 1 year,50k-100k,Late (31-120 days),114,PennyMac,2023-07-01
+LN-10091,BRW-90091,Personal,2018-07-27,2024-05-19,9875,9811,5.79,60,FL,Credit Card Refinancing,B,1-3 years,200k+,Charged Off,0,Cenlar,2023-05-07
+LN-10092,BRW-90092,Personal,2020-10-23,2025-03-09,5415,5131,16.79,60,NY,Credit Card Refinancing,B,1-3 years,150k-200k,In Grace Period,0,LoanCare,2024-05-19
+LN-10093,BRW-90093,Personal,2018-09-16,2025-06-13,25232,22625,6.17,36,NY,Debt Consolidation,A,< 1 year,150k-200k,Charged Off,0,Cenlar,2023-09-20
+LN-10094,BRW-90094,Personal,2019-10-25,2028-08-11,15202,13346,10.07,36,IL,Medical Expenses,A,10+ years,50k-100k,Late (31-120 days),70,Cenlar,2022-12-07
+LN-10095,BRW-90095,Personal,2022-06-11,2025-04-24,26873,17472,7.09,60,OH,Medical Expenses,C,8-10 years,0-50k,In Grace Period,0,LoanCare,2023-11-20
+LN-10096,BRW-90096,Personal,2019-08-29,2028-11-23,30735,29072,14.86,60,FL,Debt Consolidation,B,1-3 years,100k-150k,Current,0,PennyMac,2025-08-08
+LN-10097,BRW-90097,Personal,2018-11-09,2025-04-03,22871,12555,19.29,36,NY,Credit Card Refinancing,B,1-3 years,150k-200k,Current,0,Wells Fargo,2024-06-11
+LN-10098,BRW-90098,Personal,2019-12-16,2026-04-20,10486,6238,10.34,60,NY,Debt Consolidation,C,1-3 years,50k-100k,Late (31-120 days),45,Cenlar,2026-07-28
+LN-10099,BRW-90099,Personal,2018-03-18,2024-10-26,5466,4012,14.15,60,NY,Medical Expenses,B,1-3 years,150k-200k,Late (31-120 days),52,Cenlar,2026-06-16
+LN-10100,BRW-90100,Personal,2022-09-05,2027-02-25,25872,20567,5.49,60,MI,Credit Card Refinancing,D,< 1 year,100k-150k,In Grace Period,0,Wells Fargo,2022-05-30
+LN-10101,BRW-90101,Personal,2021-02-19,2027-11-23,13010,12595,5.73,36,PA,Credit Card Refinancing,E,8-10 years,50k-100k,In Grace Period,0,PennyMac,2023-10-04
+LN-10102,BRW-90102,Personal,2021-10-30,2026-09-07,30418,28313,6.28,60,MI,Home Improvement,A,4-7 years,0-50k,In Grace Period,0,LoanCare,2022-06-15
+LN-10103,BRW-90103,Personal,2020-03-20,2024-11-19,27900,27048,13.30,36,NC,Home Improvement,D,4-7 years,0-50k,Fully Paid,0,LoanCare,2026-02-26
+LN-10104,BRW-90104,Personal,2022-02-14,2026-04-25,33834,21014,17.75,36,FL,Home Improvement,C,< 1 year,150k-200k,Fully Paid,0,LoanCare,2022-06-13
+LN-10105,BRW-90105,Personal,2018-10-24,2026-09-27,23410,14760,5.44,36,NC,Home Improvement,C,8-10 years,100k-150k,Late (31-120 days),79,PennyMac,2022-07-26
+LN-10106,BRW-90106,Personal,2019-08-18,2024-08-10,40502,35994,16.59,36,TX,Home Improvement,C,1-3 years,50k-100k,Fully Paid,0,Wells Fargo,2025-07-26
+LN-10107,BRW-90107,Personal,2022-01-03,2023-08-05,35846,20761,9.92,36,NC,Credit Card Refinancing,A,4-7 years,100k-150k,Current,0,Cenlar,2026-02-26
+LN-10108,BRW-90108,Personal,2018-07-31,2026-05-12,31959,18629,6.63,60,FL,Medical Expenses,A,8-10 years,0-50k,Fully Paid,0,Wells Fargo,2025-01-31
+LN-10109,BRW-90109,Personal,2022-08-06,2026-08-06,31182,22589,11.08,60,OH,Major Purchase,B,< 1 year,200k+,Charged Off,0,PennyMac,2023-08-19
+LN-10110,BRW-90110,Personal,2020-08-07,2024-09-19,29461,27704,19.87,60,NY,Medical Expenses,A,10+ years,0-50k,Fully Paid,0,Mr. Cooper,2023-08-12
+LN-10111,BRW-90111,Personal,2020-04-15,2025-06-07,19681,17891,8.29,36,FL,Credit Card Refinancing,E,< 1 year,150k-200k,Late (31-120 days),53,LoanCare,2024-03-09
+LN-10112,BRW-90112,Personal,2020-08-22,2028-01-04,33009,25948,19.43,60,PA,Major Purchase,B,< 1 year,50k-100k,Late (31-120 days),32,LoanCare,2024-01-20
+LN-10113,BRW-90113,Personal,2019-05-17,2026-05-23,6874,3737,16.55,36,CA,Major Purchase,D,4-7 years,50k-100k,In Grace Period,0,PennyMac,2022-10-04
+LN-10114,BRW-90114,Personal,2022-06-15,2024-12-12,18196,10110,19.34,60,NC,Home Improvement,C,4-7 years,50k-100k,In Grace Period,0,Cenlar,2025-05-08
+LN-10115,BRW-90115,Personal,2022-05-07,2026-08-01,6186,4276,17.56,36,NC,Home Improvement,A,1-3 years,0-50k,Current,0,Wells Fargo,2022-06-18
+LN-10116,BRW-90116,Personal,2018-11-08,2024-11-22,27667,24801,13.70,36,MI,Debt Consolidation,C,10+ years,0-50k,Charged Off,0,PennyMac,2025-10-14
+LN-10117,BRW-90117,Personal,2019-05-05,2027-07-18,39901,37204,17.00,36,MI,Medical Expenses,A,1-3 years,50k-100k,Fully Paid,0,PennyMac,2024-10-23
+LN-10118,BRW-90118,Personal,2019-12-12,2025-05-23,30868,19888,5.78,60,FL,Home Improvement,B,1-3 years,50k-100k,Charged Off,0,LoanCare,2022-03-12
+LN-10119,BRW-90119,Personal,2020-11-03,2024-12-08,22285,19897,5.01,36,NY,Home Improvement,A,4-7 years,150k-200k,In Grace Period,0,Mr. Cooper,2025-08-29
+LN-10120,BRW-90120,Personal,2020-12-26,2026-10-14,30362,23194,11.89,36,NY,Medical Expenses,A,1-3 years,100k-150k,Charged Off,0,PennyMac,2022-07-13
+LN-10121,BRW-90121,Personal,2022-04-28,2024-08-03,21100,15642,14.58,60,CA,Medical Expenses,E,< 1 year,200k+,InvalidStatusString,0,LoanCare,2025-01-18
+LN-10122,BRW-90122,Personal,2019-05-12,2025-02-20,36094,23581,9.41,60,NY,Home Improvement,C,10+ years,200k+,Late (31-120 days),68,LoanCare,2025-03-10
+LN-10123,BRW-90123,Personal,2020-12-27,2025-05-22,14626,12438,16.18,36,PA,Major Purchase,A,4-7 years,150k-200k,Current,0,PennyMac,2026-08-29
+LN-10124,BRW-90124,Personal,2019-08-24,2027-01-16,16731,16598,15.64,60,GA,Debt Consolidation,A,10+ years,0-50k,Current,0,Wells Fargo,2024-10-17
+LN-10125,BRW-90125,Personal,2019-11-11,2024-02-11,16283,15305,19.11,36,IL,Debt Consolidation,A,8-10 years,0-50k,In Grace Period,0,PennyMac,2025-09-20
+LN-10126,BRW-90126,Personal,2021-09-11,2024-06-15,31147,22032,13.73,60,OH,Major Purchase,D,1-3 years,100k-150k,In Grace Period,0,LoanCare,2023-04-20
+LN-10127,BRW-90127,Personal,2019-10-21,2027-03-01,34274,21994,7.58,60,GA,Medical Expenses,D,< 1 year,100k-150k,Fully Paid,0,LoanCare,2026-01-01
+LN-10128,BRW-90128,Personal,2021-05-22,2027-10-01,7564,7310,12.24,36,MI,Medical Expenses,C,< 1 year,50k-100k,In Grace Period,0,PennyMac,2026-03-26
+LN-10129,BRW-90129,Personal,2018-11-29,2028-01-29,43561,39596,18.78,60,TX,Home Improvement,D,8-10 years,200k+,In Grace Period,0,Cenlar,2025-07-30
+LN-10130,BRW-90130,Personal,2018-03-08,2025-11-01,29884,19647,17.91,60,TX,Major Purchase,C,8-10 years,200k+,In Grace Period,0,Cenlar,2024-04-06
+LN-10131,BRW-90131,Personal,2020-11-16,2028-04-21,24406,14387,6.72,60,FL,Medical Expenses,B,1-3 years,100k-150k,In Grace Period,0,LoanCare,2024-09-13
+LN-10132,BRW-90132,Personal,2020-04-28,2027-12-25,28572,20748,6.61,60,CA,Credit Card Refinancing,E,< 1 year,50k-100k,Current,0,PennyMac,2022-04-21
+LN-10133,BRW-90133,Personal,2018-07-12,2026-07-03,34812,29019,8.28,60,OH,Debt Consolidation,C,< 1 year,50k-100k,Current,0,Mr. Cooper,2022-08-20
+LN-10134,BRW-90134,Personal,2019-04-17,2023-02-28,33876,22945,19.13,60,NY,Medical Expenses,B,1-3 years,100k-150k,Charged Off,0,Wells Fargo,2024-10-31
+LN-10135,BRW-90135,Personal,2021-01-23,2026-06-27,29941,24041,11.57,60,FL,Home Improvement,C,10+ years,0-50k,Current,0,Mr. Cooper,2022-05-25
+LN-10136,BRW-90136,Personal,2019-10-20,2024-08-25,14324,9032,5.52,36,OH,Major Purchase,E,8-10 years,150k-200k,Late (31-120 days),86,LoanCare,2023-12-13
+LN-10137,BRW-90137,Personal,2018-11-07,2026-02-24,38797,27857,8.33,36,CA,Credit Card Refinancing,D,8-10 years,50k-100k,In Grace Period,0,Wells Fargo,2022-11-28
+LN-10138,BRW-90138,Personal,2018-09-17,2025-11-15,31405,28409,16.22,36,MI,Home Improvement,C,1-3 years,50k-100k,Current,0,PennyMac,2023-10-26
+LN-10139,BRW-90139,Personal,2018-09-29,2024-08-30,35855,19479,19.38,60,PA,Home Improvement,A,1-3 years,100k-150k,Charged Off,0,LoanCare,2023-04-17
+LN-10140,BRW-90140,Personal,2021-02-22,2023-06-10,42777,25565,12.47,60,CA,Credit Card Refinancing,D,10+ years,50k-100k,Current,0,LoanCare,2023-07-18
+LN-10141,BRW-90141,Personal,2019-12-29,2023-06-14,39494,21299,11.68,36,FL,Major Purchase,D,< 1 year,100k-150k,Current,0,LoanCare,2025-05-23
+LN-10142,BRW-90142,Personal,2022-08-05,2028-10-16,20494,15724,8.17,60,GA,Credit Card Refinancing,D,8-10 years,200k+,Current,0,Wells Fargo,2026-03-22
+LN-10143,BRW-90143,Personal,2019-03-27,2027-09-12,36283,32240,5.10,60,IL,Credit Card Refinancing,B,8-10 years,200k+,Charged Off,0,LoanCare,2022-02-22
+LN-10144,BRW-90144,Personal,2019-09-23,2027-12-20,42348,31779,15.40,60,OH,Medical Expenses,E,< 1 year,100k-150k,Late (31-120 days),110,Cenlar,2022-09-18
+LN-10145,BRW-90145,Personal,2019-02-06,2027-08-17,6023,3953,15.77,36,NC,Debt Consolidation,B,4-7 years,100k-150k,Charged Off,0,Wells Fargo,2025-04-03
+LN-10146,BRW-90146,Personal,2020-04-06,2027-05-18,13331,10261,8.78,36,MI,Major Purchase,A,4-7 years,50k-100k,Late (31-120 days),56,Wells Fargo,2024-01-21
+LN-10147,BRW-90147,Personal,2021-01-17,2023-10-03,31310,30728,9.18,60,FL,Credit Card Refinancing,C,4-7 years,150k-200k,In Grace Period,0,Cenlar,2025-02-17
+LN-10148,BRW-90148,Personal,2021-06-18,2023-12-11,11674,6679,6.30,60,,Medical Expenses,B,1-3 years,150k-200k,In Grace Period,0,LoanCare,2022-03-14
+LN-10149,BRW-90149,Personal,2019-01-23,2025-01-24,31392,30619,15.50,60,IL,Medical Expenses,A,10+ years,100k-150k,Charged Off,0,Cenlar,2023-02-20
+LN-10150,BRW-90150,Personal,2022-01-30,2028-08-15,41543,29108,16.48,60,OH,Debt Consolidation,C,< 1 year,0-50k,Fully Paid,0,PennyMac,2023-12-06
+LN-10151,BRW-90151,Personal,2022-06-09,2023-03-10,14571,9274,9.45,36,FL,Major Purchase,A,10+ years,50k-100k,Late (31-120 days),99,Wells Fargo,2022-08-02
+LN-10152,BRW-90152,Personal,2022-04-03,2024-02-06,36655,28449,13.44,60,IL,Home Improvement,E,1-3 years,100k-150k,In Grace Period,0,Cenlar,2025-07-02
+LN-10153,BRW-90153,Personal,2021-06-26,2027-01-15,17719,12139,16.77,60,TX,Debt Consolidation,D,8-10 years,100k-150k,Fully Paid,0,LoanCare,2025-02-10
+LN-10154,BRW-90154,Personal,2021-12-14,2028-07-03,28270,18583,9.55,36,TX,Major Purchase,A,4-7 years,200k+,Fully Paid,0,Cenlar,2025-10-06
+LN-10155,BRW-90155,Personal,2020-12-25,2026-09-12,26724,20671,10.40,36,PA,Major Purchase,A,10+ years,0-50k,Current,0,LoanCare,2023-03-20
+LN-10156,BRW-90156,Personal,2020-12-31,2028-02-11,5832,3919,7.57,60,OH,Home Improvement,B,1-3 years,50k-100k,Current,0,Mr. Cooper,2023-12-09
+LN-10157,BRW-90157,Personal,2020-01-25,2026-02-27,29999,-5000,14.61,36,NC,Credit Card Refinancing,D,4-7 years,100k-150k,Charged Off,0,Wells Fargo,2023-05-19
+LN-10158,BRW-90158,Personal,2020-03-19,2023-04-13,32646,23542,18.68,36,TX,Home Improvement,C,8-10 years,200k+,Late (31-120 days),100,Mr. Cooper,2026-08-15
+LN-10159,BRW-90159,Personal,2020-02-10,2025-05-18,38747,34804,9.02,60,OH,Home Improvement,E,8-10 years,0-50k,Late (31-120 days),32,Wells Fargo,2022-10-08
+LN-10160,BRW-90160,Personal,2019-03-23,2028-02-17,16081,13987,14.56,36,GA,Debt Consolidation,A,4-7 years,200k+,Fully Paid,0,LoanCare,2023-08-16
+LN-10161,BRW-90161,Personal,2020-11-05,2027-03-14,13795,11836,10.61,60,FL,Major Purchase,B,< 1 year,50k-100k,Fully Paid,0,Cenlar,2025-10-02
+LN-10162,BRW-90162,Personal,2022-12-11,2025-01-08,12120,11789,6.68,60,OH,Debt Consolidation,C,8-10 years,50k-100k,In Grace Period,0,PennyMac,2024-07-23
+LN-10163,BRW-90163,Personal,2019-07-05,2026-01-21,18583,11588,5.52,60,MI,Major Purchase,E,8-10 years,200k+,Fully Paid,0,Mr. Cooper,2023-12-10
+LN-10164,BRW-90164,Personal,2018-06-04,2027-03-21,27479,19047,11.00,36,PA,Medical Expenses,A,8-10 years,50k-100k,Fully Paid,0,LoanCare,2025-01-07
+LN-10165,BRW-90165,Personal,2019-09-30,2027-03-24,8290,6763,5.93,60,GA,Medical Expenses,E,10+ years,150k-200k,Current,0,PennyMac,2025-10-17
+LN-10166,BRW-90166,Personal,2018-03-14,2027-07-30,37247,36907,8.95,36,TX,Credit Card Refinancing,A,4-7 years,50k-100k,Charged Off,0,PennyMac,2025-10-30
+LN-10167,BRW-90167,Personal,2022-02-15,2023-10-17,35577,32427,6.98,36,TX,Home Improvement,E,1-3 years,200k+,Current,0,Wells Fargo,2022-09-12
+LN-10168,BRW-90168,Personal,2019-02-27,2023-03-26,25080,24485,15.74,60,OH,Credit Card Refinancing,B,1-3 years,0-50k,Current,0,PennyMac,2024-01-05
+LN-10169,BRW-90169,Personal,2021-06-04,2024-05-26,22843,13169,11.03,60,NC,Credit Card Refinancing,D,1-3 years,100k-150k,Current,0,LoanCare,2024-12-17
+LN-10170,BRW-90170,Personal,2021-11-02,2023-12-30,22811,18377,13.82,36,OH,Major Purchase,E,< 1 year,0-50k,Late (31-120 days),43,PennyMac,2024-04-13
+LN-10171,BRW-90171,Personal,2018-11-03,2025-06-12,5287,3647,18.59,36,GA,Major Purchase,D,10+ years,0-50k,Late (31-120 days),99,Mr. Cooper,2025-06-30
+LN-10172,BRW-90172,Personal,2019-04-01,2023-04-15,33755,32904,12.40,36,CA,Medical Expenses,C,8-10 years,150k-200k,In Grace Period,0,Mr. Cooper,2024-05-08
+LN-10173,BRW-90173,Personal,2018-08-21,2027-01-01,34576,33263,14.25,36,MI,Home Improvement,D,10+ years,150k-200k,In Grace Period,0,Wells Fargo,2026-03-25
+LN-10174,BRW-90174,Personal,2019-10-22,2024-08-02,33759,27392,12.04,36,GA,Medical Expenses,C,10+ years,200k+,Charged Off,0,Mr. Cooper,2022-09-11
+LN-10175,BRW-90175,Personal,2021-07-19,2028-05-24,29484,24355,7.84,36,FL,Debt Consolidation,E,10+ years,0-50k,Fully Paid,0,LoanCare,2025-04-22
+LN-10176,BRW-90176,Personal,2019-03-12,2025-03-23,8090,4768,17.83,60,TX,Home Improvement,C,1-3 years,100k-150k,Late (31-120 days),114,Cenlar,2024-03-02
+LN-10177,BRW-90177,Personal,2018-07-22,2023-03-05,16226,12330,18.39,60,GA,Home Improvement,D,< 1 year,150k-200k,In Grace Period,0,LoanCare,2026-05-05
+LN-10178,BRW-90178,Personal,2018-01-28,2023-08-05,31983,19189,13.12,60,,Credit Card Refinancing,D,< 1 year,150k-200k,Late (31-120 days),89,Cenlar,2023-03-02
+LN-10179,BRW-90179,Personal,2018-11-26,2024-03-31,21073,17744,15.80,60,PA,Credit Card Refinancing,C,10+ years,200k+,Charged Off,0,Cenlar,2022-09-19
+LN-10180,BRW-90180,Personal,2019-07-27,2025-03-17,10488,8090,10.93,60,NC,Major Purchase,A,4-7 years,100k-150k,In Grace Period,0,Cenlar,2025-05-08
+LN-10181,BRW-90181,Personal,2018-07-13,2027-02-03,28012,17572,8.83,60,GA,Medical Expenses,D,1-3 years,200k+,Fully Paid,0,Cenlar,2025-05-19
+LN-10182,BRW-90182,Personal,2020-03-17,2024-10-09,27635,20105,18.10,60,GA,Credit Card Refinancing,A,10+ years,100k-150k,InvalidStatusString,0,Mr. Cooper,2022-12-21
+LN-10183,BRW-90183,Personal,2020-12-18,2023-05-07,26240,21495,5.74,36,GA,Medical Expenses,A,< 1 year,200k+,Late (31-120 days),60,Cenlar,2022-02-11
+LN-10184,BRW-90184,Personal,2020-06-01,2028-01-28,24971,21541,7.99,36,FL,Debt Consolidation,B,10+ years,150k-200k,Late (31-120 days),48,LoanCare,2023-02-15
+LN-10185,BRW-90185,Personal,2022-03-10,2027-05-04,40840,30276,9.63,60,GA,Debt Consolidation,A,8-10 years,50k-100k,Late (31-120 days),70,LoanCare,2026-03-14
+LN-10186,BRW-90186,Personal,2018-05-08,2025-05-03,32473,31202,7.89,60,TX,Debt Consolidation,B,< 1 year,50k-100k,Late (31-120 days),78,LoanCare,2024-09-23
+LN-10187,BRW-90187,Personal,2021-05-09,2027-02-17,19109,13093,14.45,36,NC,Credit Card Refinancing,D,8-10 years,200k+,Current,0,Wells Fargo,2025-09-18
+LN-10188,BRW-90188,Personal,2022-05-24,2025-04-20,32391,29327,18.52,60,IL,Major Purchase,C,1-3 years,0-50k,Current,0,Wells Fargo,2025-06-27
+LN-10189,BRW-90189,Personal,2019-11-09,2028-08-10,33053,26297,5.12,36,MI,Credit Card Refinancing,B,1-3 years,100k-150k,Fully Paid,0,Mr. Cooper,2024-11-02
+LN-10190,BRW-90190,Personal,2020-04-30,2025-09-14,16723,10777,11.12,36,GA,Credit Card Refinancing,D,8-10 years,200k+,Current,0,Cenlar,2024-10-16
+LN-10191,BRW-90191,Personal,2020-07-31,2028-06-04,13314,10843,15.69,60,NY,Medical Expenses,C,10+ years,0-50k,Fully Paid,0,Mr. Cooper,2026-09-13
+LN-10192,BRW-90192,Personal,2021-01-29,2027-06-13,13196,10103,17.77,60,GA,Medical Expenses,D,10+ years,50k-100k,Charged Off,0,Cenlar,2022-05-07
+LN-10193,BRW-90193,Personal,2021-07-10,2024-03-08,17063,16398,7.53,36,NC,Debt Consolidation,E,1-3 years,0-50k,Late (31-120 days),42,LoanCare,2025-06-06
+LN-10194,BRW-90194,Personal,2018-02-27,2028-08-24,10931,8133,5.19,36,TX,Credit Card Refinancing,E,1-3 years,150k-200k,In Grace Period,0,Cenlar,2024-08-02
+LN-10195,BRW-90195,Personal,2021-05-30,2028-10-26,31930,19401,10.83,36,FL,Home Improvement,C,10+ years,150k-200k,Current,0,Mr. Cooper,2023-04-06
+LN-10196,BRW-90196,Personal,2022-05-04,2028-01-07,39805,26044,16.67,36,OH,Home Improvement,E,8-10 years,50k-100k,Fully Paid,0,Mr. Cooper,2022-05-07
+LN-10197,BRW-90197,Personal,2018-12-07,2023-12-08,26228,20677,19.85,60,MI,Home Improvement,B,8-10 years,100k-150k,In Grace Period,0,Mr. Cooper,2026-03-20
+LN-10198,BRW-90198,Personal,2020-11-27,2027-01-07,7394,3817,17.00,36,OH,Medical Expenses,D,10+ years,50k-100k,In Grace Period,0,Mr. Cooper,2025-12-13
+LN-10199,BRW-90199,Personal,2020-09-27,2027-12-17,42693,27710,12.83,36,GA,Debt Consolidation,A,1-3 years,0-50k,Late (31-120 days),68,Cenlar,2022-12-01
+LN-10200,BRW-90200,Personal,2022-07-10,2024-11-14,39053,24911,6.73,60,NY,Medical Expenses,E,1-3 years,50k-100k,In Grace Period,0,LoanCare,2026-08-26
+LN-10201,BRW-90201,Personal,2020-01-02,2023-08-11,20903,20033,13.83,60,GA,Debt Consolidation,A,1-3 years,0-50k,In Grace Period,0,LoanCare,2026-07-08
+LN-10202,BRW-90202,Personal,2022-06-28,2026-01-19,5584,5107,8.84,36,CA,Major Purchase,E,< 1 year,0-50k,Current,0,Mr. Cooper,2023-02-16
+LN-10203,BRW-90203,Personal,2018-11-11,2024-08-17,25050,15885,11.76,60,TX,Home Improvement,C,4-7 years,0-50k,In Grace Period,0,Wells Fargo,2026-04-15
+LN-10204,BRW-90204,Personal,2022-10-21,2028-01-07,27478,18246,9.54,60,IL,Credit Card Refinancing,D,10+ years,0-50k,Fully Paid,0,Wells Fargo,2026-03-27
+LN-10205,BRW-90205,Personal,2020-08-13,2024-10-03,42961,41209,11.39,60,FL,Major Purchase,A,< 1 year,100k-150k,Current,0,Wells Fargo,2025-06-21
+LN-10206,BRW-90206,Personal,2018-01-20,2026-04-24,10657,6060,15.01,36,MI,Major Purchase,D,10+ years,0-50k,Fully Paid,0,Cenlar,2023-06-23
+LN-10207,BRW-90207,Personal,2018-09-02,2023-01-05,15148,8146,45,36,PA,Home Improvement,A,10+ years,0-50k,Current,0,LoanCare,2022-10-21
+LN-10208,BRW-90208,Personal,2018-10-15,2025-06-12,23199,12040,6.24,36,IL,Credit Card Refinancing,B,10+ years,200k+,Late (31-120 days),115,Mr. Cooper,2022-12-18
+LN-10209,BRW-90209,Personal,2019-01-26,2024-10-04,35979,23280,8.18,60,PA,Medical Expenses,B,8-10 years,100k-150k,Late (31-120 days),55,Mr. Cooper,2024-03-07
+LN-10210,BRW-90210,Personal,2019-02-11,2024-05-23,19996,19621,5.57,60,OH,Home Improvement,A,< 1 year,50k-100k,Charged Off,0,LoanCare,2025-02-18
+LN-10211,BRW-90211,Personal,2018-05-19,2028-12-07,10405,8198,15.13,36,GA,Credit Card Refinancing,C,8-10 years,150k-200k,Current,0,PennyMac,2023-01-07
+LN-10212,BRW-90212,Personal,2018-08-13,2023-05-04,28995,48995,19.30,60,OH,Credit Card Refinancing,C,< 1 year,0-50k,In Grace Period,0,Wells Fargo,2023-04-18
+LN-10213,BRW-90213,Personal,2021-04-23,2024-08-04,38856,19719,16.05,36,OH,Debt Consolidation,A,< 1 year,200k+,In Grace Period,0,Cenlar,2025-09-07
+LN-10214,BRW-90214,Personal,2020-11-28,2026-07-31,38574,27801,19.72,36,NC,Home Improvement,E,< 1 year,50k-100k,In Grace Period,0,PennyMac,2025-09-14
+LN-10215,BRW-90215,Personal,2019-04-07,2024-02-12,24606,12652,19.14,36,NC,Credit Card Refinancing,E,10+ years,50k-100k,Late (31-120 days),97,Mr. Cooper,2025-09-18
+LN-10216,BRW-90216,Personal,2019-11-18,2027-03-26,31822,25926,19.49,36,MI,Home Improvement,A,< 1 year,50k-100k,In Grace Period,0,LoanCare,2026-05-31
+LN-10217,BRW-90217,Personal,2022-07-02,2024-07-23,33106,20011,8.29,60,CA,Debt Consolidation,B,10+ years,200k+,Current,0,Cenlar,2025-01-01
+LN-10218,BRW-90218,Personal,2022-06-28,2024-09-24,13941,8887,12.96,36,PA,Medical Expenses,D,10+ years,0-50k,Charged Off,0,Wells Fargo,2025-05-25
+LN-10219,BRW-90219,Personal,2019-03-21,2024-10-11,24477,23200,19.47,36,TX,Medical Expenses,E,10+ years,150k-200k,Late (31-120 days),35,Mr. Cooper,2023-01-21
+LN-10220,BRW-90220,Personal,2021-09-24,2026-06-20,41658,30767,13.57,60,NC,Debt Consolidation,E,4-7 years,150k-200k,Current,0,PennyMac,2025-06-23
+LN-10221,BRW-90221,Personal,2020-09-26,2025-08-14,7599,4222,13.91,60,TX,Medical Expenses,D,8-10 years,0-50k,Current,0,LoanCare,2025-12-07
+LN-10222,BRW-90222,Personal,2022-08-29,2023-01-11,7355,6314,9.01,60,FL,Medical Expenses,E,1-3 years,50k-100k,Fully Paid,0,LoanCare,2025-06-19
+LN-10223,BRW-90223,Personal,2021-09-10,2025-06-30,41496,25883,18.34,60,GA,Medical Expenses,B,1-3 years,100k-150k,In Grace Period,0,LoanCare,2023-04-05
+LN-10224,BRW-90224,Personal,2018-09-27,2026-04-19,34380,32419,10.92,60,MI,Major Purchase,B,10+ years,0-50k,Late (31-120 days),79,PennyMac,2024-04-06
+LN-10225,BRW-90225,Personal,2022-01-09,2025-05-16,6548,4457,8.91,36,GA,Home Improvement,A,< 1 year,50k-100k,Current,0,Wells Fargo,2023-02-05
+LN-10226,BRW-90226,Personal,2021-03-05,2025-02-03,12267,11471,10.33,36,PA,Debt Consolidation,C,8-10 years,200k+,Fully Paid,0,PennyMac,2024-10-27
+LN-10227,BRW-90227,Personal,2020-01-04,2026-10-03,36162,18329,13.64,60,MI,Medical Expenses,C,8-10 years,200k+,Fully Paid,0,LoanCare,2025-08-21
+LN-10228,BRW-90228,Personal,2022-04-18,2028-04-16,35222,27786,10.12,60,PA,Debt Consolidation,A,< 1 year,0-50k,Fully Paid,0,Mr. Cooper,2024-04-20
+LN-10229,BRW-90229,Personal,2021-03-10,2028-11-12,42752,29294,13.05,60,NC,Home Improvement,D,4-7 years,0-50k,Late (31-120 days),68,PennyMac,2024-12-14
+LN-10230,BRW-90230,Personal,2020-06-09,2027-03-11,40449,24039,7.24,36,NY,Major Purchase,D,< 1 year,100k-150k,In Grace Period,0,Mr. Cooper,2026-07-29
+LN-10231,BRW-90231,Personal,2021-10-03,2026-01-02,32547,32039,10.37,60,IL,Credit Card Refinancing,D,10+ years,50k-100k,Charged Off,0,LoanCare,2024-03-08
+LN-10232,BRW-90232,Personal,2021-03-21,2026-05-13,40665,37764,17.70,60,NY,Credit Card Refinancing,C,4-7 years,150k-200k,Current,0,Cenlar,2022-03-07
+LN-10233,BRW-90233,Personal,2022-07-02,2027-11-28,33886,26610,7.51,60,GA,Home Improvement,D,10+ years,200k+,Fully Paid,0,Cenlar,2024-02-04
+LN-10234,BRW-90234,Personal,2022-11-13,2023-05-16,10858,6630,5.84,60,NC,Credit Card Refinancing,B,4-7 years,0-50k,Charged Off,0,LoanCare,2024-07-01
+LN-10235,BRW-90235,Personal,2022-08-12,2024-06-10,42841,28775,45,60,MI,Debt Consolidation,B,4-7 years,50k-100k,In Grace Period,0,Cenlar,2022-11-16
+LN-10236,BRW-90236,Personal,2022-03-18,2023-10-21,35048,32359,14.85,60,PA,Home Improvement,E,10+ years,0-50k,Charged Off,0,Mr. Cooper,2024-11-23
+LN-10237,BRW-90237,Personal,2019-09-29,2027-05-09,11781,6592,9.49,36,GA,Medical Expenses,E,< 1 year,50k-100k,Late (31-120 days),115,PennyMac,2024-04-18
+LN-10238,BRW-90238,Personal,2019-08-20,2027-11-09,36789,29711,13.05,36,FL,Credit Card Refinancing,C,< 1 year,200k+,Current,0,Mr. Cooper,2026-09-02
+LN-10239,BRW-90239,Personal,2021-05-24,2024-10-17,40122,28316,8.76,60,GA,Debt Consolidation,B,8-10 years,100k-150k,Current,0,LoanCare,2023-06-14
+LN-10240,BRW-90240,Personal,2021-08-03,2027-09-10,28249,20621,11.06,36,CA,Debt Consolidation,B,10+ years,150k-200k,Late (31-120 days),99,Wells Fargo,2023-06-26
+LN-10241,BRW-90241,Personal,2018-12-21,2026-08-15,22386,12760,16.32,60,NC,Major Purchase,B,4-7 years,100k-150k,Charged Off,0,PennyMac,2022-04-24
+LN-10242,BRW-90242,Personal,2022-03-12,2023-10-28,39010,34519,5.04,60,GA,Major Purchase,E,8-10 years,100k-150k,Charged Off,0,Cenlar,2023-12-30
+LN-10243,BRW-90243,Personal,2019-10-15,2028-11-01,21563,21223,11.64,60,MI,Debt Consolidation,B,8-10 years,200k+,Fully Paid,0,Mr. Cooper,2022-01-05
+LN-10244,BRW-90244,Personal,2019-09-16,2023-02-18,19643,19311,19.93,60,NY,Home Improvement,D,< 1 year,50k-100k,Charged Off,0,LoanCare,2022-06-06
+LN-10245,BRW-90245,Personal,2019-02-24,2027-06-13,10929,-5000,9.87,60,FL,Home Improvement,C,4-7 years,50k-100k,Current,0,LoanCare,2023-08-19
+LN-10246,BRW-90246,Personal,2019-03-09,2024-01-31,35399,32783,16.77,60,NY,Medical Expenses,A,< 1 year,200k+,Current,0,LoanCare,2022-05-21
+LN-10247,BRW-90247,Personal,2021-09-08,2024-02-20,12533,8467,9.04,60,NY,Medical Expenses,B,1-3 years,150k-200k,Charged Off,0,Mr. Cooper,2025-01-22
+LN-10248,BRW-90248,Personal,2019-08-02,2026-04-01,16248,12568,16.00,36,MI,Medical Expenses,D,< 1 year,0-50k,Fully Paid,0,Mr. Cooper,2022-09-09
+LN-10249,BRW-90249,Personal,2020-08-20,2026-01-04,38296,32270,6.44,60,TX,Medical Expenses,A,< 1 year,100k-150k,Current,0,Mr. Cooper,2023-12-21
+LN-10250,BRW-90250,Personal,2022-01-30,2025-04-17,20445,17595,18.64,36,NC,Debt Consolidation,C,8-10 years,0-50k,Late (31-120 days),120,LoanCare,2024-12-15
+LN-10251,BRW-90251,Personal,2018-09-25,2026-07-08,43340,37648,13.76,60,NC,Medical Expenses,A,10+ years,0-50k,Current,0,Mr. Cooper,2026-09-04
+LN-10252,BRW-90252,Personal,2022-11-06,2027-01-17,36212,23353,10.59,36,GA,Debt Consolidation,B,1-3 years,0-50k,Late (31-120 days),88,Mr. Cooper,2023-11-16
+LN-10253,BRW-90253,Personal,2018-06-03,2028-01-22,32665,22215,14.62,60,GA,Debt Consolidation,A,1-3 years,0-50k,Late (31-120 days),120,LoanCare,2025-01-26
+LN-10254,BRW-90254,Personal,2019-07-17,2024-06-10,5370,3218,5.83,36,MI,Major Purchase,B,8-10 years,200k+,In Grace Period,0,PennyMac,2023-06-20
+LN-10255,BRW-90255,Personal,2019-05-01,2023-08-25,21702,13909,13.82,60,TX,Home Improvement,B,10+ years,50k-100k,Fully Paid,0,LoanCare,2023-11-21
+LN-10256,BRW-90256,Personal,2019-09-05,2026-11-29,39913,33629,17.88,60,TX,Credit Card Refinancing,A,8-10 years,150k-200k,Late (31-120 days),62,PennyMac,2022-09-17
+LN-10257,BRW-90257,Personal,2021-06-11,2027-04-07,6639,3997,15.60,36,NY,Credit Card Refinancing,C,1-3 years,200k+,Fully Paid,0,PennyMac,2026-08-05
+LN-10258,BRW-90258,Personal,2020-11-28,2023-04-17,27392,23954,7.51,60,IL,Major Purchase,D,1-3 years,50k-100k,In Grace Period,0,Cenlar,2026-02-22
+LN-10259,BRW-90259,Personal,2018-08-27,2025-03-30,6728,3936,5.88,36,CA,Credit Card Refinancing,B,10+ years,200k+,Charged Off,0,Wells Fargo,2024-12-04
+LN-10260,BRW-90260,Personal,2019-03-19,2025-03-13,33360,22992,5.03,36,NY,Medical Expenses,A,4-7 years,0-50k,In Grace Period,0,Wells Fargo,2026-03-30
+LN-10261,BRW-90261,Personal,2018-03-11,2025-07-27,7753,7665,10.19,60,CA,Credit Card Refinancing,A,< 1 year,200k+,Fully Paid,0,Cenlar,2024-02-08
+LN-10262,BRW-90262,Personal,2020-06-11,2025-08-15,27870,19563,15.67,60,GA,Medical Expenses,C,< 1 year,50k-100k,In Grace Period,0,LoanCare,2022-07-03
+LN-10263,BRW-90263,Personal,2020-10-15,2028-11-30,14430,11578,17.23,60,NY,Major Purchase,C,8-10 years,50k-100k,Late (31-120 days),69,Wells Fargo,2025-01-24
+LN-10264,BRW-90264,Personal,2022-09-28,2026-01-14,19785,16651,6.00,36,NC,Debt Consolidation,E,8-10 years,50k-100k,Fully Paid,0,PennyMac,2023-11-03
+LN-10265,BRW-90265,Personal,2019-07-29,2026-08-12,31662,29532,8.32,36,GA,Medical Expenses,C,8-10 years,200k+,Late (31-120 days),35,LoanCare,2025-05-09
+LN-10266,BRW-90266,Personal,2019-12-13,2025-08-17,31492,51492,8.20,60,CA,Credit Card Refinancing,D,8-10 years,100k-150k,Current,0,PennyMac,2022-04-17
+LN-10267,BRW-90267,Personal,2022-09-14,2025-05-09,16182,13161,19.70,36,GA,Home Improvement,A,4-7 years,0-50k,Current,0,Cenlar,2024-05-16
+LN-10268,BRW-90268,Personal,2021-11-02,2025-07-14,14643,9578,17.62,60,GA,Major Purchase,B,4-7 years,150k-200k,Charged Off,0,PennyMac,2023-06-14
+LN-10269,BRW-90269,Personal,2020-11-24,2027-08-21,42193,36456,15.62,36,NY,Medical Expenses,C,10+ years,50k-100k,Late (31-120 days),60,Wells Fargo,2025-01-27
+LN-10270,BRW-90270,Personal,2022-03-10,2027-06-19,31356,30289,18.03,60,NC,Credit Card Refinancing,A,< 1 year,100k-150k,Charged Off,0,Mr. Cooper,2023-12-27
+LN-10271,BRW-90271,Personal,2022-08-15,2028-05-11,40965,30705,8.84,36,FL,Credit Card Refinancing,C,< 1 year,150k-200k,Late (31-120 days),69,PennyMac,2023-04-17
+LN-10272,BRW-90272,Personal,2018-12-07,2024-09-08,19493,39493,13.59,36,MI,Credit Card Refinancing,B,4-7 years,100k-150k,Fully Paid,0,Mr. Cooper,2022-02-12
+LN-10273,BRW-90273,Personal,2021-02-16,2027-10-26,15126,11132,11.57,36,GA,Major Purchase,D,10+ years,200k+,In Grace Period,0,LoanCare,2022-03-03
+LN-10274,BRW-90274,Personal,2020-10-08,2024-08-10,27815,21650,11.79,36,PA,Medical Expenses,E,4-7 years,100k-150k,In Grace Period,0,LoanCare,2024-02-19
+LN-10275,BRW-90275,Personal,2021-09-21,2026-09-22,20902,19131,12.64,36,CA,Medical Expenses,E,10+ years,200k+,In Grace Period,0,PennyMac,2026-03-04
+LN-10276,BRW-90276,Personal,2018-12-30,2024-09-06,8031,8016,8.57,60,NY,Credit Card Refinancing,A,10+ years,50k-100k,Fully Paid,0,PennyMac,2026-02-12
+LN-10277,BRW-90277,Personal,2018-10-27,2026-08-21,5996,4094,17.02,36,NY,Medical Expenses,A,1-3 years,100k-150k,Current,0,Wells Fargo,2024-02-05
+LN-10278,BRW-90278,Personal,2018-10-08,2027-11-22,37973,29549,7.06,60,CA,Debt Consolidation,D,< 1 year,100k-150k,In Grace Period,0,LoanCare,2026-07-06
+LN-10279,BRW-90279,Personal,2020-06-05,2026-02-03,40674,29377,17.17,36,GA,Debt Consolidation,A,< 1 year,0-50k,Current,0,LoanCare,2025-02-20
+LN-10280,BRW-90280,Personal,2018-06-15,2028-09-20,9066,6442,9.83,60,CA,Medical Expenses,E,4-7 years,0-50k,Charged Off,0,PennyMac,2024-09-21
+LN-10281,BRW-90281,Personal,2020-07-20,2027-06-05,25491,16861,16.63,36,CA,Credit Card Refinancing,E,8-10 years,100k-150k,Charged Off,0,LoanCare,2025-01-01
+LN-10282,BRW-90282,Personal,2018-05-13,2025-07-30,21565,13161,7.34,60,MI,Home Improvement,A,10+ years,50k-100k,Current,0,Wells Fargo,2026-05-12
+LN-10283,BRW-90283,Personal,2020-04-11,2028-10-29,26876,13689,6.55,36,FL,Major Purchase,B,8-10 years,150k-200k,Charged Off,0,LoanCare,2025-09-11
+LN-10284,BRW-90284,Personal,2021-07-14,2026-09-12,14244,10192,11.82,36,NC,Major Purchase,C,1-3 years,50k-100k,Current,0,Wells Fargo,2024-01-16
+LN-10285,BRW-90285,Personal,2020-04-11,2028-07-16,17475,9669,10.29,60,GA,Major Purchase,B,1-3 years,150k-200k,In Grace Period,0,Cenlar,2026-09-14
+LN-10286,BRW-90286,Personal,2019-12-02,2023-02-12,23367,20018,11.59,36,FL,Major Purchase,A,1-3 years,200k+,Current,0,LoanCare,2022-02-28
+LN-10287,BRW-90287,Personal,2022-03-10,2027-04-21,43695,63695,13.51,36,MI,Home Improvement,E,10+ years,0-50k,Late (31-120 days),104,Mr. Cooper,2026-03-18
+LN-10288,BRW-90288,Personal,2020-12-27,2027-12-07,42079,34217,18.61,60,OH,Home Improvement,A,4-7 years,50k-100k,Charged Off,0,LoanCare,2024-02-27
+LN-10289,BRW-90289,Personal,2021-12-12,2025-01-06,12128,11355,16.19,36,GA,Home Improvement,A,8-10 years,200k+,Late (31-120 days),113,Cenlar,2024-05-30
+LN-10290,BRW-90290,Personal,2019-02-09,2026-01-19,44995,31542,8.29,36,OH,Credit Card Refinancing,D,4-7 years,100k-150k,Current,0,Mr. Cooper,2026-08-26
+LN-10291,BRW-90291,Personal,2022-07-11,2026-05-24,44390,33287,19.49,36,NY,Major Purchase,E,4-7 years,150k-200k,Fully Paid,0,LoanCare,2022-04-30
+LN-10292,BRW-90292,Personal,2021-12-01,2023-10-21,38506,35415,11.90,36,PA,Medical Expenses,D,8-10 years,200k+,Late (31-120 days),91,LoanCare,2022-08-09
+LN-10293,BRW-90293,Personal,2021-09-25,2025-11-27,30000,27041,10.99,60,PA,Medical Expenses,D,10+ years,0-50k,Charged Off,0,Cenlar,2022-06-04
+LN-10294,BRW-90294,Personal,2019-05-14,2023-04-23,11623,11574,9.85,36,IL,Medical Expenses,D,8-10 years,200k+,Charged Off,0,Mr. Cooper,2024-01-21
+LN-10295,BRW-90295,Personal,2019-04-05,2028-07-18,42016,21518,6.46,60,OH,Major Purchase,D,1-3 years,0-50k,Current,0,PennyMac,2025-01-22
+LN-10296,BRW-90296,Personal,2021-03-18,2025-05-14,24348,18273,18.83,60,NC,Debt Consolidation,B,8-10 years,100k-150k,Current,0,Wells Fargo,2025-01-03
+LN-10297,BRW-90297,Personal,2018-08-13,2026-03-09,29080,17614,7.30,36,NC,Medical Expenses,E,1-3 years,200k+,Charged Off,0,LoanCare,2025-01-11
+LN-10298,BRW-90298,Personal,2021-08-02,2024-01-25,19810,18674,13.59,60,CA,Major Purchase,C,8-10 years,50k-100k,Current,0,Cenlar,2025-10-15
+LN-10299,BRW-90299,Personal,2021-07-10,2028-04-16,35880,32261,9.88,36,GA,Debt Consolidation,E,8-10 years,200k+,Late (31-120 days),53,Mr. Cooper,2022-10-03
+LN-10300,BRW-90300,Personal,2019-02-26,2027-01-14,32831,18369,6.84,60,GA,Major Purchase,D,8-10 years,100k-150k,Late (31-120 days),106,LoanCare,2024-03-09
+LN-10301,BRW-90301,Personal,2021-04-27,2026-05-05,11155,5754,16.45,60,PA,Credit Card Refinancing,C,1-3 years,200k+,Charged Off,0,Wells Fargo,2022-07-18
+LN-10302,BRW-90302,Personal,2022-04-23,2027-05-13,20814,15947,19.26,60,CA,Medical Expenses,A,1-3 years,50k-100k,In Grace Period,0,LoanCare,2025-08-29
+LN-10303,BRW-90303,Personal,2018-04-27,2026-08-04,21303,15201,10.52,60,IL,Home Improvement,E,8-10 years,150k-200k,Late (31-120 days),42,PennyMac,2025-02-23
+LN-10304,BRW-90304,Personal,2022-06-30,2026-04-12,27164,22914,8.05,60,MI,Medical Expenses,A,< 1 year,100k-150k,Fully Paid,0,PennyMac,2025-01-25
+LN-10305,BRW-90305,Personal,2018-10-01,2025-07-20,22160,17105,12.77,36,FL,Credit Card Refinancing,C,8-10 years,50k-100k,In Grace Period,0,Mr. Cooper,2024-06-07
+LN-10306,BRW-90306,Personal,2018-11-25,2023-06-12,19158,17146,7.84,36,MI,Debt Consolidation,D,8-10 years,200k+,In Grace Period,0,PennyMac,2025-12-31
+LN-10307,BRW-90307,Personal,2019-10-24,2026-12-20,15834,15068,12.20,36,MI,Major Purchase,A,< 1 year,100k-150k,In Grace Period,0,Wells Fargo,2025-11-22
+LN-10308,BRW-90308,Personal,2021-02-24,2026-06-02,9682,8213,7.12,60,OH,Home Improvement,D,< 1 year,150k-200k,Fully Paid,0,LoanCare,2025-04-30
+LN-10309,BRW-90309,Personal,2019-07-10,2026-10-10,24192,14432,12.60,36,GA,Home Improvement,E,10+ years,150k-200k,Current,0,Wells Fargo,2022-05-27
+LN-10310,BRW-90310,Personal,2020-07-31,2025-12-17,37467,24957,13.77,60,NC,Medical Expenses,C,4-7 years,150k-200k,Late (31-120 days),41,Cenlar,2022-01-20
+LN-10311,BRW-90311,Personal,2019-06-17,2027-02-20,44826,25241,7.33,60,NC,Debt Consolidation,B,1-3 years,100k-150k,In Grace Period,0,LoanCare,2022-08-26
+LN-10312,BRW-90312,Personal,2019-10-27,2023-05-09,17879,14112,9.69,60,OH,Medical Expenses,E,8-10 years,50k-100k,In Grace Period,0,LoanCare,2025-10-30
+LN-10313,BRW-90313,Personal,2022-05-22,2023-06-28,10358,8058,12.17,36,MI,Credit Card Refinancing,D,1-3 years,50k-100k,Charged Off,0,Mr. Cooper,2024-09-02
+LN-10314,BRW-90314,Personal,2018-05-17,2023-08-18,44690,43066,17.97,36,PA,Home Improvement,E,10+ years,200k+,In Grace Period,0,Mr. Cooper,2023-09-17
+LN-10315,BRW-90315,Personal,2020-09-18,2025-10-03,6006,5329,12.90,60,TX,Home Improvement,B,10+ years,100k-150k,Fully Paid,0,Wells Fargo,2026-08-15
+LN-10316,BRW-90316,Personal,2018-12-21,2027-07-18,8229,7223,15.66,36,PA,Credit Card Refinancing,D,8-10 years,50k-100k,In Grace Period,0,LoanCare,2022-06-23
+LN-10317,BRW-90317,Personal,2019-03-06,2025-09-22,34535,18141,5.84,36,NC,Home Improvement,B,8-10 years,0-50k,Charged Off,0,Mr. Cooper,2022-04-13
+LN-10318,BRW-90318,Personal,2021-01-02,2028-01-10,14644,13905,17.92,36,NC,Credit Card Refinancing,C,8-10 years,50k-100k,Late (31-120 days),31,Mr. Cooper,2025-03-23
+LN-10319,BRW-90319,Personal,2019-09-06,2024-09-20,37984,28298,12.59,36,NC,Major Purchase,E,10+ years,0-50k,Fully Paid,0,Wells Fargo,2026-02-11
+LN-10320,BRW-90320,Personal,2019-11-17,2023-07-14,37236,29168,9.78,36,NY,Home Improvement,D,10+ years,150k-200k,Late (31-120 days),89,Wells Fargo,2025-07-13
+LN-10321,BRW-90321,Personal,2019-01-14,2026-04-20,18711,14064,10.65,36,NY,Debt Consolidation,A,10+ years,0-50k,In Grace Period,0,Mr. Cooper,2022-01-28
+LN-10322,BRW-90322,Personal,2020-02-15,2025-05-23,26366,22664,14.39,36,IL,Debt Consolidation,B,4-7 years,0-50k,Charged Off,0,PennyMac,2024-09-01
+LN-10323,BRW-90323,Personal,2021-09-23,2027-01-25,11136,9251,10.72,36,NY,Credit Card Refinancing,D,< 1 year,50k-100k,Late (31-120 days),84,PennyMac,2025-12-09
+LN-10324,BRW-90324,Personal,2019-12-23,2027-07-04,41710,36733,18.69,36,CA,Debt Consolidation,A,< 1 year,100k-150k,Charged Off,0,Wells Fargo,2025-08-17
+LN-10325,BRW-90325,Personal,2021-04-10,2028-04-06,14893,10369,8.20,60,TX,Credit Card Refinancing,E,10+ years,100k-150k,Late (31-120 days),55,LoanCare,2023-02-20
+LN-10326,BRW-90326,Personal,2018-12-24,2024-02-04,21293,19184,12.74,36,FL,Major Purchase,D,4-7 years,150k-200k,In Grace Period,0,LoanCare,2025-08-28
+LN-10327,BRW-90327,Personal,2021-12-03,2027-07-17,34810,26562,7.91,60,CA,Credit Card Refinancing,B,4-7 years,100k-150k,Current,0,PennyMac,2026-01-13
+LN-10328,BRW-90328,Personal,2018-05-27,2028-08-06,35956,27541,17.30,60,NY,Debt Consolidation,A,1-3 years,50k-100k,In Grace Period,0,LoanCare,2026-03-25
+LN-10329,BRW-90329,Personal,2022-10-23,2024-03-30,15863,10885,11.91,36,OH,Credit Card Refinancing,B,1-3 years,150k-200k,Fully Paid,0,Cenlar,2025-03-29
+LN-10330,BRW-90330,Personal,2019-04-08,2025-07-03,10206,5930,11.52,60,CA,Medical Expenses,A,1-3 years,100k-150k,Fully Paid,0,Cenlar,2023-05-22
+LN-10331,BRW-90331,Personal,2018-11-17,2028-08-23,32280,31862,18.03,36,FL,Major Purchase,A,< 1 year,100k-150k,Late (31-120 days),74,Mr. Cooper,2022-12-10
+LN-10332,BRW-90332,Personal,2018-02-02,2023-01-08,37991,30487,7.67,60,CA,Credit Card Refinancing,D,8-10 years,0-50k,Current,0,LoanCare,2023-03-10
+LN-10333,BRW-90333,Personal,2021-10-25,2023-12-19,40583,22209,5.49,60,PA,Credit Card Refinancing,E,1-3 years,150k-200k,In Grace Period,0,Wells Fargo,2025-12-01
+LN-10334,BRW-90334,Personal,2019-08-03,2026-03-23,20641,17158,19.94,36,MI,Medical Expenses,E,1-3 years,150k-200k,Late (31-120 days),94,Mr. Cooper,2026-01-18
+LN-10335,BRW-90335,Personal,2018-06-03,2028-09-18,42834,27724,10.32,36,CA,Debt Consolidation,C,10+ years,0-50k,Late (31-120 days),113,Wells Fargo,2024-09-23
+LN-10336,BRW-90336,Personal,2022-04-06,2027-03-10,35065,32090,17.04,60,MI,Home Improvement,A,< 1 year,200k+,In Grace Period,0,Wells Fargo,2024-08-18
+LN-10337,BRW-90337,Personal,2021-01-28,2025-01-07,21263,11156,11.55,36,FL,Credit Card Refinancing,E,< 1 year,200k+,In Grace Period,0,PennyMac,2023-03-21
+LN-10338,BRW-90338,Personal,2022-12-27,2023-12-21,41272,38211,13.44,36,CA,Major Purchase,B,8-10 years,0-50k,Charged Off,0,Cenlar,2022-01-19
+LN-10339,BRW-90339,Personal,2021-05-20,2025-11-11,42981,24826,16.89,36,OH,Major Purchase,D,10+ years,100k-150k,Late (31-120 days),111,Mr. Cooper,2022-07-24
+LN-10340,BRW-90340,Personal,2022-08-26,2026-12-10,34592,25787,10.44,60,CA,Home Improvement,A,4-7 years,100k-150k,In Grace Period,0,Cenlar,2022-02-10
+LN-10341,BRW-90341,Personal,2022-04-24,2023-08-24,5798,3758,5.74,60,MI,Credit Card Refinancing,C,1-3 years,0-50k,In Grace Period,0,PennyMac,2024-05-15
+LN-10342,BRW-90342,Personal,2022-11-22,2028-03-05,7974,5192,16.28,60,MI,Credit Card Refinancing,B,10+ years,200k+,Charged Off,0,Wells Fargo,2024-08-02
+LN-10343,BRW-90343,Personal,2018-08-25,2023-03-03,43920,26689,13.68,36,OH,Debt Consolidation,C,10+ years,0-50k,In Grace Period,0,PennyMac,2026-07-24
+LN-10344,BRW-90344,Personal,2018-06-05,2026-10-18,11394,7981,6.99,36,MI,Medical Expenses,E,< 1 year,100k-150k,Late (31-120 days),117,Mr. Cooper,2023-09-22
+LN-10345,BRW-90345,Personal,2021-06-26,2023-10-17,34805,33304,19.19,60,OH,Credit Card Refinancing,E,4-7 years,100k-150k,Current,0,Wells Fargo,2023-07-15
+LN-10346,BRW-90346,Personal,2018-11-28,2028-06-02,36495,19171,11.40,60,PA,Medical Expenses,C,8-10 years,150k-200k,Late (31-120 days),51,Mr. Cooper,2024-08-19
+LN-10347,BRW-90347,Personal,2018-02-09,2023-11-11,43676,23435,16.02,60,NY,Credit Card Refinancing,D,4-7 years,50k-100k,Late (31-120 days),72,Wells Fargo,2024-08-14
+LN-10348,BRW-90348,Personal,2018-01-21,2024-05-20,10351,8690,15.17,36,CA,Credit Card Refinancing,D,4-7 years,100k-150k,Charged Off,0,LoanCare,2022-03-21
+LN-10349,BRW-90349,Personal,2020-04-19,2023-05-18,41078,26688,18.83,36,NY,Credit Card Refinancing,B,8-10 years,0-50k,Current,0,LoanCare,2024-08-15
+LN-10350,BRW-90350,Personal,2022-05-16,2028-12-26,16821,9398,9.78,36,CA,Major Purchase,B,< 1 year,200k+,Current,0,Wells Fargo,2023-09-02
+LN-10351,BRW-90351,Personal,2020-08-15,2024-07-26,6098,4373,5.65,36,OH,Major Purchase,D,< 1 year,200k+,In Grace Period,0,Cenlar,2023-04-23
+LN-10352,BRW-90352,Personal,2018-07-20,2024-01-21,34163,22413,10.31,60,OH,Medical Expenses,D,< 1 year,200k+,Late (31-120 days),35,Wells Fargo,2025-11-23
+LN-10353,BRW-90353,Personal,2021-02-25,2024-08-14,30277,30262,15.40,36,IL,Credit Card Refinancing,D,1-3 years,0-50k,In Grace Period,0,Cenlar,2022-02-20
+LN-10354,BRW-90354,Personal,2019-08-22,2024-05-11,43606,25890,9.34,60,IL,Home Improvement,C,< 1 year,200k+,Current,0,LoanCare,2024-05-25
+LN-10355,BRW-90355,Personal,2019-11-21,2024-07-22,12469,8883,13.10,60,FL,Debt Consolidation,C,4-7 years,200k+,Charged Off,0,Wells Fargo,2025-11-14
+LN-10356,BRW-90356,Personal,2021-08-04,2027-12-24,17741,9388,12.58,60,FL,Debt Consolidation,B,4-7 years,0-50k,Current,0,PennyMac,2022-02-18
+LN-10357,BRW-90357,Personal,2021-11-19,2027-07-22,11274,10330,15.62,36,PA,Debt Consolidation,B,10+ years,100k-150k,Charged Off,0,Mr. Cooper,2022-08-26
+LN-10358,BRW-90358,Personal,2021-01-13,2028-03-13,14099,11097,5.01,60,GA,Major Purchase,D,< 1 year,200k+,In Grace Period,0,Cenlar,2025-05-30
+LN-10359,BRW-90359,Personal,2021-10-24,2027-06-13,13143,7311,14.82,36,PA,Home Improvement,D,10+ years,150k-200k,In Grace Period,0,Mr. Cooper,2025-01-15
+LN-10360,BRW-90360,Personal,2021-11-05,2025-01-19,22387,19003,16.70,60,PA,Major Purchase,C,1-3 years,150k-200k,Charged Off,0,Cenlar,2025-03-05
+LN-10361,BRW-90361,Personal,2021-03-30,2025-06-11,6025,4365,6.18,36,TX,Credit Card Refinancing,C,1-3 years,50k-100k,Charged Off,0,Cenlar,2024-11-28
+LN-10362,BRW-90362,Personal,2019-01-18,2028-02-25,41940,38431,15.35,36,GA,Credit Card Refinancing,A,4-7 years,150k-200k,Charged Off,0,Wells Fargo,2022-03-18
+LN-10363,BRW-90363,Personal,2021-02-11,2027-07-10,30379,26866,6.57,36,FL,Medical Expenses,C,10+ years,50k-100k,In Grace Period,0,PennyMac,2024-06-24
+LN-10364,BRW-90364,Personal,2020-04-13,2027-06-24,23841,23521,7.26,36,NY,Credit Card Refinancing,A,1-3 years,0-50k,Charged Off,0,Wells Fargo,2022-10-22
+LN-10365,BRW-90365,Personal,2021-09-23,2026-12-31,37608,21842,5.06,36,NY,Credit Card Refinancing,B,1-3 years,100k-150k,Fully Paid,0,LoanCare,2025-08-08
+LN-10366,BRW-90366,Personal,2020-01-26,2024-11-03,36845,20160,18.18,60,PA,Medical Expenses,B,8-10 years,150k-200k,Fully Paid,0,Cenlar,2023-09-28
+LN-10367,BRW-90367,Personal,2021-03-05,2028-05-13,40248,31287,12.29,60,PA,Medical Expenses,A,< 1 year,200k+,Current,0,Mr. Cooper,2024-06-10
+LN-10368,BRW-90368,Personal,2018-02-22,2026-07-15,18362,15281,12.48,60,TX,Medical Expenses,B,10+ years,150k-200k,Late (31-120 days),119,Cenlar,2025-02-11
+LN-10369,BRW-90369,Personal,2021-01-07,2028-07-06,22057,14667,8.94,36,OH,Major Purchase,E,1-3 years,50k-100k,Late (31-120 days),69,Cenlar,2025-03-24
+LN-10370,BRW-90370,Personal,2019-06-17,2026-12-04,7652,4578,18.60,60,FL,Home Improvement,E,4-7 years,50k-100k,Charged Off,0,Mr. Cooper,2024-06-02
+LN-10371,BRW-90371,Personal,2018-11-13,2025-11-09,31565,23924,16.86,60,CA,Home Improvement,C,< 1 year,0-50k,Current,0,Cenlar,2026-03-17
+LN-10372,BRW-90372,Personal,2018-02-10,2024-01-27,6376,3903,9.79,36,GA,Credit Card Refinancing,E,< 1 year,0-50k,Late (31-120 days),67,Cenlar,2022-09-02
+LN-10373,BRW-90373,Personal,2021-01-13,2028-10-30,41464,25351,15.40,36,IL,Medical Expenses,C,1-3 years,150k-200k,Current,0,Wells Fargo,2025-05-31
+LN-10374,BRW-90374,Personal,2019-11-23,2023-06-17,31125,17394,19.90,36,CA,Home Improvement,C,8-10 years,50k-100k,In Grace Period,0,Mr. Cooper,2023-01-29
+LN-10375,BRW-90375,Personal,2019-03-01,2023-05-20,40026,37735,10.07,36,GA,Debt Consolidation,D,10+ years,100k-150k,Charged Off,0,LoanCare,2024-03-22
+LN-10376,BRW-90376,Personal,2021-03-25,2028-07-23,30410,23525,10.89,60,OH,Credit Card Refinancing,B,1-3 years,50k-100k,Current,0,Wells Fargo,2026-01-10
+LN-10377,BRW-90377,Personal,2022-04-20,2026-10-27,31448,27094,13.87,60,MI,Major Purchase,B,1-3 years,100k-150k,In Grace Period,0,LoanCare,2024-05-18
+LN-10378,BRW-90378,Personal,2021-06-14,2026-10-30,22882,12768,11.34,36,MI,Debt Consolidation,E,1-3 years,200k+,In Grace Period,0,Cenlar,2024-10-29
+LN-10379,BRW-90379,Personal,2022-10-30,2023-11-15,5112,4697,6.77,60,GA,Credit Card Refinancing,D,< 1 year,200k+,Fully Paid,0,LoanCare,2025-06-17
+LN-10380,BRW-90380,Personal,2019-01-07,2025-09-08,16438,8620,18.58,36,IL,Home Improvement,D,8-10 years,50k-100k,Current,0,PennyMac,2023-01-04
+LN-10381,BRW-90381,Personal,2019-02-23,2026-04-14,25979,17336,18.23,60,NC,Home Improvement,C,10+ years,0-50k,Charged Off,0,Wells Fargo,2023-04-20
+LN-10382,BRW-90382,Personal,2018-02-20,2023-03-02,11947,11376,7.53,36,GA,Home Improvement,B,< 1 year,150k-200k,Current,0,Mr. Cooper,2025-01-08
+LN-10383,BRW-90383,Personal,2020-08-19,2028-08-27,33543,20221,5.98,36,NY,Major Purchase,A,4-7 years,150k-200k,Fully Paid,0,Cenlar,2025-12-28
+LN-10384,BRW-90384,Personal,2018-05-29,2027-05-18,29602,16947,6.61,36,TX,Major Purchase,E,4-7 years,200k+,Late (31-120 days),65,LoanCare,2026-02-09
+LN-10385,BRW-90385,Personal,2018-11-15,2025-12-20,40491,35705,16.92,36,TX,Home Improvement,B,1-3 years,100k-150k,Late (31-120 days),51,PennyMac,2022-05-17
+LN-10386,BRW-90386,Personal,2022-10-01,2028-10-17,10709,6645,5.31,36,PA,Debt Consolidation,A,4-7 years,50k-100k,Late (31-120 days),39,Wells Fargo,2026-07-15
+LN-10387,BRW-90387,Personal,2022-05-22,2026-03-18,29502,20973,7.03,36,NY,Debt Consolidation,E,1-3 years,200k+,Current,0,PennyMac,2026-09-15
+LN-10388,BRW-90388,Personal,2021-05-23,2026-10-09,33870,22842,17.75,60,FL,Credit Card Refinancing,C,4-7 years,0-50k,Current,0,Wells Fargo,2023-03-13
+LN-10389,BRW-90389,Personal,2022-09-10,2023-03-02,14064,13676,9.07,60,TX,Credit Card Refinancing,E,10+ years,0-50k,Charged Off,0,Mr. Cooper,2025-08-16
+LN-10390,BRW-90390,Personal,2022-08-31,2023-04-03,18802,9553,15.83,60,PA,Home Improvement,D,< 1 year,50k-100k,Fully Paid,0,Cenlar,2024-08-30
+LN-10391,BRW-90391,Personal,2022-06-19,2027-01-11,17357,9563,13.15,60,GA,Medical Expenses,B,4-7 years,0-50k,Fully Paid,0,PennyMac,2025-02-20
+LN-10392,BRW-90392,Personal,2018-10-05,2028-03-02,40584,39712,7.08,60,GA,Major Purchase,D,< 1 year,100k-150k,Late (31-120 days),119,Cenlar,2023-07-25
+LN-10393,BRW-90393,Personal,2020-12-20,2028-02-01,26113,26106,11.09,36,PA,Major Purchase,A,1-3 years,50k-100k,Charged Off,0,PennyMac,2024-01-30
+LN-10394,BRW-90394,Personal,2021-10-17,2028-05-30,24628,20805,10.22,60,NC,Home Improvement,E,10+ years,0-50k,Fully Paid,0,PennyMac,2026-03-22
+LN-10395,BRW-90395,Personal,2022-08-09,2025-08-26,21856,17221,7.06,60,PA,Home Improvement,D,1-3 years,150k-200k,Late (31-120 days),73,Wells Fargo,2023-12-20
+LN-10396,BRW-90396,Personal,2019-02-02,2027-11-16,7449,4155,17.76,36,TX,Credit Card Refinancing,A,8-10 years,0-50k,Charged Off,0,Cenlar,2023-04-29
+LN-10397,BRW-90397,Personal,2019-10-19,2026-03-26,33371,27548,9.27,36,TX,Credit Card Refinancing,B,10+ years,200k+,In Grace Period,0,LoanCare,2022-10-30
+LN-10398,BRW-90398,Personal,2020-05-28,2027-11-13,43962,36777,16.85,36,PA,Credit Card Refinancing,D,10+ years,150k-200k,Fully Paid,0,Wells Fargo,2026-07-26
+LN-10399,BRW-90399,Personal,2019-07-14,2024-02-19,44588,35253,17.55,60,GA,Medical Expenses,E,< 1 year,0-50k,Fully Paid,0,Cenlar,2022-09-29
+LN-10400,BRW-90400,Personal,2019-03-16,2023-10-11,35928,24595,10.74,36,NY,Home Improvement,A,8-10 years,200k+,Current,0,Cenlar,2022-05-31
+LN-10401,BRW-90401,Personal,2022-02-20,2023-09-07,15926,10277,9.27,60,IL,Medical Expenses,C,1-3 years,200k+,Charged Off,0,Cenlar,2026-02-06
+LN-10402,BRW-90402,Personal,2020-09-08,2026-10-31,18629,10519,12.18,60,NC,Debt Consolidation,C,8-10 years,150k-200k,Charged Off,0,Wells Fargo,2024-07-30
+LN-10403,BRW-90403,Personal,2019-10-26,2024-01-23,33879,32202,8.72,36,FL,Home Improvement,E,10+ years,150k-200k,Current,0,LoanCare,2023-11-28
+LN-10404,BRW-90404,Personal,2021-04-06,2028-06-09,10760,10431,18.02,60,GA,Home Improvement,D,< 1 year,100k-150k,Fully Paid,0,Cenlar,2025-02-26
+LN-10405,BRW-90405,Personal,2018-11-16,2023-02-09,32033,17342,11.46,36,PA,Debt Consolidation,D,< 1 year,0-50k,Current,0,LoanCare,2026-07-24
+LN-10406,BRW-90406,Personal,2021-04-16,2025-10-06,32583,30918,10.34,36,NY,Credit Card Refinancing,C,< 1 year,200k+,In Grace Period,0,LoanCare,2025-09-26
+LN-10407,BRW-90407,Personal,2019-04-13,2028-12-01,6795,4305,11.38,60,NY,Medical Expenses,D,8-10 years,150k-200k,Late (31-120 days),64,PennyMac,2022-08-04
+LN-10408,BRW-90408,Personal,2022-11-06,2028-12-02,18923,15264,5.53,36,IL,Home Improvement,A,4-7 years,150k-200k,Late (31-120 days),31,PennyMac,2024-04-06
+LN-10409,BRW-90409,Personal,2021-09-03,2026-11-26,43433,36504,5.59,36,FL,Major Purchase,E,1-3 years,100k-150k,Fully Paid,0,PennyMac,2023-06-02
+LN-10410,BRW-90410,Personal,2020-07-22,2024-03-28,34269,31077,19.07,36,TX,Debt Consolidation,D,10+ years,100k-150k,In Grace Period,0,PennyMac,2025-05-21
+LN-10411,BRW-90411,Personal,2020-08-25,2025-11-26,32003,19202,14.27,36,NY,Credit Card Refinancing,D,8-10 years,0-50k,Charged Off,0,Mr. Cooper,2025-07-10
+LN-10412,BRW-90412,Personal,2018-04-15,2023-02-20,40455,30074,15.32,60,MI,Major Purchase,E,10+ years,50k-100k,In Grace Period,0,Wells Fargo,2023-08-06
+LN-10413,BRW-90413,Personal,2019-01-30,2026-11-30,19458,11529,16.66,60,NC,Debt Consolidation,B,10+ years,200k+,Charged Off,0,Cenlar,2024-04-02
+LN-10414,BRW-90414,Personal,2018-01-05,2028-12-26,44266,35449,8.14,60,GA,Major Purchase,E,1-3 years,50k-100k,Current,0,Mr. Cooper,2025-07-02
+LN-10415,BRW-90415,Personal,2020-01-19,2024-12-22,33238,30234,15.70,36,PA,Medical Expenses,C,8-10 years,150k-200k,Current,0,PennyMac,2025-04-01
+LN-10416,BRW-90416,Personal,2020-01-23,2023-01-21,37213,33325,9.92,60,MI,Major Purchase,A,8-10 years,0-50k,Current,0,Wells Fargo,2025-07-15
+LN-10417,BRW-90417,Personal,2021-09-01,2028-12-05,21804,17372,19.92,60,TX,Debt Consolidation,A,8-10 years,150k-200k,Current,0,LoanCare,2023-05-05
+LN-10418,BRW-90418,Personal,2018-07-26,2023-01-17,43875,38575,6.14,36,PA,Debt Consolidation,E,4-7 years,100k-150k,Charged Off,0,Mr. Cooper,2026-03-05
+LN-10419,BRW-90419,Personal,2019-08-24,2024-07-13,40324,20442,10.47,36,MI,Credit Card Refinancing,E,4-7 years,200k+,In Grace Period,0,Wells Fargo,2022-01-03
+LN-10420,BRW-90420,Personal,2019-12-31,2027-10-12,11225,11076,15.76,36,FL,Credit Card Refinancing,D,8-10 years,0-50k,Fully Paid,0,PennyMac,2022-01-13
+LN-10421,BRW-90421,Personal,2020-05-21,2027-04-07,24511,22053,14.73,36,CA,Home Improvement,C,1-3 years,0-50k,In Grace Period,0,LoanCare,2025-03-20
+LN-10422,BRW-90422,Personal,2022-07-24,2023-01-22,42203,34246,13.92,60,NC,Credit Card Refinancing,D,10+ years,0-50k,Charged Off,0,Cenlar,2022-11-28
+LN-10423,BRW-90423,Personal,2022-01-20,2023-08-16,36011,19071,16.46,36,CA,Home Improvement,A,< 1 year,200k+,Current,0,Mr. Cooper,2023-04-12
+LN-10424,BRW-90424,Personal,2020-03-12,2023-08-02,7125,3717,12.56,60,PA,Debt Consolidation,C,1-3 years,200k+,Fully Paid,0,PennyMac,2024-01-30
+LN-10425,BRW-90425,Personal,2019-07-10,2027-07-01,26022,16716,19.89,36,NC,Home Improvement,B,8-10 years,100k-150k,Charged Off,0,Mr. Cooper,2023-09-01
+LN-10426,BRW-90426,Personal,2022-01-07,2024-10-09,26050,22876,18.83,36,NY,Medical Expenses,B,4-7 years,50k-100k,Fully Paid,0,Mr. Cooper,2026-04-22
+LN-10427,BRW-90427,Personal,2021-03-16,2024-08-02,29986,19083,10.17,36,FL,Medical Expenses,A,10+ years,0-50k,Current,0,LoanCare,2025-02-28
+LN-10428,BRW-90428,Personal,2022-09-11,2028-05-22,23380,17167,11.67,60,GA,Debt Consolidation,D,8-10 years,200k+,Late (31-120 days),81,Mr. Cooper,2022-07-10
+LN-10429,BRW-90429,Personal,2019-04-11,2027-11-14,32443,31428,17.73,36,NY,Medical Expenses,B,4-7 years,200k+,Charged Off,0,LoanCare,2023-12-01
+LN-10430,BRW-90430,Personal,2018-09-28,2023-07-10,20880,10807,16.66,60,FL,Credit Card Refinancing,D,10+ years,100k-150k,In Grace Period,0,PennyMac,2026-09-03
+LN-10431,BRW-90431,Personal,2022-08-20,2026-10-03,35913,26537,11.79,60,CA,Credit Card Refinancing,C,10+ years,150k-200k,Charged Off,0,Mr. Cooper,2024-09-22
+LN-10432,BRW-90432,Personal,2018-06-12,2028-03-23,39515,19976,11.44,36,NY,Debt Consolidation,E,< 1 year,50k-100k,In Grace Period,0,Cenlar,2026-07-09
+LN-10433,BRW-90433,Personal,2018-11-25,2026-09-18,34671,31073,19.37,36,TX,Home Improvement,A,8-10 years,200k+,Fully Paid,0,Wells Fargo,2025-01-12
+LN-10434,BRW-90434,Personal,2020-04-14,2025-09-27,27634,18487,13.13,60,MI,Credit Card Refinancing,A,4-7 years,0-50k,In Grace Period,0,Wells Fargo,2025-08-18
+LN-10435,BRW-90435,Personal,2019-09-22,2025-02-01,6036,3599,15.42,36,NC,Home Improvement,B,1-3 years,0-50k,In Grace Period,0,PennyMac,2022-08-04
+LN-10436,BRW-90436,Personal,2019-11-22,2024-01-27,35936,22074,17.57,60,GA,Home Improvement,A,< 1 year,50k-100k,Current,0,Cenlar,2022-10-03
+LN-10437,BRW-90437,Personal,2018-01-04,2027-02-03,44647,34615,12.85,36,TX,Credit Card Refinancing,B,4-7 years,0-50k,Charged Off,0,Cenlar,2025-04-11
+LN-10438,BRW-90438,Personal,2020-02-09,2027-10-17,14061,10888,18.19,60,CA,Debt Consolidation,B,10+ years,200k+,In Grace Period,0,Mr. Cooper,2023-04-03
+LN-10439,BRW-90439,Personal,2022-05-12,2028-06-24,6539,4799,9.08,36,PA,Major Purchase,E,< 1 year,50k-100k,Current,0,PennyMac,2022-01-25
+LN-10440,BRW-90440,Personal,2018-10-09,2028-02-07,39047,35698,16.14,60,PA,Medical Expenses,A,< 1 year,0-50k,Fully Paid,0,LoanCare,2024-07-10
+LN-10441,BRW-90441,Personal,2018-01-06,2027-12-08,11929,9253,18.13,36,NY,Major Purchase,A,10+ years,50k-100k,Current,0,Wells Fargo,2022-03-24
+LN-10442,BRW-90442,Personal,2022-04-05,2026-12-26,9779,9257,12.05,36,OH,Medical Expenses,D,4-7 years,200k+,In Grace Period,0,LoanCare,2024-01-04
+LN-10443,BRW-90443,Personal,2018-05-30,2023-05-28,33759,27907,5.65,60,OH,Home Improvement,A,< 1 year,50k-100k,In Grace Period,0,PennyMac,2025-09-14
+LN-10444,BRW-90444,Personal,2019-01-17,2023-09-23,22043,20893,7.12,60,GA,Medical Expenses,E,< 1 year,100k-150k,Charged Off,0,PennyMac,2025-04-20
+LN-10445,BRW-90445,Personal,2018-05-01,2027-12-24,19162,13050,5.16,60,CA,Debt Consolidation,B,8-10 years,100k-150k,Fully Paid,0,Cenlar,2022-10-02
+LN-10446,BRW-90446,Personal,2020-05-28,2024-10-15,10548,9444,6.90,60,FL,Home Improvement,B,4-7 years,100k-150k,Charged Off,0,LoanCare,2024-08-02
+LN-10447,BRW-90447,Personal,2022-07-30,2027-06-22,39879,30023,8.14,36,GA,Major Purchase,B,4-7 years,0-50k,Late (31-120 days),47,Cenlar,2025-03-03
+LN-10448,BRW-90448,Personal,2019-05-07,2027-07-07,29392,18905,12.76,36,PA,Credit Card Refinancing,E,< 1 year,0-50k,Late (31-120 days),104,PennyMac,2023-05-15
+LN-10449,BRW-90449,Personal,2018-05-01,2023-06-13,37187,22878,6.40,60,TX,Debt Consolidation,E,8-10 years,50k-100k,In Grace Period,0,PennyMac,2026-06-09
+LN-10450,BRW-90450,Personal,2022-02-27,2023-03-24,40004,35312,10.02,36,TX,Medical Expenses,D,8-10 years,50k-100k,Late (31-120 days),48,Cenlar,2023-11-01
+LN-10451,BRW-90451,Personal,2021-07-11,2028-06-24,21471,13496,5.89,36,PA,Medical Expenses,E,< 1 year,50k-100k,Late (31-120 days),47,Cenlar,2025-09-28
+LN-10452,BRW-90452,Personal,2021-03-26,2024-09-25,17027,11235,18.48,36,PA,Debt Consolidation,B,10+ years,100k-150k,Late (31-120 days),102,Mr. Cooper,2024-09-20
+LN-10453,BRW-90453,Personal,2018-06-11,2024-03-01,28880,28422,5.25,60,GA,Credit Card Refinancing,C,1-3 years,100k-150k,Current,0,Wells Fargo,2023-06-09
+LN-10454,BRW-90454,Personal,2021-04-11,2027-10-13,29100,22529,17.08,60,NY,Debt Consolidation,D,8-10 years,100k-150k,Fully Paid,0,LoanCare,2022-02-19
+LN-10455,BRW-90455,Personal,2019-08-30,2028-01-13,43974,23506,12.71,36,NC,Debt Consolidation,A,4-7 years,200k+,Fully Paid,0,LoanCare,2025-04-28
+LN-10456,BRW-90456,Personal,2021-05-02,2027-10-02,26502,20009,11.42,36,OH,Debt Consolidation,C,4-7 years,50k-100k,Charged Off,0,Cenlar,2025-09-12
+LN-10457,BRW-90457,Personal,2020-11-11,2025-03-22,30487,15978,11.06,36,TX,Debt Consolidation,D,1-3 years,0-50k,In Grace Period,0,Mr. Cooper,2026-09-02
+LN-10458,BRW-90458,Personal,2022-11-10,2028-03-24,38093,37001,7.32,60,GA,Home Improvement,C,1-3 years,0-50k,Current,0,LoanCare,2026-06-20
+LN-10459,BRW-90459,Personal,2020-09-25,2025-03-05,32480,24610,11.80,36,NY,Medical Expenses,C,10+ years,150k-200k,Current,0,Cenlar,2024-07-05
+LN-10460,BRW-90460,Personal,2022-03-23,2025-09-08,9722,5621,5.56,36,CA,Credit Card Refinancing,A,< 1 year,50k-100k,Late (31-120 days),60,PennyMac,2023-12-10
+LN-10461,BRW-90461,Personal,2020-05-29,2024-06-14,36464,30273,7.19,60,OH,Credit Card Refinancing,E,4-7 years,0-50k,Fully Paid,0,Mr. Cooper,2025-04-25
+LN-10462,BRW-90462,Personal,2022-08-01,2024-05-17,25536,14783,6.58,60,OH,Home Improvement,A,4-7 years,100k-150k,Charged Off,0,Mr. Cooper,2026-01-22
+LN-10463,BRW-90463,Personal,2020-10-11,2027-07-22,35343,28282,14.18,60,TX,Home Improvement,B,4-7 years,0-50k,Current,0,Wells Fargo,2026-05-02
+LN-10464,BRW-90464,Personal,2021-07-06,2023-11-23,12761,11139,12.77,60,NC,Credit Card Refinancing,C,10+ years,50k-100k,Current,0,LoanCare,2025-03-26
+LN-10465,BRW-90465,Personal,2018-01-09,2028-01-31,17162,9106,8.95,36,PA,Home Improvement,D,8-10 years,100k-150k,Charged Off,0,LoanCare,2022-01-02
+LN-10466,BRW-90466,Personal,2018-02-19,2024-06-28,25934,22445,6.62,36,OH,Medical Expenses,D,4-7 years,0-50k,Fully Paid,0,Cenlar,2024-09-22
+LN-10467,BRW-90467,Personal,2021-09-24,2028-11-13,13089,7120,16.53,60,CA,Debt Consolidation,D,4-7 years,50k-100k,Fully Paid,0,Cenlar,2025-08-29
+LN-10468,BRW-90468,Personal,2020-03-18,2023-11-07,25238,19972,6.32,60,TX,Medical Expenses,A,1-3 years,100k-150k,Fully Paid,0,Cenlar,2025-01-30
+LN-10469,BRW-90469,Personal,2018-09-07,2028-12-21,16749,10495,6.08,60,NC,Home Improvement,D,8-10 years,200k+,Current,0,LoanCare,2026-05-15
+LN-10470,BRW-90470,Personal,2020-01-01,2023-05-11,8565,4377,15.74,60,MI,Home Improvement,C,< 1 year,150k-200k,Charged Off,0,Wells Fargo,2023-04-25
+LN-10471,BRW-90471,Personal,2018-04-04,2028-04-29,38478,19433,11.83,60,NC,Home Improvement,A,8-10 years,0-50k,Current,0,PennyMac,2022-02-06
+LN-10472,BRW-90472,Personal,2020-06-22,2025-01-18,5711,3018,7.21,60,TX,Home Improvement,C,< 1 year,150k-200k,Late (31-120 days),79,Cenlar,2025-07-28
+LN-10473,BRW-90473,Personal,2018-10-20,2023-02-28,37580,30600,5.73,60,TX,Medical Expenses,C,10+ years,0-50k,Late (31-120 days),55,Mr. Cooper,2023-04-14
+LN-10474,BRW-90474,Personal,2018-11-12,2028-01-24,42905,23663,8.80,60,IL,Credit Card Refinancing,C,< 1 year,200k+,Fully Paid,0,PennyMac,2022-01-31
+LN-10475,BRW-90475,Personal,2022-11-09,2023-01-08,10810,10713,12.74,60,PA,Credit Card Refinancing,D,8-10 years,50k-100k,In Grace Period,0,Wells Fargo,2023-07-17
+LN-10476,BRW-90476,Personal,2019-07-12,2027-11-26,20861,17549,11.36,36,FL,Credit Card Refinancing,D,8-10 years,50k-100k,In Grace Period,0,LoanCare,2022-03-24
+LN-10477,BRW-90477,Personal,2022-12-03,2024-10-11,12795,7987,6.50,60,TX,Medical Expenses,A,8-10 years,200k+,Late (31-120 days),94,LoanCare,2022-11-08
+LN-10478,BRW-90478,Personal,2019-02-26,2025-12-28,16530,15261,11.84,36,NY,Debt Consolidation,D,< 1 year,200k+,Fully Paid,0,Cenlar,2023-06-12
+LN-10479,BRW-90479,Personal,2022-03-01,2026-05-16,26570,16540,16.53,36,GA,Major Purchase,A,< 1 year,0-50k,Fully Paid,0,LoanCare,2025-04-25
+LN-10480,BRW-90480,Personal,2019-09-11,2025-05-27,40507,35880,6.87,60,MI,Major Purchase,E,8-10 years,50k-100k,In Grace Period,0,PennyMac,2025-08-16
+LN-10481,BRW-90481,Personal,2022-01-17,2028-08-21,14532,9293,12.45,60,OH,Home Improvement,E,10+ years,0-50k,Charged Off,0,LoanCare,2025-05-18
+LN-10482,BRW-90482,Personal,2019-03-03,2026-03-23,39314,31065,13.04,60,NC,Home Improvement,C,1-3 years,0-50k,Current,0,Cenlar,2025-10-06
+LN-10483,BRW-90483,Personal,2019-08-28,2023-01-26,37935,34819,5.49,60,OH,Major Purchase,E,< 1 year,100k-150k,Charged Off,0,Mr. Cooper,2023-07-08
+LN-10484,BRW-90484,Personal,2021-06-07,2027-07-08,11106,7151,7.30,36,MI,Debt Consolidation,D,1-3 years,200k+,Charged Off,0,Wells Fargo,2026-03-28
+LN-10485,BRW-90485,Personal,2019-02-21,2028-10-06,37269,34228,10.96,36,IL,Major Purchase,E,< 1 year,150k-200k,Charged Off,0,LoanCare,2023-10-27
+LN-10486,BRW-90486,Personal,2018-04-23,2024-08-10,5851,3349,18.28,60,NY,Home Improvement,D,8-10 years,0-50k,Late (31-120 days),65,Wells Fargo,2022-03-16
+LN-10487,BRW-90487,Personal,2018-03-27,2024-08-06,30103,15645,19.63,60,PA,Home Improvement,A,10+ years,150k-200k,Current,0,Mr. Cooper,2022-10-29
+LN-10488,BRW-90488,Personal,2022-09-17,2027-11-19,26491,17356,6.09,36,GA,Debt Consolidation,E,4-7 years,100k-150k,Charged Off,0,Mr. Cooper,2022-07-21
+LN-10489,BRW-90489,Personal,2018-04-07,2025-12-01,39717,21302,15.31,36,NY,Credit Card Refinancing,E,10+ years,150k-200k,Charged Off,0,Wells Fargo,2022-06-17
+LN-10490,BRW-90490,Personal,2020-10-02,2023-07-06,32537,17059,11.12,36,IL,Credit Card Refinancing,E,1-3 years,0-50k,Current,0,Wells Fargo,2022-08-30
+LN-10491,BRW-90491,Personal,2018-07-31,2028-02-15,9927,7673,6.80,36,TX,Major Purchase,E,1-3 years,50k-100k,In Grace Period,0,Mr. Cooper,2022-11-05
+LN-10492,BRW-90492,Personal,2022-08-28,2025-05-11,43940,25964,10.84,60,NY,Major Purchase,D,< 1 year,100k-150k,Fully Paid,0,Cenlar,2022-07-09
+LN-10493,BRW-90493,Personal,2018-03-13,2026-05-02,29962,21350,15.61,36,TX,Medical Expenses,B,1-3 years,50k-100k,Fully Paid,0,LoanCare,2025-05-23
+LN-10494,BRW-90494,Personal,2021-04-20,2023-09-18,40960,24729,11.78,36,MI,Medical Expenses,E,4-7 years,0-50k,Fully Paid,0,PennyMac,2026-08-29
+LN-10495,BRW-90495,Personal,2022-02-26,2026-05-01,11936,10862,8.32,36,OH,Debt Consolidation,B,4-7 years,200k+,In Grace Period,0,Wells Fargo,2026-04-21
+LN-10496,BRW-90496,Personal,2019-09-12,2027-12-06,39322,34842,6.51,60,NC,Major Purchase,A,1-3 years,200k+,Late (31-120 days),115,Wells Fargo,2023-06-01
+LN-10497,BRW-90497,Personal,2022-09-05,2027-08-07,15564,11191,17.33,36,NC,Home Improvement,B,10+ years,100k-150k,In Grace Period,0,Cenlar,2024-03-31
+LN-10498,BRW-90498,Personal,2021-10-25,2025-08-31,28993,25592,19.54,60,OH,Major Purchase,C,4-7 years,0-50k,Current,0,PennyMac,2022-04-02
+LN-10499,BRW-90499,Personal,2019-04-14,2027-07-10,16787,15792,15.02,60,TX,Major Purchase,C,10+ years,100k-150k,In Grace Period,0,Wells Fargo,2025-05-05
+LN-10500,BRW-90500,Personal,2018-09-04,2024-01-04,21628,20735,12.33,36,FL,Major Purchase,A,8-10 years,0-50k,In Grace Period,0,PennyMac,2024-04-22

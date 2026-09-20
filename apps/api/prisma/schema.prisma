@@ -146,6 +146,8 @@ model Loan {
   @@index([createdAt])
 }
 
+// The Exception model is the core of the Rule Engine. 
+// Whenever a loan fails validation, a record is created here.
 model Exception {
   id               String @id @default(cuid())
   loanId           String
@@ -161,6 +163,11 @@ model Exception {
   reviewedAt     DateTime?
   reviewerNote   String?
   correctedValue String?
+  
+  // PERFORMANCE/COST OPTIMIZATION: 
+  // We cache the AI's explanation and suggested fix here as a JSON blob.
+  // This prevents us from having to call the expensive Google Gemini API 
+  // every single time a reviewer refreshes the page or opens this row.
   aiRecommendation Json?
   metadata         Json?
 
