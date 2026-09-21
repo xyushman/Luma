@@ -1,11 +1,14 @@
+// Imports the Prisma client and the shared validation threshold configuration.
 import { prisma } from "../lib/prisma.js";
 import {
   defaultThresholds,
   type ValidationThresholds,
 } from "../lib/validation-thresholds.js";
 
+// Validation reads and persists 5,000 loans at a time to keep queries and transactions bounded.
 export const VALIDATION_CHUNK_SIZE = 5000;
 
+// Shape of one rule violation produced by the per-loan checks.
 export interface ValidationException {
   exceptionType: string;
   field: string | null;
@@ -13,6 +16,7 @@ export interface ValidationException {
   severity: string;
 }
 
+// The 50 official US state codes plus DC; anything else is treated as an invalid borrower state.
 const VALID_US_STATES = new Set([
   "AL",
   "AK",
@@ -67,6 +71,7 @@ const VALID_US_STATES = new Set([
   "DC",
 ]);
 
+// Structural subset of a loan used by the per-loan rule checks; keeps tests easy to construct.
 interface LoanLike {
   borrowerId: string | null;
   borrowerState: string | null;
@@ -84,23 +89,29 @@ interface LoanLike {
   sourceBatchId: string;
 }
 
+// Converts Prisma's numeric (Decimal) field values into plain JS numbers for comparisons.
 const decimalToNumber = (value: unknown): number | null => {
+  // Nullish cells mean "missing" and are not passed to the numeric rules.
   if (value === null || value === undefined) {
     return null;
   }
+  // Plain numbers (unit tests, already-parsed values) pass through untouched.
   if (typeof value === "number") {
     return value;
   }
   const n = Number(String(value));
+  // Reject garbage so a bad value reads as missing instead of poisoning the rules.
   if (Number.isNaN(n) || !Number.isFinite(n)) {
     return null;
   }
   return n;
 };
 
+// Produces a canonical string key for an original-principal value so combos compare consistently.
 const toPrincipalKey = (value: unknown): string => {
   const num = decimalToNumber(value);
   if (num !== null) {
+    // Numeric values resolve to their string form so 1000 and 1000.0 match.
     return String(num);
   }
   if (value === null || value === undefined) {
@@ -109,6 +120,7 @@ const toPrincipalKey = (value: unknown): string => {
   return String(value).trim();
 };
 
+// Builds the borrower+principal+date identity key; identical combos across rows signal duplicates.
 const buildBorrowerComboKey = (
   borrowerId: string,
   originalPrincipal: unknown,
@@ -116,13 +128,16 @@ const buildBorrowerComboKey = (
 ): string =>
   `${borrowerId}|${toPrincipalKey(originalPrincipal)}|${originationDate?.toISOString() ?? ""}`;
 
+// Flags maturity dates that fall before origination, an impossible loan contract.
 const checkDateRules = (
   loan: LoanLike,
   exceptions: ValidationException[]
 ): void => {
+  // Skip if either date is missing; a separate missing-field rule covers presence.
   if (!(loan.originationDate && loan.maturityDate)) {
     return;
   }
+  // Maturity on or after origination is the valid ordering, so nothing to flag.
   if (loan.maturityDate.getTime() >= loan.originationDate.getTime()) {
     return;
   }
@@ -134,11 +149,13 @@ const checkDateRules = (
   });
 };
 
+// Flags negative principal and a current balance that exceeds the original principal.
 const checkBalanceRules = (
   principal: number | null,
   balance: number | null,
   exceptions: ValidationException[]
 ): void => {
+  // Negative principal is impossible and is always a critical data error.
   if (principal !== null && principal < 0) {
     exceptions.push({
       exceptionType: "balance_error",
@@ -147,6 +164,7 @@ const checkBalanceRules = (
       severity: "critical",
     });
   }
+  // A balance growing beyond the original principal implies bad servicing math.
   if (
     principal !== null &&
     balance !== null &&
@@ -162,15 +180,18 @@ const checkBalanceRules = (
   }
 };
 
+// Flags interest rates that fall outside the configured [min, max] band.
 const checkRateRule = (
   loan: LoanLike,
   thresholds: ValidationThresholds,
   exceptions: ValidationException[]
 ): void => {
   const rate = decimalToNumber(loan.interestRate);
+  // No rate value means unknown, which is not an out-of-range condition.
   if (rate === null) {
     return;
   }
+  // In-band rates are fine; only genuinely out-of-range rates get flagged.
   if (
     rate >= thresholds.interestRateMin &&
     rate <= thresholds.interestRateMax
@@ -185,14 +206,17 @@ const checkRateRule = (
   });
 };
 
+// Checks payment_status against days_past_due and balance for internally impossible states.
 const checkPaymentRules = (
   loan: LoanLike,
   balance: number | null,
   exceptions: ValidationException[]
 ): void => {
+  // Only enforce status/dpd consistency when both halves of the signal exist.
   if (loan.paymentStatus && loan.daysPastDue !== null) {
     const status = loan.paymentStatus.toLowerCase();
     const dpd = loan.daysPastDue;
+    // "current" but with overdue months is contradictory.
     if (status === "current" && dpd > 0) {
       exceptions.push({
         exceptionType: "status_inconsistency",
@@ -200,6 +224,7 @@ const checkPaymentRules = (
         message: "payment_status current but days_past_due > 0",
         severity: "medium",
       });
+      // "delinquent"/"late" but zero days past due is likewise impossible.
     } else if ((status === "delinquent" || status === "late") && dpd === 0) {
       exceptions.push({
         exceptionType: "status_inconsistency",
@@ -210,6 +235,7 @@ const checkPaymentRules = (
     }
   }
 
+  // A closed loan must be fully paid; a remaining balance contradicts closure.
   if (
     loan.paymentStatus &&
     loan.paymentStatus.toLowerCase() === "closed" &&
@@ -225,12 +251,15 @@ const checkPaymentRules = (
   }
 };
 
+// Runs the full set of per-loan validation rules and returns any violations found.
 export const runPerLoanRules = (
   loan: LoanLike,
   thresholds: ValidationThresholds = defaultThresholds
 ): ValidationException[] => {
+  // Accumulates every violation discovered for this single loan.
   const exceptions: ValidationException[] = [];
 
+  // loan_id is the identity anchor across the workflow; missing it is critical.
   if (!loan.loanId) {
     exceptions.push({
       exceptionType: "missing_field",
@@ -242,12 +271,14 @@ export const runPerLoanRules = (
 
   checkDateRules(loan, exceptions);
 
+  // Convert the numeric columns once and feed them to the balance/rate/payment rules.
   const principal = decimalToNumber(loan.originalPrincipal);
   const balance = decimalToNumber(loan.currentBalance);
   checkBalanceRules(principal, balance, exceptions);
   checkRateRule(loan, thresholds, exceptions);
   checkPaymentRules(loan, balance, exceptions);
 
+  // document_status drives the downstream document-manifest flow, so it is required.
   if (!loan.documentStatus) {
     exceptions.push({
       exceptionType: "missing_field",
@@ -258,6 +289,7 @@ export const runPerLoanRules = (
   }
 
   if (loan.lastUpdatedAt) {
+    // Convert age into whole days for the staleness comparison.
     const daysAgo =
       (Date.now() - loan.lastUpdatedAt.getTime()) / (1000 * 60 * 60 * 24);
     if (daysAgo > thresholds.staleDaysThreshold) {
@@ -265,12 +297,14 @@ export const runPerLoanRules = (
         exceptionType: "stale_record",
         field: "lastUpdatedAt",
         message: `record is stale (last_updated_at ${Math.floor(daysAgo)} days ago)`,
+        // Staleness is a warning, not a data-integrity blocker.
         severity: "low",
       });
     }
   }
 
   if (loan.borrowerState) {
+    // Normalize to uppercase before checking against the official state list.
     const state = loan.borrowerState.toUpperCase().trim();
     if (!VALID_US_STATES.has(state)) {
       exceptions.push({
@@ -285,6 +319,7 @@ export const runPerLoanRules = (
   return exceptions;
 };
 
+// Aggregated data for batch-level duplicate detection across all of a batch's loans.
 interface BatchDuplicateSets {
   borrowerCounts: Map<string, number>;
   duplicateCombos: Set<string>;
@@ -292,6 +327,7 @@ interface BatchDuplicateSets {
   spikedBorrowers: Set<string>;
 }
 
+// Scans the whole batch in chunks and builds the duplicate/spike detection sets.
 const collectBatchDuplicateSets = async (
   batchId: string,
   thresholds: ValidationThresholds
@@ -299,7 +335,9 @@ const collectBatchDuplicateSets = async (
   const loanIdCounts = new Map<string, number>();
   const borrowerComboCounts = new Map<string, number>();
   const borrowerCounts = new Map<string, number>();
+  // Offset for windowed reads; incremented once a chunk is consumed.
   let countSkip = 0;
+  // Paged while-loop fetches all loans without loading the batch into memory at once.
   while (true) {
     const loans: {
       borrowerId: string | null;
@@ -308,6 +346,7 @@ const collectBatchDuplicateSets = async (
       originalPrincipal: unknown;
       originationDate: Date | null;
     }[] = (await prisma.loan.findMany({
+      // Row order is stable so paging cannot skip or duplicate rows between windows.
       orderBy: { sourceRowNumber: "asc" },
       select: {
         borrowerId: true,
@@ -326,6 +365,7 @@ const collectBatchDuplicateSets = async (
       originalPrincipal: unknown;
       originationDate: Date | null;
     }[];
+    // An empty page means the batch is fully consumed.
     if (loans.length === 0) {
       break;
     }
@@ -349,6 +389,7 @@ const collectBatchDuplicateSets = async (
         );
       }
     }
+    // A short page is the last one; stop paging.
     if (loans.length < VALIDATION_CHUNK_SIZE) {
       break;
     }
@@ -356,6 +397,7 @@ const collectBatchDuplicateSets = async (
   }
   return {
     borrowerCounts,
+    // Any borrower combo seen twice or more is a likely duplicate loan.
     duplicateCombos: new Set(
       [...borrowerComboCounts.entries()]
         .filter(([, c]) => c > 1)
@@ -364,6 +406,7 @@ const collectBatchDuplicateSets = async (
     duplicateLoanIds: new Set(
       [...loanIdCounts.entries()].filter(([, c]) => c > 1).map(([id]) => id)
     ),
+    // Borrowers appearing more than the threshold flag a possible data spike.
     spikedBorrowers: new Set(
       [...borrowerCounts.entries()]
         .filter(([, c]) => c > thresholds.duplicateBorrowerThreshold)
@@ -372,6 +415,7 @@ const collectBatchDuplicateSets = async (
   };
 };
 
+// Orchestrates validation: collects duplicate sets, then processes every loan in chunks.
 export const runBatch = async (
   batchId: string,
   thresholds: ValidationThresholds = defaultThresholds
@@ -379,9 +423,11 @@ export const runBatch = async (
   let exceptionCount = 0;
   let loanCount = 0;
 
+  // Batch-level duplicates must be known before the per-loan rules can tag them.
   const duplicateSets = await collectBatchDuplicateSets(batchId, thresholds);
 
   let skip = 0;
+  // Page through loans until a chunk signals it was the last one.
   while (true) {
     const chunkResult = await processValidationChunk(
       batchId,
@@ -403,6 +449,7 @@ export const runBatch = async (
   return { exceptionCount, loanCount };
 };
 
+// Validates one 5,000-loan window, tagging duplicates from the precomputed sets.
 const processValidationChunk = async (
   batchId: string,
   skip: number,
@@ -414,11 +461,13 @@ const processValidationChunk = async (
   loanCount: number;
 } | null> => {
   const loans = await prisma.loan.findMany({
+    // Stable ordering keeps paging deterministic and chunk windows non-overlapping.
     orderBy: [{ sourceRowNumber: "asc" }, { id: "asc" }],
     skip,
     take: VALIDATION_CHUNK_SIZE,
     where: { sourceBatchId: batchId },
   });
+  // An empty read signals the batch is exhausted; null tells runBatch to stop.
   if (loans.length === 0) {
     return null;
   }
@@ -438,6 +487,7 @@ const processValidationChunk = async (
   for (const loan of loans) {
     const perLoan = runPerLoanRules(loan as unknown as LoanLike, thresholds);
 
+    // A loanId seen multiple times in the batch is a hard duplicate.
     if (loan.loanId && duplicateLoanIds.has(loan.loanId)) {
       perLoan.push({
         exceptionType: "duplicate",
@@ -453,6 +503,7 @@ const processValidationChunk = async (
         loan.originalPrincipal,
         loan.originationDate
       );
+      // Same borrower+principal+date combo twice is a likely duplicate.
       if (duplicateCombos.has(comboKey)) {
         perLoan.push({
           exceptionType: "duplicate",
@@ -461,6 +512,7 @@ const processValidationChunk = async (
           severity: "critical",
         });
       }
+      // A borrower beyond the spike threshold may indicate concentrated risk.
       if (spikedBorrowers.has(loan.borrowerId)) {
         perLoan.push({
           exceptionType: "duplicate",
@@ -472,6 +524,7 @@ const processValidationChunk = async (
     }
 
     if (perLoan.length > 0) {
+      // Flatten this loan's violations into the chunk-level insert list.
       for (const exc of perLoan) {
         allExceptions.push({
           exceptionType: exc.exceptionType,
@@ -501,6 +554,7 @@ const processValidationChunk = async (
   };
 };
 
+// Persists exception rows, loan validation statuses, and the VALIDATION_RUN audit atomically.
 const persistValidationChunk = async (
   batchId: string,
   loansLength: number,
@@ -522,6 +576,7 @@ const persistValidationChunk = async (
 
   await prisma.$transaction(async (tx) => {
     if (allExceptions.length > 0) {
+      // Bulk-insert exception rows; all start open for reviewer triage.
       await tx.exception.createMany({
         data: allExceptions.map((exc) => ({
           exceptionType: exc.exceptionType,
@@ -539,6 +594,7 @@ const persistValidationChunk = async (
           updateMany: (args: unknown) => Promise<unknown>;
         }
       ).updateMany({
+        // Flag failed loans so the review queue can filter them instantly.
         data: { validationStatus: "failed" },
         where: { id: { in: failedIds } },
       });
@@ -566,6 +622,7 @@ const persistValidationChunk = async (
   });
 };
 
+// Entry point: marks the batch validating, runs rules unless already done, then closes the stage.
 export const validateBatch = async (batchId: string): Promise<void> => {
   process.stdout.write(
     `[Validation] Batch ${batchId}: Starting automated validation checks...\n`
@@ -576,6 +633,7 @@ export const validateBatch = async (batchId: string): Promise<void> => {
     });
     const metaBefore =
       (batchBefore?.metadata as Record<string, unknown> | null) ?? {};
+    // Publish the validating stage before any rule work so the UI reflects the live state.
     await prisma.uploadBatch.update({
       data: {
         metadata: {
@@ -592,6 +650,7 @@ export const validateBatch = async (batchId: string): Promise<void> => {
     // ignore
   }
 
+  // Idempotency guard: if exception rows already exist for this batch, skip re-running.
   const existingExceptions = await prisma.exception.count({
     where: { loan: { sourceBatchId: batchId } },
   });
@@ -609,6 +668,7 @@ export const validateBatch = async (batchId: string): Promise<void> => {
     });
     const metaAfter =
       (batchAfter?.metadata as Record<string, unknown> | null) ?? {};
+    // Validation finished: advance the batch to completed/done for the next stage.
     await prisma.uploadBatch.update({
       data: {
         metadata: {

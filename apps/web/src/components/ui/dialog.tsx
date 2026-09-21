@@ -1,27 +1,33 @@
 "use client";
 
+// Imports: Base UI dialog primitives, close icon, Button for the close control, and cn.
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import type * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+// Dialog: root state holder that wires open/animated state across all dialog parts.
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
+// DialogTrigger: the button/control the user clicks to open the dialog.
 function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
+// DialogPortal: renders children through a portal, escaping overflow/transform ancestors.
 function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
+// DialogClose: element or button that closes the dialog on activation.
 function DialogClose({ ...props }: DialogPrimitive.Close.Props) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
+// DialogOverlay: dimmed, click-to-close backdrop behind the popup.
 function DialogOverlay({
   className,
   ...props
@@ -38,6 +44,7 @@ function DialogOverlay({
   );
 }
 
+// DialogContent: portal + overlay compose a centered popup; optionally renders a close button.
 function DialogContent({
   className,
   children,
@@ -78,6 +85,7 @@ function DialogContent({
   );
 }
 
+// DialogHeader: stacked section holding the title and description.
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -88,6 +96,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// DialogFooter: action row at the bottom, with an optional outline "Close" button.
 function DialogFooter({
   className,
   showCloseButton = false,
@@ -115,6 +124,7 @@ function DialogFooter({
   );
 }
 
+// DialogTitle: accessible title wired to the popup's aria-labelledby.
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
@@ -128,6 +138,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   );
 }
 
+// DialogDescription: accessible description wired to the popup's aria-describedby.
 function DialogDescription({
   className,
   ...props

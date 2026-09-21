@@ -1,7 +1,9 @@
+// Imports: React types for HTML element props and cn for class merging.
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Card: outer container; spacing comes from the --card-spacing CSS variable and size maps via data-size.
 function Card({
   className,
   size = "default",
@@ -20,6 +22,7 @@ function Card({
   );
 }
 
+// CardHeader: top section that lays out title, description, and an optional action in a grid.
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -33,6 +36,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// CardTitle: heading text for the card, sized down in smaller cards.
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -46,6 +50,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// CardDescription: secondary explanatory text under the title.
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -56,6 +61,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// CardAction: right-aligned slot for buttons or links placed alongside the heading.
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -69,6 +75,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// CardContent: padded body area between the header and footer.
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -79,6 +86,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// CardFooter: bottom bar separated by a border and a subtle background tint.
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

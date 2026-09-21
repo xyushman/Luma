@@ -1,9 +1,11 @@
 "use client";
 
+// Imports: Base UI ScrollArea primitives and cn for class merging.
 import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area";
 
 import { cn } from "@/lib/utils";
 
+// ScrollArea: styled scroll region composed of a viewport, scrollbar, and corner.
 function ScrollArea({
   className,
   children,
@@ -27,6 +29,7 @@ function ScrollArea({
   );
 }
 
+// ScrollBar: styled scrollbar; defaults to vertical unless orientation is overridden.
 function ScrollBar({
   className,
   orientation = "vertical",

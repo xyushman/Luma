@@ -1,92 +1,137 @@
+// Client generation config: emit the Prisma client into the API's generated source folder.
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
 
+// Postgres is the single datasource; the connection URL comes from prisma.config.ts via env().
 datasource db {
   provider = "postgresql"
 }
 
 // Better Auth managed tables
 
+// User - an auth identity plus the app's RBAC role; sessions, accounts, and app records hang off it.
 model User {
   id            String    @id @default(cuid())
+  // Display name shown across the UI and in audit logs.
   name          String
+  // Login identifier; unique so one account exists per email and lookups stay indexed.
   email         String    @unique
+  // RBAC role (data_operator/reviewer/data_consumer); server-side guards enforce it on every route.
   role          String    @default("data_consumer")
+  // Tracks whether the email address was verified; Better Auth gates on this for email flows.
   emailVerified Boolean   @default(false)
+  // Optional avatar URL; unused by the CLI-oriented challenge UI.
   image         String?
+  // Admin-plugin flag that lets an admin block an account from signing in.
   banned        Boolean?
+  // Why the account was banned, kept for admin transparency.
   banReason     String?
+  // Optional auto-lift time for a temporary ban.
   banExpires    DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  // Better Auth relations: every session and linked identity account for this user.
   sessions      Session[]
   accounts      Account[]
 
+  // App relations: batches uploaded, loans verified, and actions audit-logged for this user.
   uploadBatches UploadBatch[]
   verifiedLoans VerifiedLoan[]
   auditLogs     AuditLog[]
 }
 
+// Session - one Better Auth session per logged-in browser/device; a row exists per active session.
 model Session {
   id             String   @id @default(cuid())
+  // Owning user; cascade delete removes all sessions when the user is deleted.
   userId         String
+  // Session token; unique so it is indexed and cannot be shared between sessions.
   token          String   @unique
+  // Expiry forces re-login, bounding how long a leaked session stays usable.
   expiresAt      DateTime
+  // Device/network fingerprint of the client, useful for anomaly detection and audit.
   ipAddress      String?
+  // Browser identifier of the client, useful for anomaly detection and audit.
   userAgent      String?
+  // Set when an admin impersonates a user via the Better Auth admin plugin.
   impersonatedBy String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  // Inverse of User.sessions; deleting a user cascades to its sessions for cleanup.
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Index backing "all sessions for a user" queries during authentication and audit.
   @@index([userId])
 }
 
+// Account - Better Auth identity link: one row per provider credential (email or OAuth) per user.
 model Account {
   id                    String    @id @default(cuid())
+  // Provider-level id that maps back to the external identity system.
   accountId             String
+  // Which identity provider owns this account (e.g. "credential", "google").
   providerId            String
+  // Owning user; cascade delete removes the linked accounts with the user.
   userId                String
   issuer                String?
+  // OAuth tokens and metadata used to refresh and introspect external sessions.
   accessToken           String?
   refreshToken          String?
   idToken               String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   scope                 String?
+  // Password hash for the email provider; must never be selected in normal queries.
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  // Inverse of User.accounts; cascades so deleted users leave no orphaned identities.
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Index backing "all accounts for a user" during sign-in and account linking.
   @@index([userId])
 }
 
+// Verification - one-time codes/tokens for email verification and password resets.
 model Verification {
   id         String   @id @default(cuid())
+  // The thing being verified (typically the email address); indexed for fast lookup.
   identifier String
+  // The verification token/code to compare against what the user supplies.
   value      String
+  // Codes expire so stale verification links cannot be replayed later.
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
+  // Index backing lookups by the identifier during the verification flow.
   @@index([identifier])
 }
 
 // App tables
 
+// UploadBatch - one uploaded CSV/XLSX file; drives the whole staged-to-validated pipeline.
 model UploadBatch {
   id             String   @id @default(cuid())
+  // Original file name, retained for display and audit.
   fileName       String
+  // Where the uploaded file was persisted on disk/object storage.
   filePath       String
+  // Detected file type (csv/xlsx) so the right parser is chosen.
   fileType       String
+  // Total rows promised by the parser; progress is measured against this.
   recordCount    Int
+  // Rows ingested so far, letting the UI render a live progress bar.
   processedCount Int      @default(0)
+  // Rows that failed ingestion, surfaced for operator follow-up.
   failedCount    Int      @default(0)
+  // Pipeline state: staged -> processing -> validated (plus per-loan outcomes downstream).
   status         String   @default("pending")
+  // Arbitrary JSON extras (parser settings, original header map, etc.).
   metadata       Json?
+  // Who uploaded the file; ownership and audit attribution.
   uploadedById   String
   uploadedBy     User     @relation(fields: [uploadedById], references: [id])
   createdAt      DateTime @default(now())
@@ -95,41 +140,57 @@ model UploadBatch {
   loans     Loan[]
   auditLogs AuditLog[]
 
+  // Query support for status dashboards, time-sorted lists, and per-uploader filters.
   @@index([status])
   @@index([createdAt])
   @@index([uploadedById])
 }
 
+// Loan - one normalized loan record inside a batch; validation, exceptions, and hashing act on these.
 model Loan {
   id            String  @id @default(cuid())
+  // Id assigned by the source system; kept as a string to survive long or zero-padded numbers.
   loanId        String?
+  // Stable borrower key consumed by the duplicate-borrower rule.
   borrowerId    String?
 
+  // Immutable pointer back to the batch this row came from (reconciliation anchor).
   sourceBatchId String
   sourceBatch   UploadBatch @relation(fields: [sourceBatchId], references: [id])
+  // Original 1-based position in the source file, giving traceability back to the CSV/XLSX.
   sourceRowNumber Int
 
+  // Business dimensions: loan product family used as context by the rule engine.
   loanType          String?
+  // Loan bookend dates; feed tenor and lifecycle checks.
   originationDate   DateTime?
   maturityDate      DateTime?
+  // Money stored as Decimal(15,2) so arithmetic never hits binary floating-point drift.
   originalPrincipal Decimal?  @db.Decimal(15, 2)
   currentBalance    Decimal?  @db.Decimal(15, 2)
+  // APR stored as Decimal(10,4) so the 0-40% rate rule compares exact values.
   interestRate      Decimal?  @db.Decimal(10, 4)
+  // Term in months, used for tenor sanity checks.
   termMonths        Int?
+  // Borrower and servicing dimensions used by rules for context and spiked-borrower checks.
   borrowerState     String?
   loanPurpose       String?
   creditGrade       String?
   employmentLength  String?
   incomeBand        String?
   paymentStatus     String?
+  // How many days past due a payment is; feeds severity of stale/aging rules.
   daysPastDue       Int?
   servicerName      String?
   lastPaymentDate   DateTime?
+  // Recency marker; staleness is judged from when the record was last updated.
   lastUpdatedAt     DateTime?
   documentStatus    String?
   sourceSystem      String?
 
+  // Rule-engine outcome (pending/valid/invalid/verified); powers the exception queue.
   validationStatus String   @default("pending")
+  // Ingestion outcome (imported/failed), distinct from validation status.
   importStatus     String   @default("imported")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -138,7 +199,9 @@ model Loan {
   verifiedRecord VerifiedLoan?
   auditLogs      AuditLog[]
 
+  // Dedup guard: the same source position in a batch can only ever be ingested once.
   @@unique([sourceBatchId, sourceRowNumber])
+  // Fast lookups by source id, borrower, validation status, batch, and recency.
   @@index([loanId])
   @@index([borrowerId])
   @@index([validationStatus])
@@ -148,27 +211,40 @@ model Loan {
 
 // The Exception model is the core of the Rule Engine. 
 // Whenever a loan fails validation, a record is created here.
+// Exception - one validation failure per loan; the reviewer exception queue operates on these rows.
 model Exception {
   id               String @id @default(cuid())
+  // The loan that failed validation, one exception per loan per firing rule.
   loanId           String
   loan             Loan   @relation(fields: [loanId], references: [id])
 
+  // Which rule fired (rate, stale, duplicate, spiked borrower, ...).
   exceptionType    String
+  // Critical/warning ranking used to sort the reviewer queue.
   severity         String
+  // Name of the offending field when the rule targets one.
   field            String?
+  // Human-readable explanation of why the loan failed validation.
   message          String
+  // Exception lifecycle state (open/reviewed/...) driving the queue's status filters.
   status           String @default("open")
 
+  // Who claimed or reviewed the exception; attribution for the audit trail.
   reviewerId       String?
+  // When the reviewer made their decision.
   reviewedAt     DateTime?
+  // Free-text rationale the reviewer typed while approving or rejecting.
   reviewerNote   String?
+  // The corrected value (if any) that was applied to the loan.
   correctedValue String?
   
   // PERFORMANCE/COST OPTIMIZATION: 
   // We cache the AI's explanation and suggested fix here as a JSON blob.
   // This prevents us from having to call the expensive Google Gemini API 
   // every single time a reviewer refreshes the page or opens this row.
+  // Cached Gemini suggestion blob; avoids re-invoking the paid API on every page refresh.
   aiRecommendation Json?
+  // Extra rule diagnostics stored as flexible JSON.
   metadata         Json?
 
   createdAt        DateTime @default(now())
@@ -176,6 +252,7 @@ model Exception {
 
   auditLogs AuditLog[]
 
+  // Query support for queue sorting and filtering by loan, status, severity, type, and time.
   @@index([loanId])
   @@index([status])
   @@index([severity])
@@ -183,35 +260,50 @@ model Exception {
   @@index([createdAt])
 }
 
+// VerifiedLoan - the final verified snapshot: canonical data plus a SHA-256 record hash.
 model VerifiedLoan {
   id                   String @id @default(cuid())
+  // One verification per loan; the unique constraint enforces that invariant at the DB level.
   loanId               String @unique
   loan                 Loan   @relation(fields: [loanId], references: [id])
 
+  // The 20 normalized canonical fields exactly as hashed; stored for re-verification and export.
   canonicalData        Json
+  // Which batch produced this verified loan, giving lineage and grouped-export support.
   sourceBatchRef       String
+  // Overall verdict (e.g. valid) from the rule engine at the time of verification.
   validationResult     String
+  // The reviewer's approve/reject decision when applicable.
   reviewerDecision     String?
+  // Whether an AI-suggested fix was incorporated; a useful reporting/audit signal.
   aiRecommendationUsed Boolean @default(false)
 
+  // Who performed the verification; immutable attribution.
   verifiedById String
   verifiedBy   User   @relation(fields: [verifiedById], references: [id])
+  // Verification timestamp for ordering and audit.
   verifiedAt   DateTime @default(now())
+  // SHA-256 over the canonical fields; recomputing and comparing this detects post-hoc tampering.
   recordHash   String
 
   auditLogs AuditLog[]
 
+  // Query support for verification status, per-verifier history, and time-bucketed audits.
   @@index([validationResult])
   @@index([verifiedById])
   @@index([verifiedAt])
 }
 
+// AuditLog - append-only trail of every meaningful action (system/actor/action) for accountability.
 model AuditLog {
   id             String @id @default(cuid())
+  // What happened (created, validated, reviewed, exported, ...).
   eventType      String
 
+  // Who did it; nullable because some events are system-triggered, not user actions.
   actorId        String?
   actor          User?         @relation(fields: [actorId], references: [id])
+  // Optional pointers to the affected loan/batch/exception/verification for timeline navigation.
   loanId         String?
   loan           Loan?         @relation(fields: [loanId], references: [id])
   batchId        String?
@@ -221,9 +313,11 @@ model AuditLog {
   verifiedLoanId String?
   verifiedLoan   VerifiedLoan? @relation(fields: [verifiedLoanId], references: [id])
 
+  // Flexible context (ids, decisions, counts) so the log can capture anything without a schema change.
   metadata  Json?
   createdAt DateTime @default(now())
 
+  // Indexes keep per-entity, per-actor, per-event, and time-range audit queries fast.
   @@index([loanId])
   @@index([actorId])
   @@index([eventType])

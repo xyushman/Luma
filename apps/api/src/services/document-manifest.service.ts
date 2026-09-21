@@ -1,10 +1,13 @@
+// Imports Node's fs for streaming, csv-parser for row parsing, Prisma for DB writes, and shared ingestion helpers.
 import fs from "node:fs";
 import csv from "csv-parser";
 import { prisma } from "../lib/prisma.js";
 import { cleanString, MAX_FAILED_ROWS_STORED } from "./ingestion.service.js";
 
+// Apply windows stay capped at 5,000 rows while keeping each loan's rows together.
 export const MANIFEST_CHUNK_SIZE = 5000;
 
+// Matches a UTF-8 Byte-Order-Mark at the start of a header/cell so it can be stripped.
 const BOM_REGEX = /^\uFEFF/;
 
 export const DOCUMENT_STATUS_COMPLETE = "complete";
@@ -45,15 +48,18 @@ export interface TapeLoanMatch {
  * manifest rows: any unavailable document -> missing; otherwise complete.
  */
 export const decideManifestStatus = (rows: ManifestRow[]): ManifestDecision => {
+  // A loan is only complete if every one of its documents is available.
   const missingDocumentTypes = rows
     .filter((r) => r.available === false)
     .map((r) => r.documentType ?? "unknown");
   return {
+    // Any unavailable document forces the whole loan to "missing".
     documentStatus:
       missingDocumentTypes.length > 0
         ? DOCUMENT_STATUS_MISSING
         : DOCUMENT_STATUS_COMPLETE,
     missingDocumentTypes,
+    // Source line numbers are retained so the audit trail points back to manifest rows.
     sourceRowNumbers: rows.map((r) => r.rowNumber),
   };
 };
@@ -82,16 +88,20 @@ const normalizeHeaderKey = (header: string): string =>
     .toLowerCase()
     .replace(/[\s_-]+/g, "");
 
+// Parses the available column into a boolean, accepting common truthy/falsy spellings.
 const parseAvailable = (raw: unknown): boolean | null => {
   const v = String(raw ?? "")
     .trim()
     .toLowerCase();
+  // Truthy spellings: 1/true/y/yes.
   if (["1", "true", "y", "yes"].includes(v)) {
     return true;
   }
+  // Falsy spellings: 0/false/n/no.
   if (["0", "false", "n", "no"].includes(v)) {
     return false;
   }
+  // Anything else cannot be interpreted as an availability signal.
   return null;
 };
 
@@ -106,6 +116,7 @@ export const normalizeManifestRow = (
   const norm = Object.fromEntries(
     Object.entries(raw).map(([key, value]) => [normalizeHeaderKey(key), value])
   );
+  // Local helper to read the first non-empty value among alias spellings.
   const get = (...keys: string[]): string => {
     for (const key of keys) {
       const value = norm[key];
@@ -121,6 +132,7 @@ export const normalizeManifestRow = (
   const availableRaw = get("available", "isavailable", "availability");
   const available = parseAvailable(availableRaw);
 
+  // Central failure helper to produce a NormalizeManifestResult for the caller.
   const fail = (reason: string): NormalizeManifestResult => ({
     failedRow: {
       rawData: JSON.stringify(raw),
@@ -130,16 +142,19 @@ export const normalizeManifestRow = (
     success: false,
   });
 
+  // A manifest row must identify which loan it belongs to.
   if (!rawLoanId) {
     return fail("missing loan_id in manifest row");
   }
 
+  // An unparseable availability value fails the row so it cannot silently be treated as complete.
   if (available === null) {
     return fail(
       `invalid available value "${availableRaw}" (use true/false/y/n/1/0)`
     );
   }
 
+  // Healthy rows become a normalized ManifestRow for later aggregation.
   return {
     row: {
       available,
@@ -159,6 +174,7 @@ const REQUIRED_AVAILABLE_HEADERS = new Set([
   "availability",
 ]);
 
+// Validates that the manifest CSV carries the two columns the pipeline depends on.
 export const validateManifestHeaders = (headers: string[]): string | null => {
   if (headers.length === 0) {
     return null;
@@ -178,6 +194,7 @@ export const validateManifestHeaders = (headers: string[]): string | null => {
   }
 
   if (missingColumns.length > 0) {
+    // Return a descriptive message that the caller turns into a batch failure.
     return `CSV header mismatch: file is missing required manifest column(s): ${missingColumns.join(", ")} (found: ${headers.slice(0, 5).join(", ")})`;
   }
   return null;
@@ -200,6 +217,7 @@ export const buildApplyWindows = (groups: ManifestRow[][]): ManifestRow[][] => {
   const windows: ManifestRow[][] = [];
   let current: ManifestRow[] = [];
   for (const group of groups) {
+    // A group would overflow the window cap: close this window and start fresh.
     if (
       current.length > 0 &&
       current.length + group.length > MANIFEST_CHUNK_SIZE
@@ -207,10 +225,12 @@ export const buildApplyWindows = (groups: ManifestRow[][]): ManifestRow[][] => {
       windows.push(current);
       current = [];
     }
+    // Add each row of the group to the open window, never splitting the group.
     for (const row of group) {
       current.push(row);
     }
   }
+  // Flush whatever remains once every group has been assigned to a window.
   if (current.length > 0) {
     windows.push(current);
   }
@@ -235,6 +255,7 @@ interface ChunkOperations {
   loansByTargetStatus: Map<string, string[]>;
 }
 
+// Decides, for every matched loan in this window, what exceptions/status updates to write.
 const prepareChunkOperations = (
   byLoanId: Map<string, ManifestRow[]>,
   tapeByLoanId: Map<string, TapeLoanMatch>,
@@ -246,12 +267,14 @@ const prepareChunkOperations = (
 
   for (const [businessId, rows] of byLoanId) {
     const tapeRow = tapeByLoanId.get(businessId);
+    // Rows with no tape match cannot affect anything; they are counted as unmatched.
     if (!tapeRow) {
       continue;
     }
 
     const decision = decideManifestStatus(rows);
 
+    // A loan with unavailable documents gets an open missing_field exception.
     if (
       decision.documentStatus === DOCUMENT_STATUS_MISSING &&
       decision.missingDocumentTypes.length > 0
@@ -271,6 +294,7 @@ const prepareChunkOperations = (
       });
     }
 
+    // No status change means this loan needs no write in this window.
     if (tapeRow.documentStatus === decision.documentStatus) {
       continue;
     }
@@ -278,6 +302,7 @@ const prepareChunkOperations = (
     const oldValue =
       tapeRow.documentStatus === null ? null : String(tapeRow.documentStatus);
 
+    // Group loan ids by the status they should transition to for one updateMany.
     const statusGroup = loansByTargetStatus.get(decision.documentStatus);
     if (statusGroup) {
       statusGroup.push(tapeRow.id);
@@ -285,6 +310,7 @@ const prepareChunkOperations = (
       loansByTargetStatus.set(decision.documentStatus, [tapeRow.id]);
     }
 
+    // Every automated documentStatus change is audited with before/after values.
     fieldEditedAuditLogs.push({
       eventType: "FIELD_EDITED",
       loanId: tapeRow.id,
@@ -320,6 +346,7 @@ const applyChunk = async (
 
   const businessIds = [...byLoanId.keys()];
   if (businessIds.length === 0) {
+    // No loan ids to process; nothing to write in this window.
     return {
       loansUpdated: 0,
       matchedLoanIds: 0,
@@ -328,6 +355,7 @@ const applyChunk = async (
     };
   }
 
+  // Fetch tape rows for these business ids; newest createdAt picks the latest tape row.
   const tapeRows = (await prisma.loan.findMany({
     orderBy: { createdAt: "desc" },
     select: { documentStatus: true, id: true, loanId: true },
@@ -340,6 +368,7 @@ const applyChunk = async (
   const tapeByLoanId = new Map<string, TapeLoanMatch>();
   for (const row of tapeRows) {
     const key = row.loanId?.trim();
+    // First row wins due to ordering, giving us the most recent tape loan per id.
     if (key && !tapeByLoanId.has(key)) {
       tapeByLoanId.set(key, row);
     }
@@ -351,10 +380,12 @@ const applyChunk = async (
   const { exceptionsToCreate, fieldEditedAuditLogs, loansByTargetStatus } =
     prepareChunkOperations(byLoanId, tapeByLoanId, manifestBatchId);
 
+  // Status updates, audits, and exceptions commit in one transaction per window.
   await prisma.$transaction(
     async (tx) => {
       for (const [targetStatus, ids] of loansByTargetStatus) {
         if (ids.length > 0) {
+          // Bulk-set documentStatus on all loans moving to one target status.
           await tx.loan.updateMany({
             data: { documentStatus: targetStatus },
             where: { id: { in: ids } },
@@ -375,6 +406,7 @@ const applyChunk = async (
           select: { id: true, loanId: true },
         });
 
+        // Audit each missing-document exception so reviewers can trace its origin.
         if (createdExceptions.length > 0) {
           await tx.auditLog.createMany({
             data: createdExceptions.map((exc) => ({
@@ -391,6 +423,7 @@ const applyChunk = async (
         missingLoansCreated = createdExceptions.length;
       }
     },
+    // Large manifest windows justify a longer transaction queue wait.
     { maxWait: 10_000, timeout: 30_000 }
   );
 
@@ -402,18 +435,22 @@ const applyChunk = async (
   };
 };
 
+// Entry point for document-manifest processing: validates headers, accumulates availability per loan, applies to tape loans.
 export const processDocumentManifest = async (
   filePath: string,
   batchId: string
 ): Promise<void> => {
+  // Log so operators can trace a manifest batch through the pipeline.
   process.stdout.write(
     `[Manifest] Batch ${batchId}: starting document-manifest processing from ${filePath}\n`
   );
 
+  // Latch flag: once a failure occurs every later step short-circuits.
   let hasFailed = false;
   let readStream: fs.ReadStream | null = null;
   let csvStream: NodeJS.ReadableStream | null = null;
 
+  // Force-closes the file and parser streams so a failing run releases its handles.
   const destroyStreams = (): void => {
     try {
       readStream?.destroy();
@@ -423,10 +460,12 @@ export const processDocumentManifest = async (
     }
   };
 
+  // Marks the batch failed with the error message, writing it into batch metadata.
   const markFailed = async (
     error: unknown,
     opts?: { isRetryable?: boolean }
   ): Promise<void> => {
+    // Only the first failure is recorded; later errors cannot overwrite its details.
     if (hasFailed) {
       return;
     }
@@ -456,6 +495,7 @@ export const processDocumentManifest = async (
       // best-effort
     }
 
+    // Header-mismatch errors keep the file on disk as they are not retryable.
     const isRetryable =
       opts?.isRetryable ?? !message.includes("header mismatch");
     // Preserve filePath for retryable failures so failed replay can reopen the file;
@@ -468,6 +508,7 @@ export const processDocumentManifest = async (
   };
 
   try {
+    // Load the batch so we can read its metadata and confirm it exists.
     const batch = await prisma.uploadBatch.findUnique({
       where: { id: batchId },
     });
@@ -478,6 +519,7 @@ export const processDocumentManifest = async (
     const existingMeta =
       (batch.metadata as Record<string, unknown> | null) ?? {};
 
+    // Idempotency: a batch already fully applied is left untouched.
     if (existingMeta.manifestStage === "done") {
       process.stdout.write(
         `[Manifest] Batch ${batchId}: already completed, skipping.\n`
@@ -492,11 +534,14 @@ export const processDocumentManifest = async (
     // buildOrphanCleanupWhere is idempotent and scoped to open + unreviewed
     // same-batch exceptions (S3), and missing-exceptions are re-ensured
     // every run, so cleanup on "failed" cannot lose reviewed state.
+    // Only clean orphans when a prior run reached "applying" or "failed", meaning
+    // it may have left partial work behind. Fully "done" batches already returned above.
     if (
       existingMeta.manifestStage === "applying" ||
       existingMeta.manifestStage === "failed"
     ) {
       try {
+        // Delete orphaned missing-document exceptions from the interrupted run.
         await prisma.exception.deleteMany({
           where: buildOrphanCleanupWhere(batchId) as never,
         });
@@ -505,6 +550,7 @@ export const processDocumentManifest = async (
       }
     }
 
+    // Move the batch to applying so a crash mid-run can be detected on retry.
     await prisma.uploadBatch.update({
       data: {
         metadata: {
@@ -526,11 +572,14 @@ export const processDocumentManifest = async (
     let totalMissingExceptioned = 0;
     let totalUnmatched = 0;
 
+    // Open the uploaded manifest and pipe it through csv-parser.
     readStream = fs.createReadStream(filePath);
     csvStream = readStream.pipe(
       csv({
+        // Clean each header on read so BOM/whitespace never breaks column matching.
         mapHeaders: ({ header }: { header: string }) =>
           header.replace(BOM_REGEX, "").trim(),
+        // Trim each cell value so comparisons are insensitive to source padding.
         mapValues: ({
           value,
         }: {
@@ -546,6 +595,7 @@ export const processDocumentManifest = async (
         on: (event: string, handler: (headers: string[]) => void) => void;
       }
     ).on("headers", (headers: string[]) => {
+      // Gate the file on required columns before any row is applied.
       headerValidationError = validateManifestHeaders(headers);
       if (headerValidationError) {
         process.stderr.write(
@@ -554,6 +604,7 @@ export const processDocumentManifest = async (
       }
     });
 
+    // Rejects on readStream/csvStream errors so the processing race can surface them.
     const streamErrorPromise = new Promise<never>((_resolve, reject) => {
       readStream?.on("error", reject);
       (
@@ -572,6 +623,7 @@ export const processDocumentManifest = async (
     const rowsByLoanId = new Map<string, ManifestRow[]>();
     let currentRowNumber = 1;
 
+    // Consumes the parsed row stream, normalizing each row and accumulating by loanId.
     const processRows = async (): Promise<void> => {
       for await (const raw of csvStream as unknown as AsyncIterable<
         Record<string, string>
@@ -579,6 +631,7 @@ export const processDocumentManifest = async (
         currentRowNumber += 1;
         const rowNumber = currentRowNumber - 1;
 
+        // Skip fully blank source lines instead of counting them as failures.
         if (
           Object.values(raw).every(
             (v) => v === null || v === undefined || String(v).trim() === ""
@@ -591,6 +644,7 @@ export const processDocumentManifest = async (
         const result = normalizeManifestRow(raw, rowNumber);
 
         if (!result.success) {
+          // Rejected rows are tallied and capped in the stored failure list.
           totalFailedRows += 1;
           if (failedRows.length < MAX_FAILED_ROWS_STORED) {
             failedRows.push(result.failedRow);
@@ -598,6 +652,7 @@ export const processDocumentManifest = async (
           continue;
         }
 
+        // Append this row to its loan's accumulation bucket, creating the bucket on first sight.
         const loanRows = rowsByLoanId.get(result.row.loanId);
         if (loanRows) {
           loanRows.push(result.row);
@@ -616,6 +671,7 @@ export const processDocumentManifest = async (
     });
 
     if (headerValidationError) {
+      // A header mismatch is fatal for the whole manifest batch.
       throw new Error(headerValidationError);
     }
 
@@ -624,6 +680,7 @@ export const processDocumentManifest = async (
     // MANIFEST_CHUNK_SIZE.
     for (const window of buildApplyWindows([...rowsByLoanId.values()])) {
       const outcome = await applyChunk(batchId, window);
+      // Aggregate the outcome tallies across all windows for final metadata.
       totalApplied += outcome.loansUpdated;
       totalMissingExceptioned += outcome.missingLoansCreated;
       totalUnmatched += outcome.unmatchedBusinessIds;
@@ -635,6 +692,7 @@ export const processDocumentManifest = async (
     const finalMetaBase =
       (finalMetaSource?.metadata as Record<string, unknown> | null) ?? {};
 
+    // Persist the final manifest summary and audit entry in one transaction.
     await prisma.$transaction(async (tx) => {
       await tx.uploadBatch.update({
         data: {
@@ -674,10 +732,12 @@ export const processDocumentManifest = async (
       `[Manifest] Batch ${batchId} SUCCESS: ${totalRows} rows, ${totalApplied} loans updated, ${totalMissingExceptioned} missing-document exceptions.\n`
     );
     destroyStreams();
+    // Processing finished, so the raw manifest file is no longer needed on disk.
     await fs.promises.unlink(filePath).catch(() => {
       // ignore ENOENT
     });
   } catch (err) {
+    // Any error fails the batch and closes the open streams.
     await markFailed(err);
     destroyStreams();
   }

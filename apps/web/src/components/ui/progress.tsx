@@ -1,7 +1,9 @@
+// Imports: Base UI Progress primitives and cn.
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 
 import { cn } from "@/lib/utils";
 
+// Progress: root that composes a track + indicator and forwards the value to the primitive.
 function Progress({
   className,
   children,
@@ -23,6 +25,7 @@ function Progress({
   );
 }
 
+// ProgressTrack: the empty rail the fill travels along.
 function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
@@ -36,6 +39,7 @@ function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   );
 }
 
+// ProgressIndicator: the filled bar whose width reflects the current value.
 function ProgressIndicator({
   className,
   ...props
@@ -49,6 +53,7 @@ function ProgressIndicator({
   );
 }
 
+// ProgressLabel: optional text label beside the bar.
 function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
   return (
     <ProgressPrimitive.Label
@@ -59,6 +64,7 @@ function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
   );
 }
 
+// ProgressValue: right-aligned numeric readout of the current value.
 function ProgressValue({ className, ...props }: ProgressPrimitive.Value.Props) {
   return (
     <ProgressPrimitive.Value

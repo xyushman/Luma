@@ -1,7 +1,9 @@
+// Imports: React types and cn for class merging.
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Label: accessible form label; dims automatically when the peer control is disabled.
 function Label({ className, ...props }: React.ComponentProps<"label">) {
   return (
     <label

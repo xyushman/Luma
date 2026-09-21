@@ -7,21 +7,23 @@ interface ResState {
   statusCode: number;
 }
 
+// Minimal fake Express response capturing status and JSON body.
 const createRes = (): { res: Response; state: ResState } => {
   const state: ResState = { body: undefined, statusCode: 0 };
   const res = {
     json(payload: unknown) {
-      state.body = payload;
+      state.body = payload; // Record the JSON payload sent.
       return this;
     },
     status(code: number) {
-      state.statusCode = code;
+      state.statusCode = code; // Record the status code set.
       return this;
     },
   };
   return { res: res as unknown as Response, state };
 };
 
+// Build a fake request optionally carrying an authenticated user with a role.
 const createReq = (user?: {
   email: string;
   id: string;
@@ -41,6 +43,7 @@ const createReq = (user?: {
       : undefined,
   }) as unknown as Request;
 
+// Invoke a middleware and report whether it called next() and what it wrote.
 const runMiddleware = async (
   middleware: (
     req: Request,
@@ -53,19 +56,19 @@ const runMiddleware = async (
   const { res, state } = createRes();
   let calledNext = false;
   await middleware(req, res, () => {
-    calledNext = true;
+    calledNext = true; // Mark that the middleware handed the request onward.
   });
   return { calledNext, req, state };
 };
 
 describe("requireRole", () => {
   describe("single role guard", () => {
-    const reviewerOnly = requireRole("reviewer");
+    const reviewerOnly = requireRole("reviewer"); // Guard accepting only reviewers.
 
     it("returns 401 when there is no user (requireAuth not run)", async () => {
       const { calledNext, state } = await runMiddleware(reviewerOnly);
-      expect(state.statusCode).toBe(401);
-      expect(calledNext).toBe(false);
+      expect(state.statusCode).toBe(401); // Missing user means auth never ran, so 401.
+      expect(calledNext).toBe(false); // Deny access when identity is unknown.
     });
 
     it("returns 403 FORBIDDEN for an authenticated wrong role", async () => {
@@ -75,9 +78,9 @@ describe("requireRole", () => {
         name: "Operator User",
         role: "data_operator",
       });
-      expect(state.statusCode).toBe(403);
-      expect(state.body).toEqual({ code: "FORBIDDEN", error: "Forbidden" });
-      expect(calledNext).toBe(false);
+      expect(state.statusCode).toBe(403); // Authenticated but wrong role gets 403.
+      expect(state.body).toEqual({ code: "FORBIDDEN", error: "Forbidden" }); // Contract error shape for the client.
+      expect(calledNext).toBe(false); // Must not continue past a forbidden role.
     });
 
     it("calls next and attaches user when role matches", async () => {
@@ -85,22 +88,22 @@ describe("requireRole", () => {
         email: "operator@luma.dev",
         id: "user_1",
         name: "Operator User",
-        role: "reviewer",
+        role: "reviewer", // The account role matches the guard.
       });
-      expect(calledNext).toBe(true);
+      expect(calledNext).toBe(true); // Matching role proceeds down the chain.
       expect(req.user?.role).toBe("reviewer");
     });
   });
 
   describe("multi-role guard", () => {
-    const operatorOrReviewer = requireRole("data_operator", "reviewer");
+    const operatorOrReviewer = requireRole("data_operator", "reviewer"); // Guard allowing either role.
 
     it("allows any of the listed roles", async () => {
       const { calledNext, req } = await runMiddleware(operatorOrReviewer, {
         email: "operator@luma.dev",
         id: "user_1",
         name: "Operator User",
-        role: "data_operator",
+        role: "data_operator", // Operator is explicitly allowed.
       });
       expect(calledNext).toBe(true);
       expect(req.user?.role).toBe("data_operator");
@@ -111,7 +114,7 @@ describe("requireRole", () => {
         email: "operator@luma.dev",
         id: "user_1",
         name: "Operator User",
-        role: "data_consumer",
+        role: "data_consumer", // Consumer is not in the allowed list.
       });
       expect(state.statusCode).toBe(403);
       expect(calledNext).toBe(false);
@@ -119,14 +122,14 @@ describe("requireRole", () => {
   });
 
   it("rejects every authenticated user when no roles are provided", async () => {
-    const denyAll = requireRole();
+    const denyAll = requireRole(); // Guard created with no allowed roles.
     const { calledNext, state } = await runMiddleware(denyAll, {
       email: "operator@luma.dev",
       id: "user_1",
       name: "Operator User",
       role: "reviewer",
     });
-    expect(state.statusCode).toBe(403);
+    expect(state.statusCode).toBe(403); // Empty allow-list denies everyone.
     expect(calledNext).toBe(false);
   });
 });

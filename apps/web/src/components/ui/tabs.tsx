@@ -1,10 +1,12 @@
 "use client";
 
+// Imports: Base UI Tabs primitives, cva for the list variant map, and cn.
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
+// Tabs: root state holder; flips between horizontal and vertical stacking.
 function Tabs({
   className,
   orientation = "horizontal",
@@ -23,6 +25,7 @@ function Tabs({
   );
 }
 
+// cva variant map for the tab rail: "default" = raised bar, "line" = borderless underline style.
 const tabsListVariants = cva(
   "group/tabs-list inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground data-[variant=line]:rounded-none group-data-horizontal/tabs:h-8 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col",
   {
@@ -38,6 +41,7 @@ const tabsListVariants = cva(
   }
 );
 
+// TabsList: the rail holding the tab triggers; the variant selects the visual treatment.
 function TabsList({
   className,
   variant = "default",
@@ -53,6 +57,7 @@ function TabsList({
   );
 }
 
+// TabsTrigger: individual selectable tab; shows an underline indicator in the line variant.
 function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   return (
     <TabsPrimitive.Tab
@@ -69,6 +74,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   );
 }
 
+// TabsContent: the panel revealed when its matching tab is active.
 function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel

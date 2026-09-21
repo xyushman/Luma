@@ -1,7 +1,10 @@
+// Imports the Prisma client only; conflict detection is pure DB reads plus comparison logic.
 import { prisma } from "../lib/prisma.js";
 
+// Conflict comparison processes servicer rows in windows of 5,000 to bound memory.
 export const CHUNK_SIZE = 5000;
 
+// The fields on which a servicer update can disagree with the original loan tape.
 const COMPARABLE_FIELDS = [
   "originalPrincipal",
   "currentBalance",
@@ -15,8 +18,10 @@ const COMPARABLE_FIELDS = [
   "documentStatus",
 ] as const;
 
+// Type-level union of the comparable field names for the row shapes below.
 type ComparableField = (typeof COMPARABLE_FIELDS)[number];
 
+// Of the comparable fields, the ones that represent numeric values for comparison.
 const numericFields = new Set<string>([
   "originalPrincipal",
   "currentBalance",
@@ -25,10 +30,13 @@ const numericFields = new Set<string>([
   "daysPastDue",
 ]);
 
+// Normalizes a value to a comparable string; numeric fields parse so "1,000" equals 1000.
 const normalizeForCompare = (value: unknown, field: string): string | null => {
+  // Nullish is "missing" and compares specially rather than as a value.
   if (value === null || value === undefined) {
     return null;
   }
+  // Dates canonicalize to UTC ISO so identical instants always match.
   if (value instanceof Date) {
     return value.toISOString();
   }
@@ -37,7 +45,9 @@ const normalizeForCompare = (value: unknown, field: string): string | null => {
     return null;
   }
   if (numericFields.has(field)) {
+    // Strip thousands separators so formatted and raw numerics align.
     const n = Number(raw.replace(/,/g, ""));
+    // Non-numeric garbage falls back to a lowercase string comparison.
     if (Number.isNaN(n) || !Number.isFinite(n)) {
       return raw.toLowerCase();
     }
@@ -46,29 +56,35 @@ const normalizeForCompare = (value: unknown, field: string): string | null => {
   return raw.toLowerCase();
 };
 
+// Decides whether two field values genuinely differ after normalization.
 const valuesDiffer = (a: unknown, b: unknown, field: string): boolean => {
   const na = normalizeForCompare(a, field);
   const nb = normalizeForCompare(b, field);
+  // Both missing is agreement, not a conflict.
   if (na === null && nb === null) {
     return false;
   }
+  // One side present and the other missing is a divergence worth flagging.
   if (na === null || nb === null) {
     return true;
   }
   return na !== nb;
 };
 
+// A servicer-update loan row plus the comparable fields projected from the DB.
 type ServicerLoanRow = {
   id: string;
   loanId: string | null;
   sourceRowNumber: number;
 } & Record<ComparableField, unknown>;
 
+// A loan-tape row with the comparable fields needed for the baseline comparison.
 type TapeLoanRow = {
   id: string;
   loanId: string | null;
 } & Record<ComparableField, unknown>;
 
+// Finds per-field conflicts between a servicer_update batch and the original loan tape loans.
 export const detectServicerConflicts = async (
   servicerBatchId: string
 ): Promise<{
@@ -77,12 +93,14 @@ export const detectServicerConflicts = async (
   matchedRows: number;
   unmatchedLoanIds: number;
 }> => {
+  // Load the servicer batch so we can verify its type and read prior-stage metadata.
   const batch = await prisma.uploadBatch.findUnique({
     where: { id: servicerBatchId },
   });
   if (!batch) {
     throw new Error(`Batch ${servicerBatchId} not found`);
   }
+  // Only servicer_update uploads flow through conflict detection; other types no-op.
   if (batch.fileType !== "servicer_update") {
     return {
       exceptionsCreated: 0,
@@ -94,6 +112,7 @@ export const detectServicerConflicts = async (
 
   const existingMeta = (batch.metadata as Record<string, unknown> | null) ?? {};
 
+  // Idempotency: a prior completed run returns its stored results instead of running again.
   if (existingMeta.conflictStage === "done") {
     process.stdout.write(
       `[Conflict] Batch ${servicerBatchId}: already completed, skipping.\n`
@@ -110,11 +129,13 @@ export const detectServicerConflicts = async (
     };
   }
 
+  // A stage left at "detecting" means a prior run crashed mid-flight.
   if (existingMeta.conflictStage === "detecting") {
     process.stdout.write(
       `[Conflict] Batch ${servicerBatchId}: cleaning orphaned conflicts from prior run.\n`
     );
     try {
+      // Delete only open, unreviewed conflicts left over from the interrupted run.
       await prisma.exception.deleteMany({
         where: {
           exceptionType: "conflicting_source",
@@ -132,6 +153,7 @@ export const detectServicerConflicts = async (
   }
 
   try {
+    // Mark the stage detecting so a crash can be detected and cleaned next run.
     await prisma.uploadBatch.update({
       data: {
         metadata: {
@@ -150,6 +172,7 @@ export const detectServicerConflicts = async (
     loanId: true,
     sourceRowNumber: true,
   };
+  // Project every comparable field onto servicer rows.
   for (const f of COMPARABLE_FIELDS) {
     servicerSelect[f] = true;
   }
@@ -167,10 +190,13 @@ export const detectServicerConflicts = async (
   let totalLoansAffected = 0;
   let totalMatched = 0;
   let totalUnmatched = 0;
+  // De-duplicates affected loan ids for the final "loans with conflicts" count.
   const affectedLoanIds = new Set<string>();
 
+  // Page over servicer rows in chunks until the batch is exhausted.
   while (true) {
     const servicerRows = (await prisma.loan.findMany({
+      // Stable ordering keeps chunk boundaries deterministic.
       orderBy: { sourceRowNumber: "asc" },
       select: servicerSelect as never,
       skip,
@@ -182,6 +208,7 @@ export const detectServicerConflicts = async (
       break;
     }
 
+    // Collect the distinct trimmed loanIds present in this servicer window.
     const loanIds = [
       ...new Set(
         servicerRows
@@ -191,6 +218,7 @@ export const detectServicerConflicts = async (
     ];
 
     if (loanIds.length === 0) {
+      // Window had no usable ids; advance and continue or stop at the end.
       skip += CHUNK_SIZE;
       if (servicerRows.length < CHUNK_SIZE) {
         break;
@@ -198,6 +226,7 @@ export const detectServicerConflicts = async (
       continue;
     }
 
+    // Pull matching tape rows; ordering by newest createdAt keeps the latest tape row.
     const tapeRows = (await prisma.loan.findMany({
       orderBy: { createdAt: "desc" },
       select: tapeSelect as never,
@@ -210,6 +239,7 @@ export const detectServicerConflicts = async (
     const tapeByLoanId = new Map<string, TapeLoanRow>();
     for (const row of tapeRows) {
       const key = row.loanId?.trim();
+      // First row wins, which is the most recent tape row due to the ordering.
       if (key && !tapeByLoanId.has(key)) {
         tapeByLoanId.set(key, row);
       }
@@ -232,6 +262,7 @@ export const detectServicerConflicts = async (
       }
       const tapeRow = tapeByLoanId.get(loanId);
       if (!tapeRow) {
+        // No tape match for this id; counted as unmatched, not an exception.
         totalUnmatched += 1;
         continue;
       }
@@ -249,6 +280,7 @@ export const detectServicerConflicts = async (
         const sStr =
           sVal === null || sVal === undefined ? "null" : String(sVal);
 
+        // The exception is raised against the ORIGINAL tape loan, carrying conflict metadata.
         exceptionsToCreate.push({
           exceptionType: "conflicting_source",
           field,
@@ -278,6 +310,7 @@ export const detectServicerConflicts = async (
             skipDuplicates: false,
           });
 
+          // Audit each created exception so the review trail is complete.
           if (createdExceptions.length > 0) {
             await tx.auditLog.createMany({
               data: createdExceptions.map((exc) => ({
@@ -311,6 +344,7 @@ export const detectServicerConflicts = async (
   totalLoansAffected = affectedLoanIds.size;
 
   try {
+    // Persist the final conflict stats back onto the batch metadata.
     const fresh = await prisma.uploadBatch.findUnique({
       where: { id: servicerBatchId },
     });

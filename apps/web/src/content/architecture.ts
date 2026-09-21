@@ -1,42 +1,48 @@
 /* Structured content transcribed from docs/architecture.md —
    rendered by pages/shared/architecture.tsx per spec and challenge deliverables. */
 
+// A row in the "technology stack" table: platform layer, chosen tool, and rationale.
 export interface StackLayer {
   choice: string;
   layer: string;
   reason: string;
 }
 
+// A row in the database schema table describing one entity's columns and indexes.
 export interface TableSpec {
-  columns: { name: string; notes?: string; type: string }[];
+  columns: { name: string; notes?: string; type: string }[]; // Column defs: name, type, optional annotation
   description: string;
-  indexes: string[];
+  indexes: string[]; // Prisma-style index/unique lines
   name: string;
 }
 
+// A row in the REST API table with the RBAC role allowed to call the endpoint.
 export interface EndpointSpec {
-  group: string;
+  group: string; // Route group (uploads, loans, exceptions, ...)
   method: "GET" | "POST" | "PATCH" | "DELETE";
   notes?: string;
   path: string;
-  role: string;
+  role: string; // data_operator / reviewer / data_consumer / system
 }
 
+// A row in the validation-engine rules table: category, code, name, severity.
 export interface ValidationRuleSpec {
-  category: "Per-Loan" | "Batch-Scoped";
+  category: "Per-Loan" | "Batch-Scoped"; // Where the rule runs in the pipeline
   code: string;
   description: string;
   name: string;
   severity: "critical" | "high" | "medium" | "low";
 }
 
+// A row in the engineering trade-offs table: chosen vs considered alternative.
 export interface TradeOffItem {
-  alternative: string;
-  chosen: string;
-  decision: string;
-  rationale: string;
+  alternative: string; // The option not chosen
+  chosen: string; // What was selected instead
+  decision: string; // Decision title
+  rationale: string; // Why the choice was made
 }
 
+// Header metadata shown on the Architecture page hero.
 export const ARCHITECTURE_META = {
   description:
     "System design, entity relationships, validation engine, AI safety controls, audit trail hashing, and engineering trade-offs.",
@@ -45,6 +51,7 @@ export const ARCHITECTURE_META = {
   version: "Luma v1.0 · Intain Campus FinTech Challenge 2026",
 };
 
+// Technology choices per platform layer, displayed as a stack table.
 export const STACK_LAYERS: StackLayer[] = [
   {
     choice: "Turborepo + Bun workspaces",
@@ -89,6 +96,7 @@ export const STACK_LAYERS: StackLayer[] = [
   },
 ];
 
+// One entry per Prisma model, forming the entity-relationship reference table.
 export const DATA_MODEL_TABLES: TableSpec[] = [
   {
     columns: [
@@ -296,6 +304,7 @@ export const DATA_MODEL_TABLES: TableSpec[] = [
   },
 ];
 
+// Every validation rule the engine enforces, shown as a documentation table.
 export const VALIDATION_RULES: ValidationRuleSpec[] = [
   {
     category: "Per-Loan",
@@ -401,6 +410,7 @@ export const VALIDATION_RULES: ValidationRuleSpec[] = [
   },
 ];
 
+// The AI safety controls highlighted on the Architecture page (feature cards).
 export const AI_CONTROLS = [
   {
     icon: "ri-shield-user-line",
@@ -424,6 +434,7 @@ export const AI_CONTROLS = [
   },
 ];
 
+// The 11 auditable event types and who triggers them (audit-trail reference).
 export const AUDIT_EVENTS = [
   {
     event: "FILE_UPLOADED",
@@ -482,6 +493,7 @@ export const AUDIT_EVENTS = [
   },
 ];
 
+// Engineering trade-offs with alternatives and rationale, framed for judges.
 export const TRADE_OFFS: TradeOffItem[] = [
   {
     alternative: "Database byte blobs or Amazon S3 bucket",

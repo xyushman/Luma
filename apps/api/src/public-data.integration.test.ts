@@ -4,6 +4,7 @@ import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path, { join } from "node:path";
 
+// Dedicated Postgres test database (docker compose luma-postgres).
 const TEST_DATABASE_URL =
   "postgresql://postgres:postgres@localhost:5432/luma_test";
 
@@ -25,9 +26,11 @@ let prisma: PrismaClient;
 let server: TestServer;
 let baseUrl: string;
 
+// Unique marker so test rows are identifiable and cleanable.
 const RUN_TAG = `public_data_it_${Date.now()}`;
 const APP_ROOT = join(import.meta.dir, "..");
 
+// Signs in via Better Auth and returns the session cookie.
 const signIn = async (email: string, password: string): Promise<string> => {
   const res = await fetch(`${baseUrl}/api/auth/sign-in/email`, {
     body: JSON.stringify({ email, password }),
@@ -36,76 +39,80 @@ const signIn = async (email: string, password: string): Promise<string> => {
   });
   expect(res.status).toBe(200);
   const setCookie = res.headers.get("set-cookie") ?? "";
-  const token = setCookie.split(";")[0] ?? "";
+  const token = setCookie.split(";")[0] ?? ""; // First cookie is the session token.
   expect(token).toContain("session_token=");
   return token;
 };
 
+// Build a realistic 108-field Fannie/Freddie pipe row with defaults by column index.
 const buildPipeFields = (
   overrides: Partial<Record<number, string>> = {}
 ): string[] => {
-  const arr: string[] = Array.from({ length: 108 }, () => "");
-  arr[0] = "";
-  arr[1] = overrides[1] ?? "100023020488";
-  arr[2] = overrides[2] ?? "082009";
-  arr[3] = overrides[3] ?? "R";
-  arr[4] = overrides[4] ?? "Other";
-  arr[5] = overrides[5] ?? "Other";
-  arr[7] = overrides[7] ?? "5.375";
-  arr[8] = overrides[8] ?? "5.375";
-  arr[9] = overrides[9] ?? "55000.00";
-  arr[11] = overrides[11] ?? "0.00";
-  arr[12] = overrides[12] ?? "240";
-  arr[13] = overrides[13] ?? "082009";
-  arr[14] = overrides[14] ?? "102009";
-  arr[15] = overrides[15] ?? "0";
-  arr[16] = overrides[16] ?? "240";
-  arr[17] = overrides[17] ?? "240";
-  arr[18] = overrides[18] ?? "092029";
-  arr[19] = overrides[19] ?? "55";
-  arr[20] = overrides[20] ?? "55";
-  arr[21] = overrides[21] ?? "1";
-  arr[22] = overrides[22] ?? "36";
-  arr[23] = overrides[23] ?? "714";
-  arr[27] = overrides[27] ?? "SF";
-  arr[29] = overrides[29] ?? "P";
-  arr[30] = overrides[30] ?? "OH";
-  arr[34] = overrides[34] ?? "FRM";
-  arr[39] = overrides[39] ?? "00";
-  arr[41] = overrides[41] ?? "N";
+  const arr: string[] = Array.from({ length: 108 }, () => ""); // Fannie/Freddie layout is 108 columns.
+  arr[0] = ""; // Column 0 is an empty lead delimiter slot.
+  arr[1] = overrides[1] ?? "100023020488"; // Loan id.
+  arr[2] = overrides[2] ?? "082009"; // Reporting period MMYYYY.
+  arr[3] = overrides[3] ?? "R"; // Seller name.
+  arr[4] = overrides[4] ?? "Other"; // Servicer name.
+  arr[5] = overrides[5] ?? "Other"; // Servicer name fallback.
+  arr[7] = overrides[7] ?? "5.375"; // Original interest rate.
+  arr[8] = overrides[8] ?? "5.375"; // Current interest rate.
+  arr[9] = overrides[9] ?? "55000.00"; // Original UPB.
+  arr[11] = overrides[11] ?? "0.00"; // Current UPB.
+  arr[12] = overrides[12] ?? "240"; // Original term.
+  arr[13] = overrides[13] ?? "082009"; // First payment date.
+  arr[14] = overrides[14] ?? "102009"; // Loan age date.
+  arr[15] = overrides[15] ?? "0"; // Delinquency status code.
+  arr[16] = overrides[16] ?? "240"; // Remaining months to maturity.
+  arr[17] = overrides[17] ?? "240"; // Months in mortgage.
+  arr[18] = overrides[18] ?? "092029"; // Maturity date YYYYMM.
+  arr[19] = overrides[19] ?? "55"; // Original LTV.
+  arr[20] = overrides[20] ?? "55"; // Current LTV.
+  arr[21] = overrides[21] ?? "1"; // Number of borrowers.
+  arr[22] = overrides[22] ?? "36"; // Debt-to-income ratio.
+  arr[23] = overrides[23] ?? "714"; // Credit score.
+  arr[27] = overrides[27] ?? "SF"; // Property type.
+  arr[29] = overrides[29] ?? "P"; // Loan purpose code.
+  arr[30] = overrides[30] ?? "OH"; // State code.
+  arr[34] = overrides[34] ?? "FRM"; // Loan type.
+  arr[39] = overrides[39] ?? "00"; // Prepayment penalty.
+  arr[41] = overrides[41] ?? "N"; // HARP flag.
   for (const [k, v] of Object.entries(overrides)) {
-    arr[Number(k)] = v as string;
+    arr[Number(k)] = v as string; // Apply any test-specific overrides.
   }
   return arr;
 };
 
+// Joins pipe fields into an unheaded public-feed row.
 const pipeRow = (fields: string[]): string => fields.join("|");
 
 beforeAll(async () => {
-  process.env.DATABASE_URL = TEST_DATABASE_URL;
+  process.env.DATABASE_URL = TEST_DATABASE_URL; // Point the app at the test DB.
 
+  // Apply all pending migrations before booting the app.
   const migrate = Bun.spawnSync(["bunx", "prisma", "migrate", "deploy"], {
     cwd: APP_ROOT,
     env: process.env as Record<string, string>,
     stderr: "pipe",
     stdout: "pipe",
   });
-  expect(migrate.exitCode).toBe(0);
+  expect(migrate.exitCode).toBe(0); // Migrations must succeed.
 
   appModule = (await import("./app.js")) as unknown as AppModule;
   const clientModule = await import("./generated/prisma/client.js");
   const adapterModule = await import("@prisma/adapter-pg");
   const adapter = new adapterModule.PrismaPg({
-    connectionString: TEST_DATABASE_URL,
+    connectionString: TEST_DATABASE_URL, // Prisma connects via the Pg adapter.
   });
   prisma = new clientModule.PrismaClient({ adapter });
 
   const app = appModule.createApp();
-  server = app.listen(0);
+  server = app.listen(0); // Listen on an ephemeral port.
   const addr = server.address() as AddressInfo;
-  baseUrl = `http://localhost:${addr.port}`;
+  baseUrl = `http://localhost:${addr.port}`; // Real HTTP base for the tests.
 });
 
+// Delete every row this run created, then close the server.
 afterAll(async () => {
   await prisma.exception.deleteMany({
     where: { loan: { sourceBatch: { fileName: { contains: RUN_TAG } } } },
@@ -150,7 +157,7 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
     });
     expect([200, 422].includes(signUpRes.status)).toBe(true);
     await prisma.user.update({
-      data: { role: "data_operator" },
+      data: { role: "data_operator" }, // Promote to operator so they can upload.
       where: { email: operatorEmail },
     });
     const cookie = await signIn(operatorEmail, "password");
@@ -181,7 +188,7 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
       15: "0",
       30: "CA",
     });
-    const bad = buildPipeFields({ 1: "" });
+    const bad = buildPipeFields({ 1: "" }); // Missing loan id — gate reject.
 
     const pipeContent = [
       pipeRow(loanAFold1),
@@ -207,7 +214,7 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
       headers: { cookie },
       method: "POST",
     });
-    expect(uploadRes.status).toBe(202);
+    expect(uploadRes.status).toBe(202); // Accepted for async processing.
     const uploadBody = (await uploadRes.json()) as {
       batchId: string;
       fileName: string;
@@ -226,7 +233,7 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
       status: string;
     } | null = null;
     for (let index = 0; index < 20; index += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Poll the pipeline.
       const detailRes = await fetch(`${baseUrl}/api/uploads/${batchId}`, {
         headers: { cookie },
       });
@@ -245,29 +252,29 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
     if (!detail) {
       throw new Error("detail null");
     }
-    expect(detail.status).toBe("done");
+    expect(detail.status).toBe("done"); // Pipeline finished.
     // 4 raw rows folded to 2 loans + 1 failed row => recordCount = 3
-    expect(detail.recordCount).toBe(3);
-    expect(detail.failedCount).toBe(1);
-    expect(detail.metadata?.publicDataSourceRows).toBe(5);
-    expect(detail.metadata?.publicDataFoldedLoans).toBe(2);
+    expect(detail.recordCount).toBe(3); // Two folded loans + one failed row.
+    expect(detail.failedCount).toBe(1); // Only the bad row failed.
+    expect(detail.metadata?.publicDataSourceRows).toBe(5); // Raw pipe rows counted.
+    expect(detail.metadata?.publicDataFoldedLoans).toBe(2); // Distinct loans after folding.
 
     const loans = await prisma.loan.findMany({
       orderBy: { sourceRowNumber: "asc" },
       where: { sourceBatchId: batchId },
     });
-    expect(loans.length).toBe(2);
+    expect(loans.length).toBe(2); // Two loans persisted.
     const loanA = loans.find((l) => l.loanId === `L-${RUN_TAG}-A`);
     const loanBRec = loans.find((l) => l.loanId === `L-${RUN_TAG}-B`);
     expect(loanA).toBeDefined();
     expect(loanBRec).toBeDefined();
     // Fold: latest balance 54200, lastUpdatedAt from 102009, DPD 60, delinquent
-    expect(Number(loanA?.currentBalance)).toBe(54_200);
-    expect(loanA?.paymentStatus).toBe("delinquent");
-    expect(loanA?.daysPastDue).toBe(60);
-    expect(loanA?.sourceSystem).toBe("freddie_mac");
-    expect(loanA?.documentStatus).toBe("unknown");
-    expect(loanBRec?.borrowerState).toBe("CA");
+    expect(Number(loanA?.currentBalance)).toBe(54_200); // Latest month's UPB wins.
+    expect(loanA?.paymentStatus).toBe("delinquent"); // Latest delinquency wins.
+    expect(loanA?.daysPastDue).toBe(60); // Two months delinquent.
+    expect(loanA?.sourceSystem).toBe("freddie_mac"); // Feed tag preserved.
+    expect(loanA?.documentStatus).toBe("unknown"); // Public data never sets docs.
+    expect(loanBRec?.borrowerState).toBe("CA"); // State lands for loan B.
 
     // Summary should reflect validation (stale_record etc. for 2009 dates will be present, but check counts)
     const summaryRes = await fetch(
@@ -282,8 +289,8 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
       passedValidation: number;
       totalImported: number;
     };
-    expect(summary.totalImported).toBe(2);
-    expect(summary.failedValidation + summary.passedValidation).toBe(2);
+    expect(summary.totalImported).toBe(2); // Both folded loans counted.
+    expect(summary.failedValidation + summary.passedValidation).toBe(2); // All loans accounted for.
 
     fs.rmSync(tmpDir, { force: true, recursive: true });
   });
@@ -310,7 +317,7 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
     const row = buildPipeFields({
       1: `L-${RUN_TAG}-FANNIE`,
       2: "082009",
-      30: "NY",
+      30: "NY", // Fannie-specific state.
     });
     const pipeContent = pipeRow(row);
     const form = new FormData();
@@ -337,12 +344,12 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
         break;
       }
     }
-    expect(detail?.status).toBe("done");
+    expect(detail?.status).toBe("done"); // Fannie ingest finished.
     const loans = await prisma.loan.findMany({
       where: { sourceBatchId: batchId },
     });
     expect(loans.length).toBe(1);
-    expect(loans[0]?.sourceSystem).toBe("fannie_mae");
+    expect(loans[0]?.sourceSystem).toBe("fannie_mae"); // Proper feed tag.
     expect(loans[0]?.loanId).toBe(`L-${RUN_TAG}-FANNIE`);
   });
 
@@ -392,6 +399,6 @@ describe("public-data ingestion (integration) — fannie_mae / freddie_mac", () 
         break;
       }
     }
-    expect(detail?.status).toBe("done");
+    expect(detail?.status).toBe("done"); // Synthetic tape still works.
   });
 });

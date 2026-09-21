@@ -1,3 +1,4 @@
+// Imports: per-type toast icons from lucide and the sonner Toaster with its props type.
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
+// Toaster: sonner host configured with lucide icons and theme-token colors for Luma.
 const Toaster = ({ ...props }: ToasterProps) => (
   <Sonner
     className="toaster group"

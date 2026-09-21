@@ -1,20 +1,25 @@
+// Imports: Base UI Menu primitives, check/caret icons, React types, and cn.
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";
 import type * as React from "react";
 import { cn } from "@/lib/utils";
 
+// DropdownMenu: root state holder for the whole menu composition.
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
+// DropdownMenuPortal: renders the menu into a portal, avoiding ancestor clipping and overflow issues.
 function DropdownMenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
   return <MenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
 }
 
+// DropdownMenuTrigger: the anchor element that opens and closes the menu.
 function DropdownMenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
   return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
 }
 
+// DropdownMenuContent: portal, positioner, and popup composed into the styled dropdown panel.
 function DropdownMenuContent({
   align = "start",
   alignOffset = 0,
@@ -49,10 +54,12 @@ function DropdownMenuContent({
   );
 }
 
+// DropdownMenuGroup: groups related items for labeling and semantics.
 function DropdownMenuGroup({ ...props }: MenuPrimitive.Group.Props) {
   return <MenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />;
 }
 
+// DropdownMenuLabel: non-interactive heading label; inset shifts it to align with items.
 function DropdownMenuLabel({
   className,
   inset,
@@ -73,6 +80,7 @@ function DropdownMenuLabel({
   );
 }
 
+// DropdownMenuItem: selectable row; the "destructive" variant renders it in the error color.
 function DropdownMenuItem({
   className,
   inset,
@@ -96,10 +104,12 @@ function DropdownMenuItem({
   );
 }
 
+// DropdownMenuSub: nested menu state root for fly-out submenus.
 function DropdownMenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
   return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />;
 }
 
+// DropdownMenuSubTrigger: the row that opens a submenu, decorated with a trailing chevron.
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -124,6 +134,7 @@ function DropdownMenuSubTrigger({
   );
 }
 
+// DropdownMenuSubContent: fly-out panel for a submenu, opening to the side by default.
 function DropdownMenuSubContent({
   align = "start",
   alignOffset = -3,
@@ -148,6 +159,7 @@ function DropdownMenuSubContent({
   );
 }
 
+// DropdownMenuCheckboxItem: toggleable item with a check indicator on the right.
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -181,6 +193,7 @@ function DropdownMenuCheckboxItem({
   );
 }
 
+// DropdownMenuRadioGroup: wraps items so only one radio option is active at a time.
 function DropdownMenuRadioGroup({ ...props }: MenuPrimitive.RadioGroup.Props) {
   return (
     <MenuPrimitive.RadioGroup
@@ -190,6 +203,7 @@ function DropdownMenuRadioGroup({ ...props }: MenuPrimitive.RadioGroup.Props) {
   );
 }
 
+// DropdownMenuRadioItem: single-select item paired with a check indicator.
 function DropdownMenuRadioItem({
   className,
   children,
@@ -221,6 +235,7 @@ function DropdownMenuRadioItem({
   );
 }
 
+// DropdownMenuSeparator: thin divider between menu sections.
 function DropdownMenuSeparator({
   className,
   ...props
@@ -234,6 +249,7 @@ function DropdownMenuSeparator({
   );
 }
 
+// DropdownMenuShortcut: right-aligned keyboard shortcut hint inside a menu item.
 function DropdownMenuShortcut({
   className,
   ...props

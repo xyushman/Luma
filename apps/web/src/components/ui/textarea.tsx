@@ -1,7 +1,9 @@
+// Imports: React types and cn for merging Tailwind classes.
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Textarea: styled multiline input with focus and invalid states.
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <textarea

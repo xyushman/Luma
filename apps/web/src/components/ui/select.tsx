@@ -1,10 +1,13 @@
+// Imports: Base UI Select primitives, check/chevron icons, React types, and cn.
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import type * as React from "react";
 import { cn } from "@/lib/utils";
 
+// Select: direct alias of the Base UI root; holds the open state and selected value.
 const Select = SelectPrimitive.Root;
 
+// SelectGroup: groups options under an optional label.
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (
     <SelectPrimitive.Group
@@ -15,6 +18,7 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   );
 }
 
+// SelectValue: placeholder/display slot for the selected option's text.
 function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value
@@ -25,6 +29,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   );
 }
 
+// SelectTrigger: the visible button; shows the value plus a chevron and is sized via data-size.
 function SelectTrigger({
   className,
   size = "default",
@@ -53,6 +58,7 @@ function SelectTrigger({
   );
 }
 
+// SelectContent: portal + positioned popup listing the options with scroll buttons.
 function SelectContent({
   className,
   children,
@@ -95,6 +101,7 @@ function SelectContent({
   );
 }
 
+// SelectLabel: small muted heading for a group of options.
 function SelectLabel({
   className,
   ...props
@@ -108,6 +115,7 @@ function SelectLabel({
   );
 }
 
+// SelectItem: one selectable row with a check indicator on selection.
 function SelectItem({
   className,
   children,
@@ -136,6 +144,7 @@ function SelectItem({
   );
 }
 
+// SelectSeparator: horizontal divider between option groups.
 function SelectSeparator({
   className,
   ...props
@@ -149,6 +158,7 @@ function SelectSeparator({
   );
 }
 
+// SelectScrollUpButton: top chevron shown when the list scrolls upward.
 function SelectScrollUpButton({
   className,
   ...props
@@ -167,6 +177,7 @@ function SelectScrollUpButton({
   );
 }
 
+// SelectScrollDownButton: bottom chevron shown when the list scrolls downward.
 function SelectScrollDownButton({
   className,
   ...props

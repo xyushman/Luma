@@ -1,8 +1,10 @@
+// Imports: Base UI Input primitive, React types, and cn.
 import { Input as InputPrimitive } from "@base-ui/react/input";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Input: styled text input; Base UI forwards native input behavior (refs, events, id linking with labels).
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <InputPrimitive

@@ -5,6 +5,7 @@ import os from "node:os";
 import path, { join } from "node:path";
 import { batchSummarySchema } from "@repo/types";
 
+// Dedicated Postgres test database (docker compose luma-postgres).
 const TEST_DATABASE_URL =
   "postgresql://postgres:postgres@localhost:5432/luma_test";
 
@@ -26,9 +27,11 @@ let prisma: PrismaClient;
 let server: TestServer;
 let baseUrl: string;
 
+// Unique marker so test rows are identifiable and cleanable.
 const RUN_TAG = `upload_it_${Date.now()}`;
 const APP_ROOT = join(import.meta.dir, "..");
 
+// Signs in via Better Auth and returns the session cookie.
 const signIn = async (email: string, password: string): Promise<string> => {
   const res = await fetch(`${baseUrl}/api/auth/sign-in/email`, {
     body: JSON.stringify({ email, password }),
@@ -37,11 +40,12 @@ const signIn = async (email: string, password: string): Promise<string> => {
   });
   expect(res.status).toBe(200);
   const setCookie = res.headers.get("set-cookie") ?? "";
-  const token = setCookie.split(";")[0] ?? "";
+  const token = setCookie.split(";")[0] ?? ""; // First cookie is the session token.
   expect(token).toContain("session_token=");
   return token;
 };
 
+// Writes CSV content to a temp file and returns the path.
 const createCsvFile = (content: string): string => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "upload-it-"));
   const filePath = path.join(tmpDir, "test.csv");
@@ -50,30 +54,32 @@ const createCsvFile = (content: string): string => {
 };
 
 beforeAll(async () => {
-  process.env.DATABASE_URL = TEST_DATABASE_URL;
+  process.env.DATABASE_URL = TEST_DATABASE_URL; // Point the app at the test DB.
 
+  // Apply all pending migrations before booting the app.
   const migrate = Bun.spawnSync(["bunx", "prisma", "migrate", "deploy"], {
     cwd: APP_ROOT,
     env: process.env as Record<string, string>,
     stderr: "pipe",
     stdout: "pipe",
   });
-  expect(migrate.exitCode).toBe(0);
+  expect(migrate.exitCode).toBe(0); // Migrations must succeed.
 
   appModule = (await import("./app.js")) as unknown as AppModule;
   const clientModule = await import("./generated/prisma/client.js");
   const adapterModule = await import("@prisma/adapter-pg");
   const adapter = new adapterModule.PrismaPg({
-    connectionString: TEST_DATABASE_URL,
+    connectionString: TEST_DATABASE_URL, // Prisma connects via the Pg adapter.
   });
   prisma = new clientModule.PrismaClient({ adapter });
 
   const app = appModule.createApp();
-  server = app.listen(0);
+  server = app.listen(0); // Listen on an ephemeral port.
   const addr = server.address() as AddressInfo;
-  baseUrl = `http://localhost:${addr.port}`;
+  baseUrl = `http://localhost:${addr.port}`; // Real HTTP base for the tests.
 });
 
+// Clean up every row created by this run, then close the server.
 afterAll(async () => {
   await prisma.loan.deleteMany({
     where: { sourceBatch: { fileName: { contains: RUN_TAG } } },
@@ -108,7 +114,7 @@ describe("upload flow (integration)", () => {
     // 200 if new, 422 if already exists from previous run -> still need role
     expect([200, 422].includes(signUpRes.status)).toBe(true);
     await prisma.user.update({
-      data: { role: "data_operator" },
+      data: { role: "data_operator" }, // Promote to operator so they can upload.
       where: { email: operatorEmail },
     });
     const cookie = await signIn(operatorEmail, "password");
@@ -118,7 +124,7 @@ describe("upload flow (integration)", () => {
     const validRow1 = `L-${RUN_TAG}-1,B-${RUN_TAG}-1,mortgage,2022-03-15,2052-03-15,350000.00,342000.00,6.75,360,CA,purchase,A,5-10 years,100k-150k,current,0,First National,2026-08-01,2026-08-20,complete,origination`;
     const validRow2 = `L-${RUN_TAG}-2,B-${RUN_TAG}-2,mortgage,2022-03-15,2052-03-15,350000.00,342000.00,6.75,360,CA,purchase,A,5-10 years,100k-150k,current,0,First National,2026-08-01,2026-08-20,complete,origination`;
     const badRow =
-      ",,mortgage,2022-03-15,2052-03-15,350000.00,342000.00,6.75,360,CA,purchase,A,5-10 years,100k-150k,current,0,First National,2026-08-01,2026-08-20,complete,origination";
+      ",,mortgage,2022-03-15,2052-03-15,350000.00,342000.00,6.75,360,CA,purchase,A,5-10 years,100k-150k,current,0,First National,2026-08-01,2026-08-20,complete,origination"; // Missing both ids.
     const csvContent = [csvHeader, validRow1, badRow, validRow2].join("\n");
 
     const tmpPath = createCsvFile(csvContent);
@@ -136,7 +142,7 @@ describe("upload flow (integration)", () => {
       headers: { cookie },
       method: "POST",
     });
-    expect(uploadRes.status).toBe(202);
+    expect(uploadRes.status).toBe(202); // Accepted for async processing.
     const uploadBody = (await uploadRes.json()) as {
       batchId: string;
       fileName: string;
@@ -146,7 +152,7 @@ describe("upload flow (integration)", () => {
     expect(uploadBody.batchId).toBeDefined();
     expect(uploadBody.fileName).toBe(fileName);
     expect(uploadBody.fileType).toBe("loan_tape");
-    expect(uploadBody.status).toBe("processing");
+    expect(uploadBody.status).toBe("processing"); // Pipeline starts processing.
 
     const { batchId } = uploadBody;
 
@@ -169,27 +175,27 @@ describe("upload flow (integration)", () => {
       };
       detail = parsedDetail;
       if (detail.status === "done" || detail.status === "failed") {
-        break;
+        break; // Stop polling once the pipeline settles.
       }
     }
     expect(detail).not.toBeNull();
     if (!detail) {
       throw new Error("detail is null after polling");
     }
-    expect(detail.status).toBe("done");
-    expect(detail.recordCount).toBe(3);
-    expect(detail.failedCount).toBe(1);
+    expect(detail.status).toBe("done"); // Batch finished successfully.
+    expect(detail.recordCount).toBe(3); // All data rows counted.
+    expect(detail.failedCount).toBe(1); // Only the bad row failed.
 
     // Verify loans exist with correct row numbers and batch linkage
     const loans = await prisma.loan.findMany({
       orderBy: { sourceRowNumber: "asc" },
       where: { sourceBatchId: batchId },
     });
-    expect(loans.length).toBe(2);
+    expect(loans.length).toBe(2); // Two valid rows inserted.
     expect(loans[0]?.loanId).toBe(`L-${RUN_TAG}-1`);
-    expect(loans[0]?.sourceRowNumber).toBe(2);
+    expect(loans[0]?.sourceRowNumber).toBe(2); // Row 2 after the header.
     expect(loans[1]?.loanId).toBe(`L-${RUN_TAG}-2`);
-    expect(loans[1]?.sourceRowNumber).toBe(4);
+    expect(loans[1]?.sourceRowNumber).toBe(4); // Improper row skipped, so 4.
 
     // Verify failedRows persisted in metadata
     const batch = await prisma.uploadBatch.findUnique({
@@ -197,10 +203,10 @@ describe("upload flow (integration)", () => {
     });
     const metadata = batch?.metadata as Record<string, unknown> | null;
     const failedRows = (metadata?.failedRows ?? []) as unknown[];
-    expect(failedRows.length).toBe(1);
+    expect(failedRows.length).toBe(1); // One failure stored.
     const firstFailed = failedRows[0] as { reason: string; rowNumber: number };
-    expect(String(firstFailed.reason).toLowerCase()).toContain("loan_id");
-    expect(firstFailed.rowNumber).toBe(3);
+    expect(String(firstFailed.reason).toLowerCase()).toContain("loan_id"); // Reason identifies the gap.
+    expect(firstFailed.rowNumber).toBe(3); // The bad row is row 3.
 
     // Summary returns real counts, zeroed exception groups for now
     const summaryRes = await fetch(
@@ -211,11 +217,11 @@ describe("upload flow (integration)", () => {
     );
     expect(summaryRes.status).toBe(200);
     const summary = (await summaryRes.json()) as unknown;
-    const parsed = batchSummarySchema.safeParse(summary);
+    const parsed = batchSummarySchema.safeParse(summary); // Validate the shape.
     expect(parsed.success).toBe(true);
     if (parsed.success) {
       expect(parsed.data.batchId).toBe(batchId);
-      expect(parsed.data.totalImported).toBe(2);
+      expect(parsed.data.totalImported).toBe(2); // Both loans imported.
       expect(parsed.data.failedValidation).toBe(0);
       expect(parsed.data.passedValidation).toBe(2);
     }
@@ -229,7 +235,7 @@ describe("upload flow (integration)", () => {
       data: { id: string }[];
       pagination: { total: number };
     };
-    expect(listBody.data.some((b) => b.id === batchId)).toBe(true);
+    expect(listBody.data.some((b) => b.id === batchId)).toBe(true); // Batch is listed.
 
     fs.rmSync(path.dirname(tmpPath), { force: true, recursive: true });
   });
@@ -247,7 +253,7 @@ describe("upload flow (integration)", () => {
     });
     expect([200, 422].includes(signUpRes.status)).toBe(true);
     await prisma.user.update({
-      data: { role: "reviewer" },
+      data: { role: "reviewer" }, // Reviewers must not upload.
       where: { email: reviewerEmail },
     });
     const cookie = await signIn(reviewerEmail, "password");
@@ -263,7 +269,7 @@ describe("upload flow (integration)", () => {
       headers: { cookie },
       method: "POST",
     });
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(403); // Role gate rejects reviewers.
   });
 
   it("rejects non-csv with 415 and missing fileType with 400", async () => {
@@ -287,7 +293,7 @@ describe("upload flow (integration)", () => {
     const form415 = new FormData();
     form415.append(
       "file",
-      new File(["hello"], "test.txt", { type: "text/plain" })
+      new File(["hello"], "test.txt", { type: "text/plain" }) // Not a CSV.
     );
     form415.append("fileType", "loan_tape");
     const res415 = await fetch(`${baseUrl}/api/uploads`, {
@@ -295,7 +301,7 @@ describe("upload flow (integration)", () => {
       headers: { cookie },
       method: "POST",
     });
-    expect(res415.status).toBe(415);
+    expect(res415.status).toBe(415); // Unsupported media type.
 
     const form400 = new FormData();
     form400.append(
@@ -304,13 +310,13 @@ describe("upload flow (integration)", () => {
         type: "text/csv",
       })
     );
-    form400.append("fileType", "invalid_type");
+    form400.append("fileType", "invalid_type"); // Unknown file type.
     const res400 = await fetch(`${baseUrl}/api/uploads`, {
       body: form400,
       headers: { cookie },
       method: "POST",
     });
-    expect(res400.status).toBe(400);
+    expect(res400.status).toBe(400); // Bad request for bad fileType.
   });
 
   it("fails batch ingestion when CSV does not contain valid loan schema/rows", async () => {
@@ -331,6 +337,7 @@ describe("upload flow (integration)", () => {
     });
     const cookie = await signIn(operatorEmail, "password");
 
+    // Tableau-style CSV that has nothing to do with loans.
     const invalidContent =
       "DB1 Controller - Cohart Selection,Measure Names,Measure Values\n2026,% Non-DUS,0.006489243\n2025,% Non-DUS,0.007187661";
 
@@ -348,7 +355,7 @@ describe("upload flow (integration)", () => {
       headers: { cookie },
       method: "POST",
     });
-    expect(uploadRes.status).toBe(202);
+    expect(uploadRes.status).toBe(202); // Accepted, then fails async.
     const { batchId } = (await uploadRes.json()) as { batchId: string };
 
     let detail: { metadata?: { error?: string }; status: string } | null = null;
@@ -367,7 +374,7 @@ describe("upload flow (integration)", () => {
       }
     }
 
-    expect(detail?.status).toBe("failed");
-    expect(detail?.metadata?.error).toContain("CSV header mismatch");
+    expect(detail?.status).toBe("failed"); // Bad schema fails the batch.
+    expect(detail?.metadata?.error).toContain("CSV header mismatch"); // Error names the cause.
   });
 });

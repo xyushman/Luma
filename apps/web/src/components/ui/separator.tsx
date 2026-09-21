@@ -1,7 +1,9 @@
+// Imports: Base UI Separator primitive and cn.
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator";
 
 import { cn } from "@/lib/utils";
 
+// Separator: 1px visual divider that flips between horizontal and vertical layouts.
 function Separator({
   className,
   orientation = "horizontal",

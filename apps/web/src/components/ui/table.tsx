@@ -1,9 +1,11 @@
 "use client";
 
+// Imports: React types and cn; the table is a styled set of plain HTML table wrappers.
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Table: full-width table wrapped in an overflow-x-auto container for narrow screens.
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
@@ -19,6 +21,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
   );
 }
 
+// TableHeader: heading row group; each row gets a bottom border.
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
@@ -29,6 +32,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   );
 }
 
+// TableBody: data row group; strips the border from the last row.
 function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
     <tbody
@@ -39,6 +43,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   );
 }
 
+// TableFooter: summary row(s) with a muted background and top border.
 function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   return (
     <tfoot
@@ -52,6 +57,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   );
 }
 
+// TableRow: standard row with hover highlight and selected/expanded states.
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
@@ -65,6 +71,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   );
 }
 
+// TableHead: header cell; left-aligned, nowrap, with padding adjusted for checkboxes.
 function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
@@ -78,6 +85,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   );
 }
 
+// TableCell: data cell with nowrap content and checkbox-aware padding.
 function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   return (
     <td
@@ -91,6 +99,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   );
 }
 
+// TableCaption: descriptive caption rendered below the table.
 function TableCaption({
   className,
   ...props

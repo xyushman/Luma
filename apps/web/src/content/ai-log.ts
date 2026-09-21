@@ -1,46 +1,56 @@
 /* Structured content transcribed from docs/AI_DEVELOPMENT_LOG.md —
    rendered by pages/shared/ai-development-log.tsx per spec §7.1. */
 
+// One commit chip shown in the development timeline (hash + short label).
 export interface CommitChip {
-  hash: string;
-  label: string;
+  hash: string; // Commit hash (or a compact "a · b" range)
+  label: string; // Short description of what the commit did
 }
 
+// A row in the phase timeline: which branch and commits landed per phase.
 export interface TimelineRow {
-  branch: string;
-  commits: CommitChip[];
-  phase: string;
+  branch: string; // Git branch where the phase work lived
+  commits: CommitChip[]; // Chips for each relevant commit
+  phase: string; // Phase label, e.g. "Phase 0–1"
 }
 
+// A tool entry in the AI tools-used table.
 export interface ToolEntry {
-  detail: string;
-  name: string;
+  detail: string; // What the tool contributed to the build
+  name: string; // Tool/provider name
 }
 
+// A logged prompt entry with the outcome it produced.
 export interface PromptEntry {
-  outcome: string;
-  prompt: string;
-  title: string;
+  outcome: string; // What the prompt ultimately delivered
+  prompt: string; // The actual prompt text that was sent
+  title: string; // Short label for the prompt
 }
 
+// A rejected design/approach with the alternative that replaced it.
 export interface RejectedEntry {
-  instead: string;
-  severity?: "Block" | "Warn";
+  instead: string; // What was done instead of the rejected idea
+  severity?: "Block" | "Warn"; // Block = correctness bug, Warn = design concern
   title: string;
-  what: string;
-  why: string;
+  what: string; // The originally proposed approach
+  why: string; // Why it was rejected
 }
 
+// Estimated share of the codebase written by AI tooling.
 export const AI_CODE_PERCENT = 65;
 
+// Estimated share written by the human engineers.
 export const HUMAN_PERCENT = 35;
 
+// Automated test evidence summary quoted on the log page.
 export const TEST_EVIDENCE =
   "129 unit tests across 11 files + 21 integration tests across 5 suites (isolated luma_test DB). Per-file or test:integration runs are the reliable signal — aggregate single-process runs have pre-existing cross-file mock.module contamination, reproduced on pristine main.";
 
+// Standalone note clarifying this document was written live, not backfilled.
 export const LIVE_NOTE =
   "Live document — prompts, decisions, and rejected outputs were appended as they happened during Phases 0–5, not backfilled.";
 
+// The git-timeline of concrete commits by phase for section §7.1.
 export const TIMELINE: TimelineRow[] = [
   {
     branch: "ai-service-core",
@@ -106,6 +116,7 @@ export const TIMELINE: TimelineRow[] = [
   },
 ];
 
+// The AI coding tools used and their specific contributions (tool table).
 export const TOOLS: ToolEntry[] = [
   {
     detail:
@@ -129,6 +140,7 @@ export const TOOLS: ToolEntry[] = [
   },
 ];
 
+// Selected prompts that produced key design artifacts (title, prompt, outcome).
 export const PROMPTS: PromptEntry[] = [
   {
     outcome:
@@ -187,6 +199,7 @@ export const PROMPTS: PromptEntry[] = [
   },
 ];
 
+// Bullet-point summary of the human review process applied to every AI PR.
 export const REVIEW_PROCESS: string[] = [
   "We treated the AI as a junior developer proposing PRs — all AI-generated architectures were manually reviewed against hackathon constraints (problem.md §1–16) before anything merged.",
   "Explicit handoff contracts between Person A (frontend) and Person B (backend) let AI-generated frontend code be tested against AI-generated endpoints independently.",
@@ -195,6 +208,7 @@ export const REVIEW_PROCESS: string[] = [
   "Phase 4(B) ran on a human-approved plan with human-supplied design decisions (audit-event reuse vs new enum, manifest pre-ingestion vs post-processing, ff-merge strategy).",
 ];
 
+// Claims verified end-to-end with the actual results (evidence cards).
 export const VERIFIED_NOTES: { claim: string; result: string }[] = [
   {
     claim: "Dataset ambiguity (§4 public pipe vs §5 synthetic comma)",
@@ -228,6 +242,7 @@ export const VERIFIED_NOTES: { claim: string; result: string }[] = [
   },
 ];
 
+// Approaches the AI proposed and the team rejected, with chosen alternatives.
 export const REJECTED: RejectedEntry[] = [
   {
     instead:
@@ -269,6 +284,7 @@ export const REJECTED: RejectedEntry[] = [
   },
 ];
 
+// Honest retrospective: where the AI needed human judgment vs where it excelled.
 export const LESSONS = {
   humanJudgment:
     "Scalability, fault tolerance, and data-contract fidelity. The AI tends to choose the easiest path first — loading a whole file into memory, accepting any delimiter/header, counting exceptions instead of loans, flushing partial groups at chunk boundaries. It takes strong human prompting to design for edge cases, crashes, and a clean ingestion/validation boundary.",
@@ -276,6 +292,7 @@ export const LESSONS = {
     "System design and boilerplate. Translating the raw problem statement into structured tables and REST endpoints was exceptionally fast, as was scaffolding validation rules once the 21-column contract was pinned. The highest-value Phase 4(B) contributions were adversarial: the gap analysis that found an unreachable mutation and the reviewer pass that found cross-chunk corruption.",
 };
 
+// Standing process rules the team applied to every AI interaction.
 export const PROCESS_RULES = [
   "Make the AI present design decisions with trade-offs — and wait for the human — before any code is written.",
   "Never trust green suites. Ask what the tests cannot see: chunk boundaries, replay after soft failure, header-case drift.",

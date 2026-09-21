@@ -1,10 +1,13 @@
+// ReactNode lets the KPI value be any renderable; cn merges conditional Tailwind classes.
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /* Spec §3 — KPICard: big number + small-caps label + optional delta chip. */
 
+// Chip arrow direction; "neutral" renders no arrow.
 type TrendDirection = "down" | "neutral" | "up";
 
+// value renders the headline figure; delta/trend props drive the optional chip.
 export interface KpiCardProps {
   delta?: string | null;
   deltaTone?: "negative" | "neutral" | "positive";
@@ -19,12 +22,14 @@ export interface KpiCardProps {
   value: ReactNode;
 }
 
+// Static delta-chip colors keyed by tone; exponent props reuse these exact mappings.
 const DELTA_TONES = {
   negative: "text-destructive",
   neutral: "text-muted-foreground",
   positive: "text-success",
 } as const;
 
+// Direction takes precedence when given; otherwise it's inferred from the delta's tone.
 function resolveTrend(
   trend?: TrendDirection | null,
   deltaTone?: "negative" | "neutral" | "positive"
@@ -41,6 +46,7 @@ function resolveTrend(
   return null;
 }
 
+// Chip color: explicit tone wins; otherwise "up" reads positive unless the card is inverted.
 function resolveTrendTone(
   trend: TrendDirection,
   trendTone?: "negative" | "neutral" | "positive",
@@ -58,6 +64,7 @@ function resolveTrendTone(
   return trend === "up" ? "positive" : "negative";
 }
 
+// A sign prefix on the chip value is dropped because the arrow icon already shows direction.
 const SIGN_REGEX = /^[+-]/;
 
 function cleanTrendValue(
@@ -69,6 +76,7 @@ function cleanTrendValue(
   return String(val).replace(SIGN_REGEX, "");
 }
 
+// Renders the direction arrow glyph for a chip, or nothing when the trend is neutral.
 function TrendIcon({ trend }: { trend: TrendDirection }) {
   if (trend === "up") {
     return <i aria-hidden="true" className="ri-arrow-up-line text-[12px]" />;
@@ -79,6 +87,7 @@ function TrendIcon({ trend }: { trend: TrendDirection }) {
   return null;
 }
 
+// Small pill that displays the trend arrow, formatted value, and tone-coded color.
 function TrendBadge({
   trend,
   tone,
@@ -94,6 +103,7 @@ function TrendBadge({
     positive: "text-success",
   };
 
+  // Clean display copy has the leading sign stripped and empties collapsed.
   const formattedValue = cleanTrendValue(displayValue);
 
   return (
@@ -109,6 +119,7 @@ function TrendBadge({
   );
 }
 
+// KPI cell: icon, label, headline value, and an optional trend/delta chip.
 export function KpiCard({
   delta,
   deltaTone = "neutral",
@@ -122,14 +133,19 @@ export function KpiCard({
   trendValue,
   value,
 }: KpiCardProps) {
+  // Resolve chip direction from the explicit trend, or infer it from the delta tone.
   const effectiveTrend = resolveTrend(trend, deltaTone);
+  // Resolve the chip color; falls to neutral when no trend is shown at all.
   const effectiveTone = effectiveTrend
     ? resolveTrendTone(effectiveTrend, trendTone, inverse)
     : "neutral";
+  // Prefer the explicit trend value, else reuse the delta as the display figure.
   const displayTrendValue = trendValue ?? (trend ? delta : null);
 
   return (
+    // Card body is a horizontal flex: leading icon tile, then the value block.
     <div className="flex items-center gap-3.5">
+      {/* Circular icon tile mirrors the page theme and stays fixed-width. */}
       <div
         aria-hidden="true"
         className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border/60 bg-muted/40 text-foreground/80 shadow-xs"
@@ -137,19 +153,24 @@ export function KpiCard({
         <i className={cn(icon, "text-[20px]")} />
       </div>
 
+      {/* Text column: label on top, then either skeleton or the live figures. */}
       <div className="min-w-0 flex-1">
         <p className="truncate font-semibold text-foreground text-sm">
           {label}
         </p>
 
+        {/* While loading, a pulsing skeleton keeps the row height stable. */}
         {loading ? (
           <div className="mt-1.5 h-7 w-20 animate-pulse rounded-md bg-muted" />
         ) : (
+          // Secondary row lays out the big number next to any trend/delta chips.
           <div className="mt-1 flex flex-wrap items-baseline gap-2">
+            {/* Headline figure is the largest text on the card. */}
             <p className="font-semibold text-[24px] tabular-nums leading-none tracking-tight">
               {value}
             </p>
 
+            {/* Directional chip (arrow + value) appears only when a trend resolves. */}
             {effectiveTrend ? (
               <TrendBadge
                 displayValue={displayTrendValue}
@@ -158,6 +179,7 @@ export function KpiCard({
               />
             ) : null}
 
+            {/* Plain delta pill colors the delta itself when no trend chip is shown. */}
             {!effectiveTrend && delta ? (
               <span
                 className={cn(
@@ -169,6 +191,7 @@ export function KpiCard({
               </span>
             ) : null}
 
+            {/* Free-text trendLabel tacks on extra context like a comparison period. */}
             {trendLabel ? (
               <span className="text-[11px] text-muted-foreground">
                 {trendLabel}
@@ -181,6 +204,7 @@ export function KpiCard({
   );
 }
 
+// Grid strip that lays out multiple KPI cards with responsive dividers.
 export function KpiStrip({ children }: { children: ReactNode }) {
   return (
     <div

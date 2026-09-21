@@ -1,17 +1,22 @@
+// Imports: cva powers variant styling, React types type the props, cn merges Tailwind classes.
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// cva variant map: shared base layout plus a per-variant color scheme for alerts.
 const alertVariants = cva(
   "group/alert relative grid w-full gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 has-data-[slot=alert-action]:pr-18 *:[svg:not([class*='size-'])]:size-4 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current",
   {
+    // Apply the default variant whenever the caller omits the variant prop.
     defaultVariants: {
       variant: "default",
     },
     variants: {
       variant: {
+        // default: neutral card tones for informational alerts.
         default: "bg-card text-card-foreground",
+        // destructive: card tone paired with error-colored text and icons.
         destructive:
           "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current",
       },
@@ -19,6 +24,7 @@ const alertVariants = cva(
   }
 );
 
+// Alert: renders a semantic alert region using the variant-mapped classes.
 function Alert({
   className,
   variant,
@@ -34,6 +40,7 @@ function Alert({
   );
 }
 
+// AlertTitle: optional bold heading inside the alert.
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -47,6 +54,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// AlertDescription: supporting text rendered in the muted foreground color.
 function AlertDescription({
   className,
   ...props
@@ -63,6 +71,7 @@ function AlertDescription({
   );
 }
 
+// AlertAction: container for a button or pill pinned to the alert's top-right corner.
 function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

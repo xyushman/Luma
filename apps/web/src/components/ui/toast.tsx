@@ -1,3 +1,4 @@
+// Imports: Base UI toast primitives, per-type icons, Button for actions/close, and cn.
 import { Toast as ToastPrimitive } from "@base-ui/react/toast";
 import {
   CircleCheckIcon,
@@ -11,16 +12,20 @@ import type * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+// Default toast manager instance; the app can create extra managers for separate regions.
 const toast = ToastPrimitive.createToastManager();
 
+// ToastProvider: context provider that owns the open toasts and their state.
 function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
   return <ToastPrimitive.Provider {...props} />;
 }
 
+// ToastPortal: renders the toast tree outside the component hierarchy.
 function ToastPortal({ ...props }: ToastPrimitive.Portal.Props) {
   return <ToastPrimitive.Portal data-slot="toast-portal" {...props} />;
 }
 
+// ToastViewport: fixed container that lays out toasts at the bottom of the screen.
 function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
   return (
     <ToastPrimitive.Viewport
@@ -34,6 +39,7 @@ function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
   );
 }
 
+// Toast: single toast card; stacking, offset, and swipe behaviors are driven by primitive CSS variables.
 function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
   return (
     <ToastPrimitive.Root
@@ -61,6 +67,7 @@ function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
   );
 }
 
+// ToastContent: horizontal flex layout holding the icon, title/description, and actions.
 function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
   return (
     <ToastPrimitive.Content
@@ -74,6 +81,7 @@ function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
   );
 }
 
+// ToastTitle: the bold heading line of the toast.
 function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
   return (
     <ToastPrimitive.Title
@@ -84,6 +92,7 @@ function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
   );
 }
 
+// ToastDescription: muted supporting text under the title.
 function ToastDescription({
   className,
   ...props
@@ -97,6 +106,7 @@ function ToastDescription({
   );
 }
 
+// ToastAction: optional call-to-action button rendered as an outline Button by default.
 function ToastAction({
   className,
   render = <Button size="sm" variant="outline" />,
@@ -112,6 +122,7 @@ function ToastAction({
   );
 }
 
+// ToastClose: dismiss control; ghost icon Button by default, labelled for screen readers.
 function ToastClose({
   className,
   children,
@@ -134,29 +145,32 @@ function ToastClose({
   );
 }
 
+// ToastIcon: maps the toast "type" to a matching lucide icon (or nothing).
 function ToastIcon({ type }: { type: string | undefined }) {
   let icon: React.ReactNode = null;
 
+  // Each toast type maps to a distinct lucide icon; every branch overwrites the node.
   if (type === "success") {
-    icon = <CircleCheckIcon aria-hidden="true" />;
+    icon = <CircleCheckIcon aria-hidden="true" />; // success: green check circle.
   }
 
   if (type === "info") {
-    icon = <InfoIcon aria-hidden="true" />;
+    icon = <InfoIcon aria-hidden="true" />; // info: neutral info marker.
   }
 
   if (type === "warning") {
-    icon = <TriangleAlertIcon aria-hidden="true" />;
+    icon = <TriangleAlertIcon aria-hidden="true" />; // warning: amber triangle.
   }
 
   if (type === "error") {
-    icon = <OctagonXIcon aria-hidden="true" className="text-destructive" />;
+    icon = <OctagonXIcon aria-hidden="true" className="text-destructive" />; // error: red octagon X.
   }
 
   if (type === "loading") {
-    icon = <Loader2Icon aria-hidden="true" className="animate-spin" />;
+    icon = <Loader2Icon aria-hidden="true" className="animate-spin" />; // loading: spinning loader.
   }
 
+  // Unrecognized or absent type: no icon matches, so render nothing below.
   if (!icon) {
     return null;
   }
@@ -171,6 +185,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
   );
 }
 
+// ToastList: subscribes to the manager and renders one Toast per open item.
 function ToastList() {
   const { toasts } = ToastPrimitive.useToastManager();
 
@@ -189,6 +204,7 @@ function ToastList() {
   ));
 }
 
+// Toaster: composed host wiring provider, portal, and viewport around the live toast list.
 function Toaster({
   children,
   toastManager = toast,
@@ -206,6 +222,7 @@ function Toaster({
   );
 }
 
+// Re-export the primitive factory and hook so callers can build custom toast managers.
 const createToastManager = ToastPrimitive.createToastManager;
 const useToastManager = ToastPrimitive.useToastManager;
 

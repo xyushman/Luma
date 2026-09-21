@@ -1,15 +1,18 @@
+// Imports: ReactNode for polymorphic content, cn for conditional trend classes.
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
+// StatCardProps: describes the KPI tiles used on dashboard screens (label, big value, trend, hint, icon).
 interface StatCardProps {
-  hint?: string;
-  icon?: string;
-  label: string;
-  trend?: ReactNode;
-  trendClassName?: string;
-  value: ReactNode;
+  hint?: string; // optional footnote shown under the value.
+  icon?: string; // CSS class for an icon font glyph.
+  label: string; // short metric name, e.g. "Pending exceptions".
+  trend?: ReactNode; // optional trend indicator (arrow + percentage) node.
+  trendClassName?: string; // overrides the default success/positive trend color.
+  value: ReactNode; // the headline KPI number, possibly formatted markup.
 }
 
+// StatCard: dashboard KPI tile pairing an icon, label, headline value, trend, and hint.
 export function StatCard({
   icon,
   label,

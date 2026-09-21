@@ -1,3 +1,6 @@
+// Imports: Node fs/os/path for file handling, shared request/response types and Zod schemas from
+// @repo/types, Express + multer for HTTP and multipart parsing, Prisma, auth/RBAC guards, and the
+// three pipeline entry services (document manifest, public-data ingestion, streaming ingestion).
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -67,26 +70,32 @@ const router = express.Router();
 // Apply an authentication middleware to ALL routes in this router so only logged-in users can access them
 router.use(requireAuth);
 
+// POST / upload endpoint: operator-only, accepts a single CSV, stages it, then async pipelines it.
 router.post(
   "/",
   requireRole("data_operator"),
   upload.single("file"),
   async (req: Request, res: Response): Promise<void> => {
+    // Pull the multer-parsed file (if any) from the request under a typed cast.
     const { file } = req as Request & { file?: Express.Multer.File };
+    // Read the declared fileType discriminator from the multipart form body.
     const { fileType } = req.body as { fileType?: string };
 
+    // Reject with 400 before anything else if no file was actually sent.
     if (!file) {
       res.status(400).json({ code: "BAD_REQUEST", error: "Missing file" });
       return;
     }
 
+    // Only CSV files are accepted, so inspect the extension after lowercasing it.
     const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== ".csv") {
       try {
-        fs.unlinkSync(file.path);
+        fs.unlinkSync(file.path); // Discard the rejected file from disk to avoid orphaned files.
       } catch {
         // ignore
       }
+      // Respond 415 Unsupported Media Type, the correct status for a wrong file format.
       res.status(415).json({
         code: "UNSUPPORTED_MEDIA_TYPE",
         error: "Only .csv files are allowed",
@@ -94,9 +103,10 @@ router.post(
       return;
     }
 
+    // Reject if the caller did not state which of the five pipeline file types this is.
     if (!fileType) {
       try {
-        fs.unlinkSync(file.path);
+        fs.unlinkSync(file.path); // Same cleanup: remove the file we are not going to process.
       } catch {
         // ignore
       }
@@ -104,13 +114,15 @@ router.post(
       return;
     }
 
+    // Validate fileType against the known union schema rather than trusting raw input.
     const parsedType = fileTypeSchema.safeParse(fileType);
     if (!parsedType.success) {
       try {
-        fs.unlinkSync(file.path);
+        fs.unlinkSync(file.path); // Invalid type, so nothing further will use this file.
       } catch {
         // ignore
       }
+      // Return 400 listing the accepted values so clients can fix the request.
       res.status(400).json({
         code: "BAD_REQUEST",
         error: "Invalid fileType",
@@ -123,27 +135,31 @@ router.post(
     }
 
     const { user } = req;
+    // The router already required auth, but narrow the type and fail defensively anyway.
     if (!user) {
       res.status(401).json({ code: "UNAUTHENTICATED", error: "Unauthorized" });
       return;
     }
 
+    // Create the batch row and write the FILE_UPLOADED audit event atomically in one transaction.
     const batch = await prisma.$transaction(async (tx) => {
+      // Persist the upload as a new batch marked "processing" and pinned to the very first pipeline step.
       const created = await tx.uploadBatch.create({
         data: {
           fileName: file.originalname,
-          filePath: file.path,
+          filePath: file.path, // Keep the on-disk path so the async worker can stream it later.
           fileType: parsedType.data,
           metadata: {
-            pipelineStage: "staged",
+            pipelineStage: "staged", // Pipeline start: the batch is staged awaiting ingestion.
             pipelineStep: 1,
             stageMessage: "File received and staged for ingestion.",
           },
-          recordCount: 0,
+          recordCount: 0, // Rows are counted later by the streaming ingester.
           status: "processing",
-          uploadedById: user.id,
+          uploadedById: user.id, // Tie the batch to its operator for ownership-scoped queries.
         },
       });
+      // Record the upload action so the audit trail shows who uploaded which file.
       await tx.auditLog.create({
         data: {
           actorId: user.id,
@@ -155,6 +171,7 @@ router.post(
       return created;
     });
 
+    // Build the payload the client receives immediately after a successful staging.
     const response: CreateUploadResponse = {
       batchId: batch.id,
       fileName: batch.fileName,
@@ -163,16 +180,20 @@ router.post(
       status: "processing",
     };
 
+    // Log the ingestion acceptance line to stdout for operational traces.
     process.stdout.write(
       `[Upload] Received "${file.originalname}" (${(file.size / 1024).toFixed(1)} KB, type: ${parsedType.data}) by ${user.email} -> batchId: ${batch.id}\n`
     );
 
+    // Reply 202 Accepted immediately, since the heavy work runs in the background after this.
     res.status(202).json(response);
 
     // Document manifests bypass the loan pipeline entirely: they stream
     // their own format and apply documentStatus onto existing tape loans.
     if (batch.fileType === "document_manifest") {
+      // Fire the manifest handler asynchronously so the HTTP response is not blocked.
       processDocumentManifest(file.path, batch.id).catch((err) => {
+        // Surface any uncaught failure to stderr for debugging rather than crashing the process.
         process.stderr.write(
           `[Upload] Manifest processing uncaught error for batch ${batch.id}: ${err}\n`
         );
@@ -185,11 +206,13 @@ router.post(
     // loan_tape, handled by a dedicated tolerant parser and incremental
     // contiguous-run fold (352522aa plan §4).
     if (batch.fileType === "fannie_mae" || batch.fileType === "freddie_mac") {
+      // Run the public-data ingestion pipeline in the background for either agency file.
       processPublicDataIngestion(
         file.path,
         batch.id,
         batch.fileType as "fannie_mae" | "freddie_mac"
       ).catch((err) => {
+        // Log background failures so operators can investigate without taking down the process.
         process.stderr.write(
           `[Upload] Public-data ingestion uncaught error for batch ${batch.id}: ${err}\n`
         );
@@ -197,7 +220,9 @@ router.post(
       return;
     }
 
+    // Default path (loan_tape / servicer_update): stream the rows in O(1) memory in the background.
     processStreamAndNormalize(file.path, batch.id).catch((err) => {
+      // Report any ingestion failure on stderr for later diagnosis.
       process.stderr.write(
         `[Upload] Ingestion stream uncaught error for batch ${batch.id}: ${err}\n`
       );
@@ -205,12 +230,15 @@ router.post(
   }
 );
 
+// GET /list endpoint, open to all three roles so dashboards can render batch history.
 router.get(
   "/",
   requireRole("data_operator", "reviewer", "data_consumer"),
   async (req: Request, res: Response): Promise<void> => {
+    // Validate the pagination and status filter query parameters against the shared Zod schema.
     const parsed = listUploadsQuerySchema.safeParse(req.query);
     if (!parsed.success) {
+      // Reply 400, mapping each failed field to its human-readable error message.
       res.status(400).json({
         code: "BAD_REQUEST",
         error: "Invalid query",
@@ -226,6 +254,7 @@ router.get(
 
     const { page, limit, status } = parsed.data;
     const { user } = req;
+    // Authed by router.use(requireAuth) above, but narrow the type and stay fail-closed anyway.
     if (!user) {
       res.status(401).json({ code: "UNAUTHENTICATED", error: "Unauthorized" });
       return;
@@ -235,21 +264,25 @@ router.get(
     // metadata (fileName, recordCount, fileType) for dashboards and filters.
     const where: Record<string, unknown> =
       user.role === "data_operator" ? { uploadedById: user.id } : {};
+    // Apply the optional status filter on top of the role scoping.
     if (status) {
       where.status = status;
     }
 
+    // Convert page/limit to an offset for skip-take pagination.
     const skip = (page - 1) * limit;
+    // Fetch the matching row count and one page of batches in parallel.
     const [total, batches] = await Promise.all([
       prisma.uploadBatch.count({ where }),
       prisma.uploadBatch.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "desc" }, // Newest uploads first for the list UI.
         skip,
         take: limit,
         where,
       }),
     ]);
 
+    // Project each batch to the slim fields the list UI consumes.
     const data = batches.map((batch) => ({
       createdAt: batch.createdAt.toISOString(),
       failedCount: batch.failedCount,
@@ -260,6 +293,7 @@ router.get(
       status: batch.status,
     }));
 
+    // Return the page along with enough pagination math for the frontend to render controls.
     res.json({
       data,
       pagination: {
@@ -272,11 +306,13 @@ router.get(
   }
 );
 
+// GET /:batchId detail endpoint, restricted to the operator who owns the batch.
 router.get(
   "/:batchId",
   requireRole("data_operator"),
   async (req: Request, res: Response): Promise<void> => {
     const rawBatchId = (req.params as { batchId: string }).batchId;
+    // Validate the path param is a real cuid before touching the database.
     const parsedId = BATCH_ID_SCHEMA.safeParse(rawBatchId);
     if (!parsedId.success) {
       res.status(400).json({
@@ -288,25 +324,31 @@ router.get(
     }
     const { data: batchId } = parsedId;
     const { user } = req;
+    // Already authed, but fail closed if user is somehow absent.
     if (!user) {
       res.status(401).json({ code: "UNAUTHENTICATED", error: "Unauthorized" });
       return;
     }
 
+    // Scoped by operator id too, so an operator can never read another user's batch.
     const batch = await prisma.uploadBatch.findFirst({
       where: { id: batchId, uploadedById: user.id },
     });
 
+    // 404 (rather than 403) intentionally, to avoid leaking whether a batch id exists.
     if (!batch) {
       res.status(404).json({ code: "NOT_FOUND", error: "Batch not found" });
       return;
     }
 
+    // Read the stored metadata object, defaulting to an empty map when absent.
     const metadata = (batch.metadata as Record<string, unknown> | null) ?? {};
+    // failedRows may not exist, so guard the shape before exposing it.
     const failedRows = Array.isArray(metadata.failedRows)
       ? (metadata.failedRows as unknown[])
       : [];
 
+    // Compose the full batch detail response the operator UI renders.
     const response: GetBatchResponse = {
       createdAt: batch.createdAt.toISOString(),
       failedCount: batch.failedCount,
@@ -325,11 +367,13 @@ router.get(
   }
 );
 
+// GET /:batchId/summary endpoint: per-batch exception breakdown for the operator dashboard.
 router.get(
   "/:batchId/summary",
   requireRole("data_operator"),
   async (req: Request, res: Response): Promise<void> => {
     const rawBatchId = (req.params as { batchId: string }).batchId;
+    // Validate the batch id path param as a cuid before querying.
     const parsedId = BATCH_ID_SCHEMA.safeParse(rawBatchId);
     if (!parsedId.success) {
       res.status(400).json({
@@ -341,24 +385,29 @@ router.get(
     }
     const { data: batchId } = parsedId;
     const { user } = req;
+    // Defensive check though requireAuth already guarantees a user.
     if (!user) {
       res.status(401).json({ code: "UNAUTHENTICATED", error: "Unauthorized" });
       return;
     }
 
+    // Ownership-scoped lookup, mirroring the GET /:batchId guard.
     const batch = await prisma.uploadBatch.findFirst({
       where: { id: batchId, uploadedById: user.id },
     });
 
+    // Unknown or foreign batches return 404 without revealing existence.
     if (!batch) {
       res.status(404).json({ code: "NOT_FOUND", error: "Batch not found" });
       return;
     }
 
+    // Count every loan that came from this batch to serve as the summary denominator.
     const totalImported = await prisma.loan.count({
       where: { sourceBatchId: batchId },
     });
 
+    // Run three aggregation queries in parallel: exceptions by type, by severity, and failed loans.
     const [byType, bySeverity, failedValidation] = await Promise.all([
       prisma.exception.groupBy({
         _count: { exceptionType: true },
@@ -371,10 +420,11 @@ router.get(
         where: { loan: { sourceBatchId: batchId } },
       }),
       prisma.loan.count({
-        where: { sourceBatchId: batchId, exceptions: { some: {} } },
+        where: { sourceBatchId: batchId, exceptions: { some: {} } }, // Loans with >= 1 open exception.
       }),
     ]);
 
+    // Pre-fill every known exception type with zero so report charts never show gaps.
     const exceptionsByType: Record<string, number> = {
       balance_error: 0,
       conflicting_source: 0,
@@ -387,6 +437,7 @@ router.get(
       status_inconsistency: 0,
     };
 
+    // Same zero-fill strategy for the four severity buckets.
     const exceptionsBySeverity: Record<string, number> = {
       critical: 0,
       high: 0,
@@ -394,12 +445,14 @@ router.get(
       medium: 0,
     };
 
+    // Fold the grouped exception-type counts into the pre-seeded map, ignoring unknown keys.
     for (const row of byType) {
       const key = row.exceptionType;
       if (key in exceptionsByType) {
         exceptionsByType[key] = row._count.exceptionType ?? 0;
       }
     }
+    // Fold the grouped severity counts into the pre-seeded severity map.
     for (const row of bySeverity) {
       const key = row.severity;
       if (key in exceptionsBySeverity) {
@@ -407,8 +460,10 @@ router.get(
       }
     }
 
+    // Loans that imported cleanly are those without any exception; clamp at zero defensively.
     const passedValidation = Math.max(0, totalImported - failedValidation);
 
+    // Assemble the typed summary payload for the dashboard.
     const summary: BatchSummary = {
       batchId,
       exceptionsBySeverity:

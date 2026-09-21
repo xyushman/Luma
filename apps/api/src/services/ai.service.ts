@@ -1,3 +1,4 @@
+// Imports: shared type enums, the AI SDK generation functions, Zod for output schemas, and the AI config helpers.
 import { exceptionTypeSchema, severitySchema } from "@repo/types";
 import { generateObject, generateText } from "ai";
 import { z } from "zod";

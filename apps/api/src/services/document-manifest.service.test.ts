@@ -27,24 +27,25 @@ describe("buildApplyWindows", () => {
       group("C", 1),
     ];
     const windows = buildApplyWindows(groups);
-    expect(windows.length).toBe(3);
-    expect(windows[0]?.length).toBe(5);
-    expect(windows[1]?.length).toBe(9999);
-    expect(windows[2]?.length).toBe(1);
+    expect(windows.length).toBe(3); // Windows: [A+B], [BIG], [C].
+    expect(windows[0]?.length).toBe(5); // Small groups merge into one window.
+    expect(windows[1]?.length).toBe(9999); // Oversized group keeps its own window.
+    expect(windows[2]?.length).toBe(1); // Trailing group gets its own window.
     // Loan B's rows must never be split across windows.
     const bRows = windows.flat().filter((r) => r.loanId === "B");
-    expect(bRows.length).toBe(2);
+    expect(bRows.length).toBe(2); // B appears exactly twice, together.
   });
 
   it("returns empty for no groups and single window for small input", () => {
-    expect(buildApplyWindows([])).toEqual([]);
+    expect(buildApplyWindows([])).toEqual([]); // No input, no windows.
     const one = buildApplyWindows([
       [{ available: true, documentType: "d", loanId: "L", rowNumber: 1 }],
     ]);
-    expect(one.length).toBe(1);
+    expect(one.length).toBe(1); // Tiny input fits one window.
   });
 });
 
+// Helper that builds a manifest row with per-call fields.
 const mkRow = (
   loanId: string,
   available: boolean,
@@ -60,26 +61,26 @@ const mkRow = (
 describe("normalizeManifestRow", () => {
   it("parses a valid snake_case row", () => {
     const result = normalizeManifestRow(
-      { available: "true", document_type: "deed_of_trust", loan_id: "L-1" },
+      { available: "true", document_type: "deed_of_trust", loan_id: "L-1" }, // Standard CSV columns.
       2
     );
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.row.loanId).toBe("L-1");
+      expect(result.row.loanId).toBe("L-1"); // Loan id maps through.
       expect(result.row.documentType).toBe("deed_of_trust");
-      expect(result.row.available).toBe(true);
-      expect(result.row.rowNumber).toBe(2);
+      expect(result.row.available).toBe(true); // "true" boolean-coerces.
+      expect(result.row.rowNumber).toBe(2); // Source row number preserved.
     }
   });
 
   it("accepts camelCase header variants with BOM handled upstream", () => {
     const result = normalizeManifestRow(
-      { available: "y", documentType: "title", loanId: "L-2" },
+      { available: "y", documentType: "title", loanId: "L-2" }, // camelCase headers.
       3
     );
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.row.available).toBe(true);
+      expect(result.row.available).toBe(true); // "y" counts as true.
       expect(result.row.documentType).toBe("title");
     }
   });
@@ -88,14 +89,14 @@ describe("normalizeManifestRow", () => {
     // validateManifestHeaders accepts "Loan Id, Document Type, Available";
     // row parsing must agree or the batch would complete with all rows failed.
     const result = normalizeManifestRow(
-      { Available: "no", "Document Type": "deed", "Loan Id": "L-3" },
+      { Available: "no", "Document Type": "deed", "Loan Id": "L-3" }, // Title Case headers.
       4
     );
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.row.loanId).toBe("L-3");
       expect(result.row.documentType).toBe("deed");
-      expect(result.row.available).toBe(false);
+      expect(result.row.available).toBe(false); // "no" counts as false.
     }
   });
 
@@ -108,7 +109,7 @@ describe("normalizeManifestRow", () => {
       );
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.row.available).toBe(true);
+        expect(result.row.available).toBe(true); // All truthy spellings coerce.
       }
     }
     const falseValues = ["0", "false", "FALSE", "N", "no"];
@@ -119,22 +120,22 @@ describe("normalizeManifestRow", () => {
       );
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.row.available).toBe(false);
+        expect(result.row.available).toBe(false); // All falsy spellings coerce.
       }
     }
   });
 
   it("fails on missing loan_id", () => {
     const result = normalizeManifestRow(
-      { available: "true", document_type: "deed" },
+      { available: "true", document_type: "deed" }, // No loan id at all.
       4
     );
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.failedRow.reason).toContain("loan_id");
+      expect(result.failedRow.reason).toContain("loan_id"); // Reason names the gap.
       expect(result.failedRow.rowNumber).toBe(4);
       expect(JSON.parse(result.failedRow.rawData)).toEqual({
-        available: "true",
+        available: "true", // Raw input is preserved for inspection.
         document_type: "deed",
       });
     }
@@ -146,9 +147,9 @@ describe("normalizeManifestRow", () => {
         { available: v, document_type: "deed", loan_id: "L-1" },
         5
       );
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(false); // Unsupported spelling fails.
       if (!result.success) {
-        expect(result.failedRow.reason).toContain("available");
+        expect(result.failedRow.reason).toContain("available"); // Reason points at the field.
       }
     }
   });
@@ -157,26 +158,26 @@ describe("normalizeManifestRow", () => {
 describe("validateManifestHeaders", () => {
   it("accepts recognized headers", () => {
     expect(
-      validateManifestHeaders(["loan_id", "document_type", "available"])
+      validateManifestHeaders(["loan_id", "document_type", "available"]) // Canonical names.
     ).toBeNull();
     expect(
-      validateManifestHeaders(["Loan Id", "DOCUMENT TYPE", "Available"])
+      validateManifestHeaders(["Loan Id", "DOCUMENT TYPE", "Available"]) // Case-insensitive.
     ).toBeNull();
     expect(
-      validateManifestHeaders(["loanid", "documenttype", "available"])
+      validateManifestHeaders(["loanid", "documenttype", "available"]) // Space-stripped names.
     ).toBeNull();
-    expect(validateManifestHeaders(["\uFEFFloan_id", "available"])).toBeNull();
-    expect(validateManifestHeaders([])).toBeNull();
+    expect(validateManifestHeaders(["\uFEFFloan_id", "available"])).toBeNull(); // BOM-prefixed header.
+    expect(validateManifestHeaders([])).toBeNull(); // Empty header rows are tolerated.
   });
 
   it("rejects files without required manifest columns and reports missing names", () => {
     const error1 = validateManifestHeaders(["foo", "bar"]);
-    expect(error1).toContain("header mismatch");
-    expect(error1).toContain("loan_id, available");
+    expect(error1).toContain("header mismatch"); // Generic mismatch text.
+    expect(error1).toContain("loan_id, available"); // All missing names listed.
 
     const error2 = validateManifestHeaders(["loan_id", "document_type"]);
     expect(error2).toContain("header mismatch");
-    expect(error2).toContain("available");
+    expect(error2).toContain("available"); // Only the missing one is named.
 
     const error3 = validateManifestHeaders(["document_type", "available"]);
     expect(error3).toContain("header mismatch");
@@ -190,24 +191,24 @@ describe("decideManifestStatus", () => {
       mkRow("L-1", true, "deed"),
       mkRow("L-1", true, "title"),
     ]);
-    expect(decision.documentStatus).toBe("complete");
-    expect(decision.missingDocumentTypes).toEqual([]);
+    expect(decision.documentStatus).toBe("complete"); // Every doc present.
+    expect(decision.missingDocumentTypes).toEqual([]); // Nothing missing.
   });
 
   it("returns missing when any document is unavailable, listing them", () => {
     const decision = decideManifestStatus([
-      mkRow("L-1", true, "deed", 3),
-      mkRow("L-1", false, "title", 4),
-      mkRow("L-1", false, "insurance", 7),
+      mkRow("L-1", true, "deed", 3), // Deed is available.
+      mkRow("L-1", false, "title", 4), // Title is missing.
+      mkRow("L-1", false, "insurance", 7), // Insurance is missing.
     ]);
-    expect(decision.documentStatus).toBe("missing");
-    expect(decision.missingDocumentTypes).toEqual(["title", "insurance"]);
-    expect(decision.sourceRowNumbers).toEqual([3, 4, 7]);
+    expect(decision.documentStatus).toBe("missing"); // Any gap means missing.
+    expect(decision.missingDocumentTypes).toEqual(["title", "insurance"]); // Types listed.
+    expect(decision.sourceRowNumbers).toEqual([3, 4, 7]); // Source rows all listed.
   });
 
   it("falls back to 'unknown' for missing docs without a type", () => {
-    const decision = decideManifestStatus([mkRow("L-1", false, null)]);
-    expect(decision.missingDocumentTypes).toEqual(["unknown"]);
+    const decision = decideManifestStatus([mkRow("L-1", false, null)]); // Missing with no type name.
+    expect(decision.missingDocumentTypes).toEqual(["unknown"]); // Fallback label.
     expect(decision.documentStatus).toBe("missing");
   });
 });
@@ -218,11 +219,11 @@ describe("buildOrphanCleanupWhere", () => {
       string,
       unknown
     >;
-    expect(where.exceptionType).toBe("missing_field");
-    expect(where.reviewerId).toBeNull();
-    expect(where.status).toBe("open");
+    expect(where.exceptionType).toBe("missing_field"); // Only manifest-style exceptions.
+    expect(where.reviewerId).toBeNull(); // Never touch reviewed exceptions.
+    expect(where.status).toBe("open"); // Only open ones.
     expect(where.metadata).toEqual({
-      equals: "batch_123",
+      equals: "batch_123", // Scoped to this exact batch.
       path: ["manifestBatchId"],
     });
   });

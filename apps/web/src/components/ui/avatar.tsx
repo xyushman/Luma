@@ -1,8 +1,10 @@
+// Imports: Base UI Avatar primitives, React types, and the cn class merger.
 import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Avatar: root circle; size is carried by a data-size attribute that descendant classes read.
 function Avatar({
   className,
   size = "default",
@@ -23,6 +25,7 @@ function Avatar({
   );
 }
 
+// AvatarImage: renders the user photo, cropped with object-cover inside the circle.
 function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
   return (
     <AvatarPrimitive.Image
@@ -36,6 +39,7 @@ function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
   );
 }
 
+// AvatarFallback: initials or icon placeholder shown while the image is loading or missing.
 function AvatarFallback({
   className,
   ...props
@@ -52,6 +56,7 @@ function AvatarFallback({
   );
 }
 
+// AvatarBadge: small presence/status dot overlaid on the bottom-right corner, sized per avatar size.
 function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
@@ -68,6 +73,7 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
   );
 }
 
+// AvatarGroup: overlapping stack of avatars created with negative horizontal margins.
 function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -81,6 +87,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// AvatarGroupCount: trailing "+N" overflow indicator that scales with the group's size.
 function AvatarGroupCount({
   className,
   ...props

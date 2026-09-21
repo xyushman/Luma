@@ -1,3 +1,4 @@
+// Imports: React, recharts primitives and types for charting, and cn for class merging.
 import * as React from "react";
 import type { TooltipValueType } from "recharts";
 import * as RechartsPrimitive from "recharts";
@@ -7,9 +8,12 @@ import { cn } from "@/lib/utils";
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { dark: ".dark", light: "" } as const;
 
+// Default first-render size used by ResponsiveContainer before it can measure the parent.
 const INITIAL_DIMENSION = { height: 200, width: 320 } as const;
+// Recharts tooltip names may be either numeric or string keys.
 type TooltipNameType = number | string;
 
+// Per-data-key config: an optional label/icon plus a fixed color or theme-paired colors.
 export type ChartConfig = Record<
   string,
   {
@@ -21,15 +25,19 @@ export type ChartConfig = Record<
   )
 >;
 
+// Shape of the value stored in ChartContext below.
 type ChartContextProps = {
   config: ChartConfig;
 };
 
+// Shares the ChartConfig down to tooltip and legend children without prop drilling.
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
+// Hook that throws if a tooltip/legend is rendered outside a ChartContainer.
 function useChart() {
   const context = React.useContext(ChartContext);
 
+  // Fail loudly so a misused tooltip/legend does not silently render broken.
   if (!context) {
     throw new Error("useChart must be used within a <ChartContainer />");
   }
@@ -37,6 +45,7 @@ function useChart() {
   return context;
 }
 
+// ChartContainer: provides the config context and hosts the responsive recharts wrapper.
 function ChartContainer({
   id,
   className,
@@ -54,8 +63,9 @@ function ChartContainer({
     height: number;
   };
 }) {
+  // Fall back to a generated unique id when the caller does not supply one.
   const uniqueId = React.useId();
-  const chartId = `chart-${id ?? uniqueId.replace(/:/g, "")}`;
+  const chartId = `chart-${id ?? uniqueId.replace(/:/g, "")}`; // stable id scopes the injected CSS variables.
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -79,11 +89,14 @@ function ChartContainer({
   );
 }
 
+// ChartStyle: injects a CSS variable (--color-<key>) per data key so recharts can use the configured colors.
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  // Keep only config entries that actually declare a theme or color.
   const colorConfig = Object.entries(config).filter(
     ([, config]) => config.theme ?? config.color
   );
 
+  // Output nothing when no entry carries a color.
   if (!colorConfig.length) {
     return null;
   }
@@ -112,8 +125,10 @@ ${colorConfig
   );
 };
 
+// ChartTooltip: direct re-export of recharts' built-in Tooltip component.
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
+// ChartTooltipContent: custom-styled tooltip that resolves labels/colors from the ChartConfig.
 function ChartTooltipContent({
   active,
   payload,
@@ -144,11 +159,14 @@ function ChartTooltipContent({
   >) {
   const { config } = useChart();
 
+  // Memoized tooltip heading resolved from config labels unless hidden or overridden by a formatter.
   const tooltipLabel = React.useMemo(() => {
+    // Skip the heading when explicitly hidden or when there is no hovered payload.
     if (hideLabel || !payload?.length) {
       return null;
     }
 
+    // Pull the first payload item to derive the label key and its config entry.
     const [item] = payload;
     const key = `${labelKey ?? item?.dataKey ?? item?.name ?? "value"}`;
     const itemConfig = getPayloadConfigFromPayload(config, item, key);
@@ -157,6 +175,7 @@ function ChartTooltipContent({
         ? (config[label]?.label ?? label)
         : itemConfig?.label;
 
+    // labelFormatter wins over the default label lookup when supplied.
     if (labelFormatter) {
       return (
         <div className={cn("font-medium", labelClassName)}>
@@ -165,6 +184,7 @@ function ChartTooltipContent({
       );
     }
 
+    // Return null when no label could be resolved for the heading.
     if (!value) {
       return null;
     }
@@ -180,10 +200,12 @@ function ChartTooltipContent({
     labelKey,
   ]);
 
+  // Render nothing until a data point is actively hovered with a payload.
   if (!(active && payload?.length)) {
     return null;
   }
 
+  // Single-series tooltips nest the series label above values when not using a dot indicator.
   const nestLabel = payload.length === 1 && indicator !== "dot";
 
   return (
@@ -198,6 +220,7 @@ function ChartTooltipContent({
         {payload
           .filter((item) => item.type !== "none")
           .map((item, index) => {
+            // Resolve this series' config entry (label/color) and the effective indicator color.
             const key = `${nameKey ?? item.name ?? item.dataKey ?? "value"}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
             const indicatorColor = color ?? item.payload?.fill ?? item.color;
@@ -268,8 +291,10 @@ function ChartTooltipContent({
   );
 }
 
+// ChartLegend: re-export of recharts' built-in Legend component.
 const ChartLegend = RechartsPrimitive.Legend;
 
+// ChartLegendContent: custom legend that maps each series to its icon/label from ChartConfig.
 function ChartLegendContent({
   className,
   hideIcon = false,
@@ -325,15 +350,18 @@ function ChartLegendContent({
   );
 }
 
+// Resolves the ChartConfig entry for a payload key, walking into nested "payload" objects when needed.
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
   key: string
 ) {
+  // Bail early if the given payload value is not a usable object.
   if (typeof payload !== "object" || payload === null) {
     return;
   }
 
+  // Recharts nests the raw data point under "payload"; unwrap it when present for label resolution.
   const payloadPayload =
     "payload" in payload &&
     typeof payload.payload === "object" &&
@@ -343,6 +371,7 @@ function getPayloadConfigFromPayload(
 
   let configLabelKey: string = key;
 
+  // Prefer a string lookup value (e.g. the tooltip/name field) carried by the payload item itself.
   if (
     key in payload &&
     typeof payload[key as keyof typeof payload] === "string"
@@ -358,6 +387,7 @@ function getPayloadConfigFromPayload(
     ] as string;
   }
 
+  // Return the matched config entry, or the entry keyed directly by "key" as a fallback.
   return configLabelKey in config ? config[configLabelKey] : config[key];
 }
 

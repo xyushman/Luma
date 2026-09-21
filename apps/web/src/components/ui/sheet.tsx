@@ -1,25 +1,31 @@
+// Imports: dialog primitives power the sheet, X renders the close icon, Button styles it, cn merges classes.
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import type * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+// Sheet: root state holder; a sheet is a dialog rendered as a sliding side panel.
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
 }
 
+// SheetTrigger: the control that opens the sheet.
 function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
 }
 
+// SheetClose: element or button that closes the sheet.
 function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
 }
 
+// SheetPortal: teleports the sheet UI out of ancestor stacking and overflow contexts.
 function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
 }
 
+// SheetOverlay: dimmed backdrop behind the sliding panel; click closes when configured.
 function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
   return (
     <SheetPrimitive.Backdrop
@@ -33,6 +39,7 @@ function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
   );
 }
 
+// SheetContent: populated panel that slides in from the chosen side with a close button.
 function SheetContent({
   className,
   children,
@@ -76,6 +83,7 @@ function SheetContent({
   );
 }
 
+// SheetHeader: top padding region for the title.
 function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -86,6 +94,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// SheetFooter: bottom action area pushed to the end of the panel.
 function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -96,6 +105,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+// SheetTitle: accessible heading wired to the panel's aria-labelledby.
 function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
   return (
     <SheetPrimitive.Title
@@ -109,6 +119,7 @@ function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
   );
 }
 
+// SheetDescription: accessible supporting text for the panel.
 function SheetDescription({
   className,
   ...props
