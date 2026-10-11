@@ -18,6 +18,9 @@ import summaryRouter from "./routes/summary.js";
 import uploadsRouter from "./routes/uploads.js";
 import verifiedLoansRouter from "./routes/verified-loans.js";
 
+// Matches one or more trailing slashes; used to normalize CORS origins for comparison.
+const TRAILING_SLASHES = /\/+$/;
+
 // Builds and wires the whole Express app: security middleware, CORS, routers, health/me, error handling.
 export const createApp = (): Express => {
   // Fail fast at boot if critical env vars are missing, before any request can be served.
@@ -25,6 +28,10 @@ export const createApp = (): Express => {
 
   // Create the Express server instance that every route and middleware mounts onto.
   const app = express();
+
+  // Normalize an origin for CORS matching: strip trailing slashes so "https://x/" matches "https://x".
+  const normalizeOrigin = (url: string): string =>
+    url.replace(TRAILING_SLASHES, "");
 
   // The main CORS origin is the frontend, defaulting to the local dev server when unset.
   const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:3000";
@@ -34,7 +41,13 @@ export const createApp = (): Express => {
     .map((url) => url.trim())
     .filter((url) => url.length > 0);
   // Combine main and extra frontend origins into the single CORS allowlist used below.
-  const allowedOrigins = [frontendUrl, ...extraOrigins];
+  const allowedOrigins = [frontendUrl, ...extraOrigins]
+    .map(normalizeOrigin)
+    .filter((url) => url.length > 0);
+  // Surface the effective allowlist at boot so CORS misconfigurations are visible in deployment logs.
+  process.stderr.write(
+    `[cors] allowed origins: ${allowedOrigins.join(", ")}\n`
+  );
 
   // Security hardening: helmet sets safe HTTP headers, compression shrinks payloads, morgan logs requests.
   app.use(helmet());
