@@ -20,4 +20,6 @@ COPY packages packages
 RUN cd apps/api && DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/luma" bun x prisma generate --schema prisma/schema.prisma
 USER bun
 EXPOSE 4000
-CMD ["bun", "apps/api/src/index.ts"]
+# Apply migrations and (idempotently) seed demo users at startup, then boot the API.
+# Runs here so it works even when the host does not support pre-deploy commands.
+CMD ["sh", "-c", "cd apps/api && bun x prisma migrate deploy && (bun x prisma db seed || echo '[warn] seed skipped') && bun src/index.ts"]

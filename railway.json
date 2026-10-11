@@ -5,11 +5,6 @@
     "dockerfilePath": "Dockerfile.api"
   },
   "deploy": {
-    "preDeployCommand": [
-      "sh",
-      "-c",
-      "cd apps/api && bun node_modules/prisma/build/index.js migrate deploy"
-    ],
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
