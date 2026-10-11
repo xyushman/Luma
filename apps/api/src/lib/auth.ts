@@ -12,7 +12,11 @@ export const auth = betterAuth({
       process.env.CROSS_ORIGIN_COOKIES === "true"
         ? { sameSite: "none", secure: true }
         : undefined,
+    // Behind Railway's proxy the real client IP arrives in x-forwarded-for; read it so rate limiting keys per client.
+    ipAddress: { ipAddressHeaders: ["x-forwarded-for"] },
   },
+  // Public base URL of this API; without it Better Auth derives the origin per-request and callback URLs can break.
+  baseURL: process.env.BETTER_AUTH_URL,
   // Persist sessions, accounts, and users in Postgres through the singleton Prisma client.
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   // Enable the challenge's email+password sign-in flow (Better Auth's core credential method).
