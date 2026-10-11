@@ -16,7 +16,12 @@ export const auth = betterAuth({
     ipAddress: { ipAddressHeaders: ["x-forwarded-for"] },
   },
   // Public base URL of this API; without it Better Auth derives the origin per-request and callback URLs can break.
-  baseURL: process.env.BETTER_AUTH_URL,
+  // Fall back to Railway's auto-injected public domain so no manual env var is required in production.
+  baseURL:
+    process.env.BETTER_AUTH_URL ??
+    (process.env.RAILWAY_PUBLIC_DOMAIN
+      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+      : undefined),
   // Persist sessions, accounts, and users in Postgres through the singleton Prisma client.
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   // Enable the challenge's email+password sign-in flow (Better Auth's core credential method).
