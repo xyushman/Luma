@@ -15,7 +15,9 @@ COPY packages/typescript-config/package.json packages/typescript-config/
 RUN git init -q . && bun install --frozen-lockfile
 COPY apps/api apps/api
 COPY packages packages
-RUN cd apps/api && bun x prisma generate --schema prisma/schema.prisma
+# prisma.config.ts resolves env("DATABASE_URL") at load time, so generate needs a
+# placeholder URL here. It is scoped to this RUN; the real URL is injected at runtime.
+RUN cd apps/api && DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/luma" bun x prisma generate --schema prisma/schema.prisma
 USER bun
 EXPOSE 4000
 CMD ["bun", "apps/api/src/index.ts"]
